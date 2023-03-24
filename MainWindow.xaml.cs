@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 using E9361App.DBHelper;
+using E9361App.Maintain;
 
 namespace e9361debug
 {
@@ -26,7 +27,12 @@ namespace e9361debug
         {
             InitializeComponent();
 
-            DataSet ds = SQLiteHelper.Query("select * from t_para");
+            DataSet ds = SQLiteHelper.Query("select * from t_chkPara");
+
+            byte[] frame;
+            MaintainProtocol.GetResetFrame(out frame);
+
+            MessageBox.Show(MaintainProtocol.ByteArryToString(frame, 0, frame.Length));
         }
     }
 }
