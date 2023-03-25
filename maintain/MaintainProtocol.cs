@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf.Converters.CircularProgressBar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,9 +35,9 @@ namespace E9361App.Maintain
 
         /// <summary>
         /// 报文的固定长度.
-        /// 1字节起始码 + 2字节地址 + 1字节校验值
+        /// 1字节起始码 + 2字节地址 + 2字节数据域长度 + 1字节主功能码 + 1字节子功能码 + 1字节校验值
         /// </summary>
-        private const int m_fixLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(byte);
+        private const int m_minLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(byte) + sizeof(byte) + sizeof(byte);
 
         private static readonly byte[] _auchCRCHi = new byte[]//crc高位表
             {
@@ -189,8 +190,8 @@ namespace E9361App.Maintain
 
         public static void ComposeFrame(byte mainFunc, byte subFunc, byte[] data, out byte[] frameBuf)
         {
-            //mainFunc + subFunc
-            ushort dataLen = sizeof(byte) + sizeof(byte);
+            //data len except mainFunc + subFunc
+            ushort dataLen = 0;
 
             //data length
             if (data != null && data.Length > 0)
@@ -199,7 +200,7 @@ namespace E9361App.Maintain
             }
 
             int pos = 0;
-            frameBuf = new byte[m_fixLen + dataLen];
+            frameBuf = new byte[m_minLen + dataLen];
 
             //start code
             frameBuf[pos++] = m_startCode;
@@ -209,6 +210,7 @@ namespace E9361App.Maintain
             pos += sizeof(ushort);
 
             //data len
+            dataLen += (sizeof(ushort) + sizeof(ushort));
             Array.Copy(BitConverter.GetBytes(dataLen), 0, frameBuf, pos, sizeof(ushort));
             pos += sizeof(ushort);
 
@@ -225,6 +227,19 @@ namespace E9361App.Maintain
 
             //chksum
             frameBuf[pos++] = GetXor(frameBuf, 1, pos - 1);
+        }
+
+        public static bool FindOneFrame(byte[] buf, out int start, out int len)
+        {
+            start = -1;
+            len = 0;
+
+            if (buf == null || buf.Length <= (m_minLen + 2))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public static void SetAddress(ushort address)
