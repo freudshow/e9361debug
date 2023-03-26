@@ -39,6 +39,12 @@ namespace E9361App.Maintain
         /// </summary>
         private const int m_minLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(byte) + sizeof(byte) + sizeof(byte);
 
+        /// <summary>
+        /// 报文头的长度.
+        /// 1字节起始码 + 2字节地址 + 2字节数据域长度
+        /// </summary>
+        private const int m_headLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort);
+
         private static readonly byte[] _auchCRCHi = new byte[]//crc高位表
             {
             0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
@@ -229,15 +235,78 @@ namespace E9361App.Maintain
             frameBuf[pos++] = GetXor(frameBuf, 1, pos - 1);
         }
 
-        public static bool FindOneFrame(byte[] buf, out int start, out int len)
+        public static bool FindOneFrame(byte[] buf, out int start, out int len, out byte mainFunc, out byte subFunc)
         {
             start = -1;
             len = 0;
+            mainFunc = 0;
+            subFunc = 0;
 
             if (buf == null || buf.Length <= (m_minLen + 2))
             {
                 return false;
             }
+
+            int delta;
+            ushort addr;
+            bool foundStart = false;
+            for (int i = 0; i < buf.Length; i += delta)
+            {
+                if (buf[i] == m_startCode)
+                {
+                    if ((buf.Length - i) > sizeof(ushort))
+                    {
+                        byte[] addrArray = new byte[sizeof(ushort)];
+                        Array.Copy(buf, i + 1, addrArray, 0, sizeof(ushort));
+                        addr = BitConverter.ToUInt16(addrArray, 0);
+                        if (addr == m_address || addr == 0xFFFF)
+                        {
+                            foundStart = true;
+                            start = i;
+                            break;
+                        }
+                        else
+                        {
+                            delta = sizeof(ushort) + 1;
+                        }
+                    }
+                    else
+                    {
+                        delta = 1;
+                    }
+                }
+                else
+                {
+                    delta = 1;
+                }
+            }
+
+            if (!foundStart)
+            {
+                return false;
+            }
+
+            if ((buf.Length - start) < m_headLen)
+            {
+                return false;
+            }
+
+            ushort dataLen = BitConverter.ToUInt16(buf, start + 3);
+
+            if (dataLen < 2 || buf.Length < (dataLen + m_minLen))
+            {
+                return false;
+            }
+
+            byte chk = GetXor(buf, 1, dataLen + sizeof(ushort) + sizeof(ushort));
+
+            if (buf[start + dataLen + sizeof(byte) + sizeof(ushort) + sizeof(ushort)] != chk)
+            {
+                return false;
+            }
+
+            mainFunc = buf[start + 5];
+            subFunc = buf[start + 6];
 
             return true;
         }
