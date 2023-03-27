@@ -1,9 +1,15 @@
-﻿using E9361App.Log;
+﻿using ControlzEx.Standard;
+using E9361App.Log;
 using E9361App.Maintain;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Documents;
+using System.Windows.Interop;
+using System.Windows.Media.TextFormatting;
 
 namespace E9361App.Communication
 {
@@ -19,32 +25,31 @@ namespace E9361App.Communication
 
         bool Open(String Com, int Braude);
 
-        bool close();
+        bool Close();
 
-        byte[] Read(int readtimes, out int bufferlen);
-
-        byte[] ContinueRead(int readtimes, out int bufferlen);
+        byte[] Read(int readtimes);
 
         bool Write(byte[] frame, int index, int len);
 
-        PortTypeEnum GetPorType();
+        bool FlushAll();
+
+        PortTypeEnum GetPortType();
     }
 
     public class UartPort : AbstractPort
     {
-        private SerialPort sp = null;
-        private log4net.ILog logerror = log4net.LogManager.GetLogger("logerror");
-        private log4net.ILog loginfo = log4net.LogManager.GetLogger("loginfo");
-
-        //打印收发报文
-        private SRMessageSingleton m_msgHandle = SRMessageSingleton.getInstance();
+        private SerialPort m_SerialPort = null;
+        private List<byte> m_ReceiveBuffer = new List<byte>();
+        private SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
+        private Thread m_Thread;
+        private object m_Lock = new object();
 
         public bool IsOpen()
         {
-            return sp != null && sp.IsOpen;
+            return m_SerialPort != null && m_SerialPort.IsOpen;
         }
 
-        public PortTypeEnum GetPorType()
+        public PortTypeEnum GetPortType()
         {
             return PortTypeEnum.PortType_Serial;
         }
@@ -53,24 +58,36 @@ namespace E9361App.Communication
         {
             try
             {
-                if (sp == null)
+                if (m_SerialPort == null)
                 {
-                    sp = new SerialPort();
-                    sp.PortName = com;
-                    sp.BaudRate = baud;
-                    sp.StopBits = StopBits.One;
-                    sp.DataBits = 8;
-                    sp.Parity = Parity.None;
-                    sp.ReadTimeout = 1000;
-                    sp.RtsEnable = true;
-                    sp.Open();
+                    m_SerialPort = new SerialPort();
+                }
 
-                    return sp.IsOpen;
-                }
-                else
+                if (m_SerialPort.IsOpen)
                 {
-                    return false;
+                    m_SerialPort.Close();
                 }
+
+                m_SerialPort.PortName = com;
+                m_SerialPort.BaudRate = baud;
+                m_SerialPort.StopBits = StopBits.One;
+                m_SerialPort.DataBits = 8;
+                m_SerialPort.Parity = Parity.None;
+                m_SerialPort.ReadTimeout = 1000;
+                m_SerialPort.RtsEnable = true;
+                m_SerialPort.Open();
+
+                if (m_Thread == null)
+                {
+                    m_Thread = new Thread(RunPort);
+                }
+
+                m_Thread.Name = m_SerialPort.PortName;
+                m_Thread.IsBackground = true;
+                m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
+                m_Thread.Start(this);
+
+                return m_SerialPort.IsOpen;
             }
             catch
             {
@@ -78,96 +95,36 @@ namespace E9361App.Communication
             }
         }
 
-        public bool close()
+        private void RunPort()
         {
-            if (sp != null)
+            while (true)
             {
-                sp.Close();
+                Thread.Sleep(1000);
+            }
+        }
 
-                return !sp.IsOpen;
+        public bool Close()
+        {
+            if (m_SerialPort != null)
+            {
+                m_SerialPort.Close();
+
+                return !m_SerialPort.IsOpen;
             }
 
             return true;
         }
 
-        /*
-         * 从串口读取一帧报文
-         * @para frame 报文缓冲区
-         * @para timeOut 超时时间
-         * @return 此帧报文的长度
-         */
-
-        public int ReadOneFrame(byte[] frame, int msTimeOut)
+        private void DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            try
+            if (!IsOpen())
             {
-                if (sp.BytesToRead >= 5)
-                {
-                    int head = sp.ReadByte();
-                    int frameSize = 0;
-                    if (head == 0xAA)
-                    {
-                        int addrL = sp.ReadByte();
-                        int addrH = sp.ReadByte();
-                        //不校验地址
-                        if (addrL > 0/*addrL == 0xff && addrH == 0xff*/)
-                        {
-                            int msgSizeL = sp.ReadByte();
-                            int msgSizeH = sp.ReadByte();
-                            int msgSize = (msgSizeH << 8) + msgSizeL;
-                            //判断数据长度异常，清空串口buffer
-                            if (msgSize > 2048)
-                            {
-                                loginfo.Error(string.Format("接收: 数据长度太大，大小 = {0:d} (最大 = 2048)\n", msgSize));
-
-                                sp.DiscardInBuffer();
-                                return -1;
-                            }
-
-                            int remainSize = msgSize + 1;
-                            //一帧报文没传送完，等待
-                            DateTime dt = DateTime.Now;
-                            while (remainSize > sp.BytesToRead)
-                            {
-                                Thread.Sleep(20);
-                                if ((DateTime.Now - dt).TotalMilliseconds > msTimeOut)
-                                {
-                                    break;
-                                }
-                            }
-                            frame[0] = (byte)0xAA;
-                            frame[1] = (byte)addrL;
-                            frame[2] = (byte)addrH;
-                            frame[3] = (byte)msgSizeL;
-                            frame[4] = (byte)msgSizeH;
-
-                            int readBytes = sp.Read(frame, 5, remainSize);
-                            frameSize = readBytes + 5;
-                            //读取帧超时，清空串口buffer
-                            if (readBytes != remainSize)
-                            {
-                                loginfo.Error(string.Format("接收: 读取帧超时，大小 = {0:d} (期望 = {0:d})\n", readBytes, remainSize));
-                                sp.DiscardInBuffer();
-                                return -1;
-                            }
-                            int comRxLen = readBytes + 5;
-                            string SndDataString = sp.PortName + "接收:";
-                            for (int m = 0; m < comRxLen; m++)
-                            {
-                                SndDataString += string.Format("{0:X2} ", frame[m]);
-                            }
-                            loginfo.Debug(SndDataString);
-                            return readBytes + 5;
-                        }
-                    }
-                }
+                return;
             }
-            catch (Exception ex)
-            {
-                log4net.ILog loginfo = log4net.LogManager.GetLogger("loginfo");
-                loginfo.Error(ex.ToString());
-            }
-            return 0;
+
+            byte[] receivedData = new byte[m_SerialPort.BytesToRead];
+            m_SerialPort.Read(receivedData, 0, m_SerialPort.BytesToRead);
+            m_ReceiveBuffer.AddRange(receivedData);
         }
 
         /// <summary>
@@ -176,124 +133,34 @@ namespace E9361App.Communication
         /// <param name="readtimes"></param>
         /// <param name="bufferlen"></param>
         /// <returns></returns>
-
-        public byte[] Read(int readtimes, out int bufferlen)
+        public byte[] Read(int readtimes)
         {
-            bufferlen = 0;
-            byte[] SerialReadBuffer = new byte[4096];
+            byte[] log = m_ReceiveBuffer.ToArray();
+            string msg = m_SerialPort.PortName + "接收报文:<<<" + MaintainProtocol.ByteArryToString(log, 0, log.Length);
+            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
 
-            List<byte> recvbuf = new List<byte>();
-            if (sp == null)
-            {
-                return SerialReadBuffer;
-            }
-
-            if (!sp.IsOpen)
-            {
-                return SerialReadBuffer;
-            }
-
-            readtimes *= 100;//原每次延时为200ms，现在改为20ms，所以*10
-
-            sp.DiscardInBuffer();
-            int comRxLen = 0;
-
-            /// 丢弃来自串行驱动程序的传输缓冲区的数据 清空缓冲区
-            for (int ReadCount = 0; ReadCount < readtimes; ReadCount++)
-            {
-                if (sp.BytesToRead == 0)
-                {
-                    Thread.Sleep(2);
-                    continue;
-                }
-
-                try
-                {
-                    comRxLen += sp.Read(SerialReadBuffer, comRxLen, sp.BytesToRead);
-                }
-                catch (TimeoutException)
-                {
-                    Console.WriteLine("Serial Read Overtime");
-                }
-            }
-
-            bufferlen = comRxLen;
-            string SndDataString = sp.PortName + "接收:" + MaintainProtocol.ByteArryToString(SerialReadBuffer, 0, bufferlen);
-
-            return SerialReadBuffer;
-        }
-
-        public byte[] ContinueRead(int readtimes, out int bufferlen)
-        {
-            try
-            {
-                if (sp == null)
-                {
-                    bufferlen = 0;
-                    return null;
-                }
-
-                if (!sp.IsOpen)
-                {
-                    bufferlen = 0;
-                    return null;
-                }
-
-                Console.WriteLine(DateTime.Now.ToString("hh-mm-ss.fff") + "w");
-
-                sp.DiscardInBuffer();/// 丢弃来自串行驱动程序的传输缓冲区的数据 清空缓冲区
-                int ReadCount = 0;
-                int comRxLen = 0;
-                byte[] SerialReadBuffer = new byte[2048];
-                for (ReadCount = 0; ReadCount < readtimes; ReadCount++)
-                {
-                    Console.WriteLine(DateTime.Now.ToString("hh-mm-ss.fff") + ReadCount.ToString());
-
-                    if (sp.BytesToRead == 0)
-                    {
-                        Thread.Sleep(200);
-                        continue;
-                    }
-                    try
-                    {
-                        comRxLen += sp.Read(SerialReadBuffer, comRxLen, sp.BytesToRead);
-                        Console.WriteLine(DateTime.Now.ToString("hh-mm-ss.fff") + "接收长度" + comRxLen.ToString());
-                    }
-                    catch (TimeoutException)
-                    {
-                        Console.WriteLine("Serial Read Overtime");
-                    }
-                }
-                bufferlen = comRxLen;
-                string SndDataString = sp.PortName + "接收:";
-                for (int m = 0; m < comRxLen; m++)
-                {
-                    SndDataString += string.Format("{0:X2} ", SerialReadBuffer[m]);
-                }
-                //loginfo.Debug(SndDataString);
-                //Console.WriteLine(DateTime.Now.ToString("hh-mm-ss.fff") + SndDataString);
-                return SerialReadBuffer;
-            }
-            catch (Exception ex)
-            {
-                loginfo.Error(ex.ToString());
-                throw ex;
-            }
+            return log;
         }
 
         public bool Write(byte[] frame, int start, int len)
         {
-            if (sp != null && sp.IsOpen)
+            if (m_SerialPort == null || !m_SerialPort.IsOpen)
             {
-                sp.Write(frame, start, len);
-
-                string msg = sp.PortName + "发送报文：" + MaintainProtocol.ByteArryToString(frame, start, len);
-                m_msgHandle.AddSRMsg(SRMsgType.报文说明, msg);
-
-                return true;
+                return false;
             }
 
-            return false;
+            m_SerialPort.Write(frame, start, len);
+
+            string msg = m_SerialPort.PortName + "发送报文:>>>" + MaintainProtocol.ByteArryToString(frame, start, len);
+            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+
+            return true;
+        }
+
+        public bool FlushAll()
+        {
+            m_ReceiveBuffer.Clear();
+            return true;
         }
     }
 }

@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Data;
 using E9361App.DBHelper;
 using E9361App.Maintain;
+using E9361App.Communication;
+using System.Threading;
 
 namespace e9361debug
 {
@@ -44,6 +46,17 @@ namespace e9361debug
             else
             {
                 MessageBox.Show("not found");
+            }
+
+            UartPort uartPort = new UartPort();
+
+            byte[] writeFrame = new byte[] { (byte)'l', (byte)'s', (byte)'\n' };
+            byte[] recvFrame;
+            while (true)
+            {
+                uartPort.Open("COM6", 115200);
+                uartPort.Write(writeFrame, 0, writeFrame.Length);
+                Thread.Sleep(1000);
             }
         }
     }
