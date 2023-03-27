@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Runtime.InteropServices;
 
 namespace E9361App.Maintain
 {
@@ -28,10 +30,16 @@ namespace E9361App.Maintain
         private static ushort m_address = 0xFFFF;
 
         /// <summary>
-        /// 报文的固定长度.
+        /// 报文的最小长度.
         /// 1字节起始码 + 2字节地址 + 2字节数据域长度 + 1字节主功能码 + 1字节子功能码 + 1字节校验值
         /// </summary>
         private const int m_minLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(byte) + sizeof(byte) + sizeof(byte);
+
+        /// <summary>
+        /// 报文去掉数据域的长度.
+        /// 1字节起始码 + 2字节地址 + 2字节数据域长度 +  + 1字节校验值
+        /// </summary>
+        private const int m_removeDataLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(byte);
 
         /// <summary>
         /// 报文头的长度.
@@ -229,14 +237,24 @@ namespace E9361App.Maintain
             frameBuf[pos++] = GetXor(frameBuf, 1, pos - 1);
         }
 
-        public static bool FindOneFrame(byte[] buf, out int start, out int len, out byte mainFunc, out byte subFunc)
+        /// <summary>
+        /// 查找一帧报文
+        /// </summary>
+        /// <param name="buf">报文缓冲区</param>
+        /// <param name="start">报文起始位置</param>
+        /// <param name="len">一帧报文长度, 不包括无用的字符</param>
+        /// <param name="mainFunc">主功能码</param>
+        /// <param name="subFunc">子功能码</param>
+        /// <returns></returns>
+        public static bool FindOneFrame(byte[] buf, out int start, out int len, out byte mainFunc, out byte subFunc, out byte[] data)
         {
             start = -1;
             len = 0;
             mainFunc = 0;
             subFunc = 0;
+            data = null;
 
-            if (buf == null || buf.Length <= (m_minLen + 2))
+            if (buf == null || buf.Length <= m_minLen)
             {
                 return false;
             }
@@ -261,7 +279,7 @@ namespace E9361App.Maintain
                         }
                         else
                         {
-                            delta = sizeof(ushort) + 1;
+                            delta = Marshal.SizeOf(m_address) + 1;
                         }
                     }
                     else
@@ -285,22 +303,29 @@ namespace E9361App.Maintain
                 return false;
             }
 
-            ushort dataLen = BitConverter.ToUInt16(buf, start + 3);
+            ushort dataLen = BitConverter.ToUInt16(buf, start + Marshal.SizeOf(m_startCode) + Marshal.SizeOf(m_address));
+            len = dataLen + m_removeDataLen;
 
-            if (dataLen < 2 || buf.Length < (dataLen + m_minLen))
+            if (dataLen < 2 || buf.Length < (start + len))
             {
+                len = 0;
                 return false;
             }
 
-            byte chk = GetXor(buf, 1, dataLen + sizeof(ushort) + sizeof(ushort));
+            byte chk = GetXor(buf, start + Marshal.SizeOf(m_startCode), Marshal.SizeOf(m_address) + Marshal.SizeOf(dataLen) + dataLen);
 
-            if (buf[start + dataLen + sizeof(byte) + sizeof(ushort) + sizeof(ushort)] != chk)
+            if (buf[start + Marshal.SizeOf(m_startCode) + Marshal.SizeOf(m_address) + Marshal.SizeOf(dataLen) + dataLen] != chk)
             {
+                len = 0;
                 return false;
             }
 
             mainFunc = buf[start + 5];
             subFunc = buf[start + 6];
+
+            int dataBufLen = dataLen - Marshal.SizeOf(mainFunc) - Marshal.SizeOf(subFunc);
+            data = new byte[dataBufLen];
+            Array.Copy(buf, start + m_headLen + Marshal.SizeOf(mainFunc) + Marshal.SizeOf(subFunc), data, 0, dataBufLen);
 
             return true;
         }
