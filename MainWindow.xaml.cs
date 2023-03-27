@@ -16,7 +16,7 @@ using System.Data;
 using E9361App.DBHelper;
 using E9361App.Maintain;
 
-namespace E9361App
+namespace e9361debug
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑

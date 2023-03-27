@@ -1,10 +1,4 @@
-﻿using MaterialDesignThemes.Wpf.Converters.CircularProgressBar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System;
 
 namespace E9361App.Maintain
 {
@@ -216,7 +210,7 @@ namespace E9361App.Maintain
             pos += sizeof(ushort);
 
             //data len
-            dataLen += (sizeof(ushort) + sizeof(ushort));
+            dataLen += (sizeof(byte) + sizeof(byte));
             Array.Copy(BitConverter.GetBytes(dataLen), 0, frameBuf, pos, sizeof(ushort));
             pos += sizeof(ushort);
 

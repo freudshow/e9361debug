@@ -1,13 +1,9 @@
 ﻿using E9361App.Log;
+using E9361App.Maintain;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using E9361App.Maintain;
-using System.Windows.Controls;
 
 namespace E9361App.Communication
 {

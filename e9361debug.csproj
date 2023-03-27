@@ -239,7 +239,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="communication\CommunicatePort.cs" />
-    <Compile Include="log\SRMessage.cs" />
+    <Compile Include="SRMessage\SRMessage.cs" />
     <Compile Include="maintain\MaintainProtocol.cs" />
     <Compile Include="sqlite\SqliteHelper.cs" />
     <Compile Include="ssh\SshClientClass.cs" />
