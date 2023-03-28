@@ -4,11 +4,10 @@ using E9361App.Maintain;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace e9361debug.communication
+namespace E9361App.Communication
 {
     public enum NetMode
     {
@@ -44,15 +43,18 @@ namespace e9361debug.communication
 
     public class TcpClientNetPort : AbstractPort
     {
+        private TcpPara m_TcpPara = new TcpPara();
         private Socket m_Socket = null;
         private Thread m_Thread = null;
         private volatile bool m_ThreadRunning = false;
         private List<byte> m_ReceiveBuffer = new List<byte>();
+        private byte[] m_TempBuffer = new byte[1024];
         private TcpClient m_TcpClient = null;
         private NetworkStream m_Stream = null;
-        private SRMessageSingleton m_msgHandle = SRMessageSingleton.getInstance();
+        private SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
         private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
         private log4net.ILog loginfo = log4net.LogManager.GetLogger("loginfo");
+        public MaintainResEventHander MaintainResHander = null;
 
         public bool IsOpen()
         {
@@ -71,8 +73,8 @@ namespace e9361debug.communication
 
         public bool Open(object o)
         {
-            TcpPara tcpPara = (TcpPara)o;
-            if (tcpPara == null || tcpPara.Mode != NetMode.TcpClientMode)
+            m_TcpPara = (TcpPara)o;
+            if (m_TcpPara == null || m_TcpPara.Mode != NetMode.TcpClientMode)
             {
                 throw new ArgumentException("Mode is not TcpClientMode");
             }
@@ -84,7 +86,7 @@ namespace e9361debug.communication
 
             try
             {
-                m_TcpClient = new TcpClient(tcpPara.ServerIP, tcpPara.ServerPort);
+                m_TcpClient = new TcpClient(m_TcpPara.ServerIP, m_TcpPara.ServerPort);
 
                 if (m_TcpClient.Connected)
                 {
@@ -96,7 +98,7 @@ namespace e9361debug.communication
                     m_Thread = new Thread(TcpClientRun);
                 }
 
-                m_Thread.Name = $"TcpClient-{tcpPara.ServerIP}:{tcpPara.ServerPort}";
+                m_Thread.Name = $"TcpClient-{m_TcpPara.ServerIP}:{m_TcpPara.ServerPort}";
                 m_Thread.IsBackground = true;
                 m_ThreadRunning = true;
                 m_Thread.Start();
@@ -139,6 +141,53 @@ namespace e9361debug.communication
 
                 if (m_Stream.CanRead)
                 {
+                    int len = m_Stream.Read(m_TempBuffer, 0, m_TempBuffer.Length);
+                    if (len > 0)
+                    {
+                        byte[] readbuf = new byte[len];
+                        Array.Copy(m_TempBuffer, 0, readbuf, 0, len);
+                        m_ReceiveBuffer.AddRange(readbuf);
+                    }
+                }
+
+                byte[] b = m_ReceiveBuffer.ToArray();
+
+                if (b != null)
+                {
+                    byte mainFunc;
+                    byte subFucn;
+                    int start;
+                    int len;
+                    byte[] data;
+
+                    bool find = MaintainProtocol.FindOneFrame(b, out start, out len, out mainFunc, out subFucn, out data);
+
+                    if (find)
+                    {
+                        byte[] frame = new byte[len];
+                        Array.Copy(b, start, frame, 0, len);
+
+                        MaintainParseRes res = new MaintainParseRes
+                        {
+                            MainFunc = mainFunc,
+                            SubFucn = subFucn,
+                            Start = start,
+                            Len = len,
+                            Data = data,
+                            Frame = frame
+                        };
+
+                        string msg = m_Thread.Name + "接收报文:<<<" + MaintainProtocol.ByteArryToString(frame, start, len);
+                        m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+
+                        if (MaintainResHander != null)
+                        {
+                            MaintainResEventArgs e = new MaintainResEventArgs(res);
+                            MaintainResHander(this, e);
+                        }
+
+                        m_ReceiveBuffer.RemoveRange(0, start + len);
+                    }
                 }
             }
         }
@@ -180,7 +229,7 @@ namespace e9361debug.communication
 
                 m_Stream.Write(frame, index, len);
                 string msg = "发送报文: >>>" + MaintainProtocol.ByteArryToString(frame, index, len);
-                m_msgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+                m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
 
                 return true;
             }
