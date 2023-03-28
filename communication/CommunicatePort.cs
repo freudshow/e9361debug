@@ -7,6 +7,7 @@ using System.Threading;
 using System.Management;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Web.UI.WebControls.WebParts;
 
 namespace E9361App.Communication
 {
@@ -20,7 +21,7 @@ namespace E9361App.Communication
     {
         bool IsOpen();
 
-        bool Open(string Com, int baud);
+        bool Open(object para);
 
         bool Close();
 
@@ -91,6 +92,80 @@ namespace E9361App.Communication
         }
     }
 
+    public class UartPortPara
+    {
+        private string m_PortName;
+        private int m_BaudRate = 9600;
+        private StopBits m_StopBits = StopBits.One;
+        private int m_DataBits = 8;
+        private Parity m_Parity = Parity.None;
+        private int m_ReadTimeout = 1000;
+        private bool m_RtsEnable = true;
+
+        public string PortName
+        {
+            get => m_PortName;
+            set
+            {
+                m_PortName = value;
+            }
+        }
+
+        public int BaudRate
+        {
+            get => m_BaudRate;
+            set
+            {
+                m_BaudRate = value;
+            }
+        }
+
+        public StopBits StopBits
+        {
+            get => m_StopBits;
+            set
+            {
+                m_StopBits = value;
+            }
+        }
+
+        public int DataBits
+        {
+            get => m_DataBits;
+            set
+            {
+                m_DataBits = value;
+            }
+        }
+
+        public Parity Parity
+        {
+            get => m_Parity;
+            set
+            {
+                m_Parity = value;
+            }
+        }
+
+        public int ReadTimeout
+        {
+            get => m_ReadTimeout;
+            set
+            {
+                m_ReadTimeout = value;
+            }
+        }
+
+        public bool RtsEnable
+        {
+            get => m_RtsEnable;
+            set
+            {
+                m_RtsEnable = value;
+            }
+        }
+    }
+
     public class UartPort : AbstractPort
     {
         private SerialPort m_SerialPort = null;
@@ -100,7 +175,6 @@ namespace E9361App.Communication
         private object m_Lock = new object();
         private volatile bool m_ThreadRunning = false;
         private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
-        private log4net.ILog m_LogInfo = log4net.LogManager.GetLogger("loginfo");
 
         public MaintainResEventHander MaintainResHander = null;
 
@@ -114,7 +188,7 @@ namespace E9361App.Communication
             return PortTypeEnum.PortType_Serial;
         }
 
-        public bool Open(string com, int baud)
+        public bool Open(object para)
         {
             try
             {
@@ -128,14 +202,15 @@ namespace E9361App.Communication
                     m_SerialPort.Close();
                 }
 
-                m_SerialPort.PortName = com;
-                m_SerialPort.BaudRate = baud;
-                m_SerialPort.StopBits = StopBits.One;
-                m_SerialPort.DataBits = 8;
-                m_SerialPort.Parity = Parity.None;
-                m_SerialPort.ReadTimeout = 1000;
+                UartPortPara upara = (UartPortPara)para;
+                m_SerialPort.PortName = upara.PortName;
+                m_SerialPort.BaudRate = upara.BaudRate;
+                m_SerialPort.StopBits = upara.StopBits;
+                m_SerialPort.DataBits = upara.DataBits;
+                m_SerialPort.Parity = upara.Parity;
+                m_SerialPort.ReadTimeout = upara.ReadTimeout;
+                m_SerialPort.RtsEnable = upara.RtsEnable;
                 m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
-                m_SerialPort.RtsEnable = true;
                 m_SerialPort.Open();
 
                 if (m_Thread == null)
@@ -188,6 +263,9 @@ namespace E9361App.Communication
                                 Data = data,
                                 Frame = frame
                             };
+
+                            string msg = m_SerialPort.PortName + "接收报文:<<<" + MaintainProtocol.ByteArryToString(frame, start, len);
+                            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
 
                             if (MaintainResHander != null)
                             {

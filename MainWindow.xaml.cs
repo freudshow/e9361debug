@@ -20,7 +20,8 @@ namespace e9361debug
 
             byte[] writeFrame = new byte[] { 0xAA, 0xFF, 0xFF, 0x03, 0x00, 0x0A, 0x01, 0x00, 0x08 };
 
-            m_UartPort.Open("COM3", 9600);
+            UartPortPara para = new UartPortPara { PortName = "COM3", BaudRate = 9600 };
+            m_UartPort.Open(para);
             m_UartPort.MaintainResHander += new MaintainResEventHander(MaintainResHander);
             int count = 0;
             while (count < 3)

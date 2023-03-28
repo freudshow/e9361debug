@@ -137,6 +137,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="communication\CommunicateNet.cs" />
     <Compile Include="communication\CommunicatePort.cs" />
     <Compile Include="json\JsonProcess.cs" />
     <Compile Include="SRMessage\SRMessage.cs" />
