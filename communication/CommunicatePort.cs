@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
 using System.Management;
+using System.Text.RegularExpressions;
+using System.Data;
 
 namespace E9361App.Communication
 {
@@ -97,6 +99,8 @@ namespace E9361App.Communication
         private Thread m_Thread;
         private object m_Lock = new object();
         private volatile bool m_ThreadRunning = false;
+        private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
+        private log4net.ILog m_LogInfo = log4net.LogManager.GetLogger("loginfo");
 
         public MaintainResEventHander MaintainResHander = null;
 
@@ -148,6 +152,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }
@@ -199,6 +204,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }
@@ -219,6 +225,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }
@@ -242,6 +249,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }
@@ -262,6 +270,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }
@@ -281,6 +290,7 @@ namespace E9361App.Communication
             {
                 return false;
             }
+
             try
             {
                 m_SerialPort.Write(frame, start, len);
@@ -292,6 +302,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }
@@ -305,6 +316,50 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
+                m_LogError.Error(ex.Message);
+                throw ex;
+            }
+        }
+
+        public DataTable GetPortNames()
+        {
+            try
+            {
+                System.Data.DataTable dt = new System.Data.DataTable();
+                dt.Columns.Add("Name");
+                dt.Columns.Add("Description");
+                System.Data.DataRow dr;
+                //{4d36e978-e325-11ce-bfc1-08002be10318}为设备类别port（端口（COM&LPT））的GUID
+                string sql = "SELECT * FROM Win32_PnPEntity WHERE ClassGuid=\"{4d36e978-e325-11ce-bfc1-08002be10318}\"";
+
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", sql);
+                ManagementObjectCollection mc = searcher.Get();
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    if (queryObj != null)
+                    {
+                        string name = queryObj.GetPropertyValue("Name").ToString();
+                        Regex re = new Regex("COM\\d+");
+                        Match m = re.Match(name);
+                        if (name != null && m != null && m.Success)
+                        {
+                            dr = dt.NewRow();
+                            dr["Name"] = m.Value;
+                            dr["Description"] = name;
+                            dt.Rows.Add(dr);
+                        }
+                    }
+                }
+
+                dr = dt.NewRow();
+                dr["Name"] = "Net";
+                dr["Description"] = "Net";
+                dt.Rows.Add(dr);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                m_LogError.Error(ex.Message);
                 throw ex;
             }
         }

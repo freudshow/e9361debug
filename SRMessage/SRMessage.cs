@@ -58,7 +58,7 @@ namespace E9361App.Log
 
     public class SRMessageSingleton : Singleton<SRMessageSingleton>
     {
-        private log4net.ILog loginfo = log4net.LogManager.GetLogger("loginfo");
+        private log4net.ILog m_LogInfo = log4net.LogManager.GetLogger("loginfo");
 
         //OnSRMsg自定义事件（添加收发报文时触发）  SRMsgEventArgs自定义参数
         private event EventHandler<SRMsgEventArgs> OnSRMsg;
@@ -76,7 +76,7 @@ namespace E9361App.Log
                 OnSRMsg(this, new SRMsgEventArgs(type, info)); //演示不同的参数类型
             }
 
-            loginfo.Debug("Signaleton " + info);
+            m_LogInfo.Debug("Signaleton " + info);
         }
 
         /// <summary>
