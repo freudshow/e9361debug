@@ -1,15 +1,10 @@
-﻿using ControlzEx.Standard;
-using E9361App.Log;
+﻿using E9361App.Log;
 using E9361App.Maintain;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Numerics;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Documents;
-using System.Windows.Interop;
-using System.Windows.Media.TextFormatting;
+using System.Management;
 
 namespace E9361App.Communication
 {
@@ -23,17 +18,75 @@ namespace E9361App.Communication
     {
         bool IsOpen();
 
-        bool Open(String Com, int Braude);
+        bool Open(string Com, int baud);
 
         bool Close();
 
-        byte[] Read(int readtimes);
+        byte[] Read(int maxlen);
+
+        byte[] ReadAll();
 
         bool Write(byte[] frame, int index, int len);
 
         bool FlushAll();
 
         PortTypeEnum GetPortType();
+    }
+
+    public delegate void USBDetectionEventHander(object sender, EventArgs e);
+
+    public class UsbDection
+    {
+        private static ManagementEventWatcher watchingObect = null;
+        private static WqlEventQuery watcherQuery;
+        private static ManagementScope scope;
+
+        public UsbDection()
+        {
+            scope = new ManagementScope("root\\CIMV2");
+            scope.Options.EnablePrivileges = true;
+        }
+
+        public static void AddRemoveUSBHandler(USBDetectionEventHander h)
+        {
+            try
+            {
+                USBWatcherSetUp("__InstanceDeletionEvent");
+                watchingObect.EventArrived += new EventArrivedEventHandler(h);
+                watchingObect.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                if (watchingObect != null)
+                    watchingObect.Stop();
+            }
+        }
+
+        public static void AddInsetUSBHandler(USBDetectionEventHander h)
+        {
+            try
+            {
+                USBWatcherSetUp("__InstanceCreationEvent");
+                watchingObect.EventArrived += new EventArrivedEventHandler(h);
+                watchingObect.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                if (watchingObect != null)
+                    watchingObect.Stop();
+            }
+        }
+
+        private static void USBWatcherSetUp(string eventType)
+        {
+            watcherQuery = new WqlEventQuery();
+            watcherQuery.EventClassName = eventType;
+            watcherQuery.WithinInterval = new TimeSpan(0, 0, 2);
+            watcherQuery.Condition = @"TargetInstance ISA 'Win32_USBControllerdevice'";
+            watchingObect = new ManagementEventWatcher(scope, watcherQuery);
+        }
     }
 
     public class UartPort : AbstractPort
@@ -43,6 +96,9 @@ namespace E9361App.Communication
         private SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
         private Thread m_Thread;
         private object m_Lock = new object();
+        private volatile bool m_ThreadRunning = false;
+
+        public MaintainResEventHander MaintainResHander = null;
 
         public bool IsOpen()
         {
@@ -74,6 +130,7 @@ namespace E9361App.Communication
                 m_SerialPort.DataBits = 8;
                 m_SerialPort.Parity = Parity.None;
                 m_SerialPort.ReadTimeout = 1000;
+                m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
                 m_SerialPort.RtsEnable = true;
                 m_SerialPort.Open();
 
@@ -84,62 +141,138 @@ namespace E9361App.Communication
 
                 m_Thread.Name = m_SerialPort.PortName;
                 m_Thread.IsBackground = true;
-                m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
-                m_Thread.Start(this);
+                m_ThreadRunning = true;
+                m_Thread.Start();
 
                 return m_SerialPort.IsOpen;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw ex;
             }
         }
 
         private void RunPort()
         {
-            while (true)
+            try
             {
-                Thread.Sleep(1000);
+                while (m_ThreadRunning)
+                {
+                    byte[] b = m_ReceiveBuffer.ToArray();
+                    if (b != null)
+                    {
+                        byte mainFunc;
+                        byte subFucn;
+                        int start;
+                        int len;
+                        byte[] data;
+
+                        bool find = MaintainProtocol.FindOneFrame(b, out start, out len, out mainFunc, out subFucn, out data);
+
+                        if (find)
+                        {
+                            byte[] frame = new byte[len];
+                            Array.Copy(b, start, frame, 0, len);
+
+                            MaintainParseRes res = new MaintainParseRes
+                            {
+                                MainFunc = mainFunc,
+                                SubFucn = subFucn,
+                                Start = start,
+                                Len = len,
+                                Data = data,
+                                Frame = frame
+                            };
+
+                            if (MaintainResHander != null)
+                            {
+                                MaintainResEventArgs e = new MaintainResEventArgs(res);
+                                MaintainResHander(this, e);
+                            }
+
+                            m_ReceiveBuffer.RemoveRange(0, start + len);
+                        }
+                    }
+
+                    Thread.Sleep(100);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
         public bool Close()
         {
-            if (m_SerialPort != null)
+            try
             {
-                m_SerialPort.Close();
+                m_ThreadRunning = false;
+                if (m_SerialPort != null)
+                {
+                    m_SerialPort.Close();
 
-                return !m_SerialPort.IsOpen;
+                    return !m_SerialPort.IsOpen;
+                }
+
+                return true;
             }
-
-            return true;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            if (!IsOpen())
+            try
             {
-                return;
-            }
+                lock (m_Lock)
+                {
+                    if (!IsOpen())
+                    {
+                        return;
+                    }
 
-            byte[] receivedData = new byte[m_SerialPort.BytesToRead];
-            m_SerialPort.Read(receivedData, 0, m_SerialPort.BytesToRead);
-            m_ReceiveBuffer.AddRange(receivedData);
+                    int len = m_SerialPort.BytesToRead;
+                    byte[] receivedData = new byte[len];
+                    m_SerialPort.Read(receivedData, 0, len);
+                    m_ReceiveBuffer.AddRange(receivedData);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
-        ///读取端口
+        ///读取缓冲区数据
         /// </summary>
-        /// <param name="readtimes"></param>
-        /// <param name="bufferlen"></param>
-        /// <returns></returns>
-        public byte[] Read(int readtimes)
+        /// <param name="maxlen">读取的最大长度</param>
+        public byte[] Read(int maxlen)
         {
-            byte[] log = m_ReceiveBuffer.ToArray();
-            string msg = m_SerialPort.PortName + "接收报文:<<<" + MaintainProtocol.ByteArryToString(log, 0, log.Length);
-            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+            try
+            {
+                byte[] log = m_ReceiveBuffer.ToArray();
+                int actualLen = Math.Min(log.Length, maxlen);
+                byte[] res = new byte[actualLen];
+                Array.Copy(log, 0, res, 0, actualLen);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-            return log;
+        /// <summary>
+        ///读取缓冲区全部数据
+        /// </summary>
+        /// <returns></returns>
+        public byte[] ReadAll()
+        {
+            return m_ReceiveBuffer.ToArray();
         }
 
         public bool Write(byte[] frame, int start, int len)
@@ -148,19 +281,32 @@ namespace E9361App.Communication
             {
                 return false;
             }
+            try
+            {
+                m_SerialPort.Write(frame, start, len);
 
-            m_SerialPort.Write(frame, start, len);
+                string msg = m_SerialPort.PortName + "发送报文:>>>" + MaintainProtocol.ByteArryToString(frame, start, len);
+                m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
 
-            string msg = m_SerialPort.PortName + "发送报文:>>>" + MaintainProtocol.ByteArryToString(frame, start, len);
-            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
-
-            return true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public bool FlushAll()
         {
-            m_ReceiveBuffer.Clear();
-            return true;
+            try
+            {
+                m_ReceiveBuffer.Clear();
+                return m_ReceiveBuffer.Count == 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

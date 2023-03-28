@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Runtime.InteropServices;
 
 namespace E9361App.Maintain
@@ -23,6 +22,67 @@ namespace E9361App.Maintain
         MaintainMainFuction_Ade9078Mult = 0x0F,
         MaintainMainFuction_SSHPassThrough = 0x11
     };
+
+    public class MaintainParseRes
+    {
+        private byte m_MainFunc;
+        private byte m_SubFucn;
+        private int m_Start;
+        private int m_Len;
+        private byte[] m_Data;
+        private byte[] m_Frame;
+
+        public MaintainParseRes()
+        { }
+
+        public byte MainFunc
+        {
+            get { return m_MainFunc; }
+            set { m_MainFunc = value; }
+        }
+
+        public byte SubFucn
+        {
+            get { return m_SubFucn; }
+            set { m_SubFucn = value; }
+        }
+
+        public int Start
+        {
+            get { return m_Start; }
+            set { m_Start = value; }
+        }
+
+        public int Len
+        {
+            get { return m_Len; }
+            set { m_Len = value; }
+        }
+
+        public byte[] Data
+        {
+            get { return m_Data; }
+            set { m_Data = value; }
+        }
+
+        public byte[] Frame
+        {
+            get { return m_Frame; }
+            set { m_Frame = value; }
+        }
+    }
+
+    public class MaintainResEventArgs : EventArgs
+    {
+        public readonly MaintainParseRes m_Res;
+
+        public MaintainResEventArgs(MaintainParseRes res)
+        {
+            m_Res = res;
+        }
+    }
+
+    public delegate void MaintainResEventHander(object sender, MaintainResEventArgs e);
 
     public static class MaintainProtocol
     {
