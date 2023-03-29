@@ -18,8 +18,6 @@ namespace E9361App.SshInterface
         private SshClient m_SshClient;
         private SftpClient m_SftpClient;
         private ShellStream m_ShellStream;
-        private PasswordConnectionInfo connectionInfo;
-        private SshClient client;
 
         public SshClientClass()
         {
@@ -62,10 +60,9 @@ namespace E9361App.SshInterface
                     return true;
                 }
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                MessageBox.Show("与服务器连接失败");
-                return false;
+                throw ex;
             }
         }
 
@@ -76,9 +73,9 @@ namespace E9361App.SshInterface
                 m_SshClient = new SshClient(m_HostIp, m_SshPort, m_UsrName, m_Passwd);
                 m_SshClient.Connect();
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                MessageBox.Show("与服务器连接失败");
+                throw ex;
             }
         }
 
@@ -108,9 +105,9 @@ namespace E9361App.SshInterface
                 m_ShellStream.WriteLine(cmd);
                 m_ShellStream.Flush();
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
 
@@ -130,9 +127,9 @@ namespace E9361App.SshInterface
 
                 m_ShellStream.Expect(res);
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
 
@@ -150,9 +147,9 @@ namespace E9361App.SshInterface
                     return x.Result;
                 }
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
 
@@ -174,9 +171,9 @@ namespace E9361App.SshInterface
                 m_ShellStream.Flush();
                 return tmpstring;
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
 
@@ -202,9 +199,9 @@ namespace E9361App.SshInterface
 
                 return tmpstring;
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
 
@@ -230,8 +227,9 @@ namespace E9361App.SshInterface
                 m_SftpClient = new SftpClient(m_HostIp, m_SshPort, m_UsrName, m_Passwd);
                 m_SftpClient.Connect();
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
+                throw ex;
             }
         }
 
@@ -244,9 +242,9 @@ namespace E9361App.SshInterface
                     m_SftpClient.Disconnect();
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
+                throw ex;
             }
         }
 
@@ -272,9 +270,9 @@ namespace E9361App.SshInterface
                 fs.Close();
                 fs.Dispose();
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
 
@@ -298,9 +296,9 @@ namespace E9361App.SshInterface
                 fs.Close();
                 fs.Dispose();
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                throw err;
+                throw ex;
             }
         }
     }

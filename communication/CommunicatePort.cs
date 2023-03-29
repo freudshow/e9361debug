@@ -172,7 +172,7 @@ namespace E9361App.Communication
         private List<byte> m_ReceiveBuffer = new List<byte>();
         private SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
         private Thread m_Thread;
-        private object m_Lock = new object();
+        private volatile object m_Lock = new object();
         private volatile bool m_ThreadRunning = false;
         private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
 
@@ -215,7 +215,7 @@ namespace E9361App.Communication
 
                 if (m_Thread == null)
                 {
-                    m_Thread = new Thread(RunPort);
+                    m_Thread = new Thread(PortRun);
                 }
 
                 m_Thread.Name = m_SerialPort.PortName;
@@ -232,7 +232,7 @@ namespace E9361App.Communication
             }
         }
 
-        private void RunPort()
+        private void PortRun()
         {
             try
             {
@@ -264,7 +264,7 @@ namespace E9361App.Communication
                                 Frame = frame
                             };
 
-                            string msg = m_SerialPort.PortName + "接收报文:<<<" + MaintainProtocol.ByteArryToString(frame, start, len);
+                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(frame, start, len);
                             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
 
                             if (MaintainResHander != null)
@@ -373,7 +373,7 @@ namespace E9361App.Communication
             {
                 m_SerialPort.Write(frame, start, len);
 
-                string msg = m_SerialPort.PortName + "发送报文:>>>" + MaintainProtocol.ByteArryToString(frame, start, len);
+                string msg = "发送报文:" + MaintainProtocol.ByteArryToString(frame, start, len);
                 m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
 
                 return true;
