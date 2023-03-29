@@ -256,6 +256,13 @@ namespace E9361App.Maintain
             return BitConverter.ToString(b).Replace('-', ' ');
         }
 
+        /// <summary>
+        /// 组织一帧维护规约报文
+        /// </summary>
+        /// <param name="mainFunc">主功能码</param>
+        /// <param name="subFunc">子功能码</param>
+        /// <param name="data">去掉主功能码和子功能码后的数据域</param>
+        /// <param name="frameBuf">输出的完整的报文缓冲区</param>
         public static void ComposeFrame(byte mainFunc, byte subFunc, byte[] data, out byte[] frameBuf)
         {
             //data len except mainFunc + subFunc
@@ -305,7 +312,8 @@ namespace E9361App.Maintain
         /// <param name="len">一帧报文长度, 不包括无用的字符</param>
         /// <param name="mainFunc">主功能码</param>
         /// <param name="subFunc">子功能码</param>
-        /// <returns></returns>
+        /// <param name="data">去掉主功能码和子功能码后的数据域</param>
+        /// <returns>true-查找到一帧完整的报文; false-未查找到一帧完整的报文</returns>
         public static bool FindOneFrame(byte[] buf, out int start, out int len, out byte mainFunc, out byte subFunc, out byte[] data)
         {
             start = -1;
