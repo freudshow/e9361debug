@@ -2,13 +2,9 @@
 using E9361App.DBHelper;
 using E9361App.Log;
 using E9361App.Maintain;
-using System.Data;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace e9361debug
 {
@@ -25,25 +21,31 @@ namespace e9361debug
         {
             InitializeComponent();
 
-            byte[] writeFrame = new byte[] { 0xAA, 0xFF, 0xFF, 0x03, 0x00, 0x0A, 0x01, 0x00, 0x08 };
-
-            NetPara para = new NetPara { ServerIP = "192.168.0.231", ServerPort = 5000, Mode = NetMode.UdpClientMode };
+            NetPara para = new NetPara { ServerIP = "192.168.0.237", ServerPort = 5000, Mode = NetMode.UdpClientMode };
             m_UdpPort.Open(para);
             m_UdpPort.MaintainResHander += new MaintainResEventHander(MaintainResHander);
-            int count = 0;
-            while (count < 3)
-            {
-                m_UdpPort.Write(writeFrame, 0, writeFrame.Length);
-                count++;
-                Thread.Sleep(3000);
-            }
-
-            m_UdpPort.Close();
         }
 
         public void MaintainResHander(object sender, MaintainResEventArgs e)
         {
-            MessageBox.Show(MaintainProtocol.ByteArryToString(e.m_Res.Frame, 0, e.m_Res.Frame.Length));
+            this.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
+            {
+                TextBox_Result.Text += $"{MaintainProtocol.ByteArryToString(e.m_Res.Frame, 0, e.m_Res.Frame.Length)}\r\n";
+            }));
+        }
+
+        private async void Button_ReadTime_Click(object sender, RoutedEventArgs e)
+        {
+            //MaintainProtocol.GetTerminalTime(out byte[] writeFrame);
+            //m_UdpPort.Write(writeFrame, 0, writeFrame.Length);
+
+            var t = Task.Run(() =>
+            {
+                Thread.Sleep(3000);
+                return "Hello I am TimeConsumingMethod";
+            });
+
+            TextBox_Result.Text += $"{await t}\r\n";
         }
     }
 }

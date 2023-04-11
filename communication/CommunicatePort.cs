@@ -241,13 +241,7 @@ namespace E9361App.Communication
                     byte[] b = m_ReceiveBuffer.ToArray();
                     if (b != null)
                     {
-                        byte mainFunc;
-                        byte subFucn;
-                        int start;
-                        int len;
-                        byte[] data;
-
-                        bool find = MaintainProtocol.FindOneFrame(b, out start, out len, out mainFunc, out subFucn, out data);
+                        bool find = MaintainProtocol.FindOneFrame(b, out int start, out int len, out byte mainFunc, out byte subFucn, out byte[] data);
 
                         if (find)
                         {

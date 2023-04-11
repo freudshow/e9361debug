@@ -403,13 +403,22 @@ namespace E9361App.Maintain
             m_address = address;
         }
 
-        public static void GetResetFrame(out byte[] resetFrame)
+        public static void GetResetFrame(out byte[] outframe)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ParameterSet;
             byte subFunc = 0x01;
             byte[] data = new byte[1];
             data[0] = 0x00;
-            ComposeFrame(mainFunc, subFunc, data, out resetFrame);
+            ComposeFrame(mainFunc, subFunc, data, out outframe);
+        }
+
+        public static void GetTerminalTime(out byte[] outframe)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ReadTime;
+            byte subFunc = 0x01;
+            byte[] data = new byte[1];
+            data[0] = 0x00;
+            ComposeFrame(mainFunc, subFunc, data, out outframe);
         }
     }
 }

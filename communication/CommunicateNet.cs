@@ -166,13 +166,7 @@ namespace E9361App.Communication
 
                     if (b != null)
                     {
-                        byte mainFunc;
-                        byte subFucn;
-                        int start;
-                        int len;
-                        byte[] data;
-
-                        bool find = MaintainProtocol.FindOneFrame(b, out start, out len, out mainFunc, out subFucn, out data);
+                        bool find = MaintainProtocol.FindOneFrame(b, out int start, out int len, out byte mainFunc, out byte subFucn, out byte[] data);
 
                         if (find)
                         {
@@ -354,6 +348,12 @@ namespace E9361App.Communication
                 {
                     m_RemoteIPEndPoint = null;
                 }
+
+                if (m_Thread != null)
+                {
+                    m_Thread.Abort();
+                    m_Thread = null;
+                }
             }
 
             return true;
@@ -380,13 +380,7 @@ namespace E9361App.Communication
                 byte[] buf = m_ReceiveBuffer.ToArray();
                 if (buf != null)
                 {
-                    byte mainFunc;
-                    byte subFucn;
-                    int start;
-                    int len;
-                    byte[] data;
-
-                    bool find = MaintainProtocol.FindOneFrame(buf, out start, out len, out mainFunc, out subFucn, out data);
+                    bool find = MaintainProtocol.FindOneFrame(buf, out int start, out int len, out byte mainFunc, out byte subFucn, out byte[] data);
 
                     if (find)
                     {

@@ -140,6 +140,7 @@
     <Compile Include="communication\CommunicateNet.cs" />
     <Compile Include="communication\CommunicatePort.cs" />
     <Compile Include="json\JsonProcess.cs" />
+    <Compile Include="mqtt\MqttHelper.cs" />
     <Compile Include="SRMessage\SRMessage.cs" />
     <Compile Include="maintain\MaintainProtocol.cs" />
     <Compile Include="sqlite\SqliteHelper.cs" />
