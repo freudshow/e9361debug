@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -15,15 +16,32 @@
         Title="E9361调试软件" Height="auto" Width="auto">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <materialDesign:Card Padding="32" Margin="16">
-                <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}">My First Material Design App</TextBlock>
+            <materialDesign:Card Padding="32" Margin="3">
+                <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                           Text="E9361-C0 DEBUG App"
+                           TextAlignment="Center">
+                </TextBlock>
             </materialDesign:Card>
             <Button x:Name="Button_ReadTime" Click="Button_ReadTime_Click"
-  Content="_READ TIME"
-  IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-  Style="{StaticResource MaterialDesignRaisedLightButton}"
-  ToolTip="Resource name: MaterialDesignRaisedLightButton" />
-            <TextBox x:Name="TextBox_Result"/>
+                    Content="_READ TIME"
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                    Style="{StaticResource MaterialDesignRaisedLightButton}"
+                    ToolTip="Resource name: MaterialDesignRaisedLightButton">
+            </Button>
+            <materialDesign:Card Padding="32" Margin="5">
+                <TextBox x:Name="TextBox_Result"
+                         Height="auto"
+                         VerticalAlignment="Top"
+                         AcceptsReturn="True"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         TextWrapping="Wrap"
+                         TextAlignment="Justify"
+                         VerticalScrollBarVisibility="Auto" />
+            </materialDesign:Card>
+            <Controls:MultiSelectTreeView>
+                <TreeViewItem Header="Mercury" />
+                <TreeViewItem Header="Venus" />
+            </Controls:MultiSelectTreeView>
         </StackPanel>
     </Grid>
 </Window>

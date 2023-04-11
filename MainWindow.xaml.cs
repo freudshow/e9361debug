@@ -41,7 +41,7 @@ namespace e9361debug
 
             var t = Task.Run(() =>
             {
-                Thread.Sleep(3000);
+                Thread.Sleep(1000);
                 return "Hello I am TimeConsumingMethod";
             });
 
