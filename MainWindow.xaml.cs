@@ -5,6 +5,7 @@ using E9361App.Maintain;
 using System.Threading;
 using System.Windows;
 using System.Threading.Tasks;
+using System;
 
 namespace e9361debug
 {
@@ -13,39 +14,43 @@ namespace e9361debug
     /// </summary>
     public partial class MainWindow : Window
     {
-        private UartPort m_UartPort = new UartPort();
-        private TcpClientNetPort m_TcpClientNetPort = new TcpClientNetPort();
-        private UdpPort m_UdpPort = new UdpPort();
+        private CommunicationPort m_CommunicationPort;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            NetPara para = new NetPara { ServerIP = "192.168.0.237", ServerPort = 5000, Mode = NetMode.UdpClientMode };
-            m_UdpPort.Open(para);
-            m_UdpPort.MaintainResHander += new MaintainResEventHander(MaintainResHander);
-        }
+            NetPara udpclientpara = new NetPara { ServerIP = "192.168.0.237", ServerPort = 5000, Mode = PortTypeEnum.PortType_Net_UDP_Client };
+            NetPara tcpclientpara = new NetPara { ServerIP = "192.168.1.232", ServerPort = 5001, Mode = PortTypeEnum.PortType_Net_TCP_Client };
+            UartPortPara uartPortPara = new UartPortPara { PortName = "COM3" };
 
-        public void MaintainResHander(object sender, MaintainResEventArgs e)
-        {
-            this.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
-            {
-                TextBox_Result.Text += $"{MaintainProtocol.ByteArryToString(e.m_Res.Frame, 0, e.m_Res.Frame.Length)}\r\n";
-            }));
+            m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Serial);
+            m_CommunicationPort.Open(uartPortPara);
         }
 
         private async void Button_ReadTime_Click(object sender, RoutedEventArgs e)
         {
-            //MaintainProtocol.GetTerminalTime(out byte[] writeFrame);
-            //m_UdpPort.Write(writeFrame, 0, writeFrame.Length);
-
-            var t = Task.Run(() =>
+            try
             {
-                Thread.Sleep(1000);
-                return "Hello I am TimeConsumingMethod";
-            });
+                MaintainProtocol.GetTerminalTime(out byte[] writeFrame);
+                m_CommunicationPort.Write(writeFrame, 0, writeFrame.Length);
+                Task<MaintainParseRes> res = m_CommunicationPort.ReadOneFrame(5000);
 
-            TextBox_Result.Text += $"{await t}\r\n";
+                var frame = await res;
+                if (frame != null)
+                {
+                    byte[] b = frame.Frame;
+                    TextBox_Result.Text += $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(b, 0, b.Length)}\r\n";
+                }
+                else
+                {
+                    MessageBox.Show("超时!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -8,13 +8,21 @@ using System.Management;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Web.UI.WebControls.WebParts;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Collections;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace E9361App.Communication
 {
     public enum PortTypeEnum
     {
+        PortType_Error = -1,
         PortType_Serial = 0,
-        PortType_Net,
+        PortType_Net_UDP_Client,
+        PortType_Net_TCP_Client,
+        PortType_Net_TCP_Server,
     }
 
     public interface AbstractPort
@@ -25,13 +33,9 @@ namespace E9361App.Communication
 
         bool Close();
 
-        byte[] Read(int maxlen);
-
-        byte[] ReadAll();
-
         bool Write(byte[] frame, int index, int len);
 
-        bool FlushAll();
+        Task<MaintainParseRes> ReadOneFrame(long timeout);
 
         PortTypeEnum GetPortType();
     }
@@ -169,14 +173,11 @@ namespace E9361App.Communication
     public class UartPort : AbstractPort
     {
         private SerialPort m_SerialPort = null;
+        private object m_Lock = new object();
         private List<byte> m_ReceiveBuffer = new List<byte>();
         private SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
-        private Thread m_Thread;
-        private volatile object m_Lock = new object();
-        private volatile bool m_ThreadRunning = false;
         private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
-
-        public MaintainResEventHander MaintainResHander = null;
+        private static readonly Stopwatch m_StopWatch = new Stopwatch();
 
         public bool IsOpen()
         {
@@ -192,6 +193,12 @@ namespace E9361App.Communication
         {
             try
             {
+                UartPortPara upara = para as UartPortPara;
+                if (upara == null)
+                {
+                    return false;
+                }
+
                 if (m_SerialPort == null)
                 {
                     m_SerialPort = new SerialPort();
@@ -202,7 +209,6 @@ namespace E9361App.Communication
                     m_SerialPort.Close();
                 }
 
-                UartPortPara upara = (UartPortPara)para;
                 m_SerialPort.PortName = upara.PortName;
                 m_SerialPort.BaudRate = upara.BaudRate;
                 m_SerialPort.StopBits = upara.StopBits;
@@ -213,70 +219,11 @@ namespace E9361App.Communication
                 m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
                 m_SerialPort.Open();
 
-                if (m_Thread == null)
-                {
-                    m_Thread = new Thread(PortRun);
-                }
-
-                m_Thread.Name = m_SerialPort.PortName;
-                m_Thread.IsBackground = true;
-                m_ThreadRunning = true;
-                m_Thread.Start();
-
                 return m_SerialPort.IsOpen;
             }
             catch (Exception ex)
             {
-                m_LogError.Error(ex.Message);
-                throw ex;
-            }
-        }
-
-        private void PortRun()
-        {
-            try
-            {
-                while (m_ThreadRunning)
-                {
-                    byte[] b = m_ReceiveBuffer.ToArray();
-                    if (b != null)
-                    {
-                        bool find = MaintainProtocol.FindOneFrame(b, out int start, out int len, out byte mainFunc, out byte subFucn, out byte[] data);
-
-                        if (find)
-                        {
-                            byte[] frame = new byte[len];
-                            Array.Copy(b, start, frame, 0, len);
-
-                            MaintainParseRes res = new MaintainParseRes
-                            {
-                                MainFunc = mainFunc,
-                                SubFucn = subFucn,
-                                Start = start,
-                                Len = len,
-                                Data = data,
-                                Frame = frame
-                            };
-
-                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(frame, start, len);
-                            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
-
-                            if (MaintainResHander != null)
-                            {
-                                MaintainResEventArgs e = new MaintainResEventArgs(res);
-                                MaintainResHander(this, e);
-                            }
-
-                            m_ReceiveBuffer.RemoveRange(0, start + len);
-                        }
-                    }
-
-                    Thread.Sleep(100);
-                }
-            }
-            catch (Exception ex)
-            {
-                m_LogError.Error(ex.Message);
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
         }
@@ -285,7 +232,6 @@ namespace E9361App.Communication
         {
             try
             {
-                m_ThreadRunning = false;
                 if (m_SerialPort != null)
                 {
                     m_SerialPort.Close();
@@ -297,7 +243,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error(ex.Message);
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
         }
@@ -314,46 +260,19 @@ namespace E9361App.Communication
                     }
 
                     int len = m_SerialPort.BytesToRead;
-                    byte[] receivedData = new byte[len];
-                    m_SerialPort.Read(receivedData, 0, len);
-                    m_ReceiveBuffer.AddRange(receivedData);
+                    if (len > 0)
+                    {
+                        byte[] receivedData = new byte[len];
+                        m_SerialPort.Read(receivedData, 0, len);
+                        m_ReceiveBuffer.AddRange(receivedData);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                m_LogError.Error(ex.Message);
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
-        }
-
-        /// <summary>
-        ///读取缓冲区数据
-        /// </summary>
-        /// <param name="maxlen">读取的最大长度</param>
-        public byte[] Read(int maxlen)
-        {
-            try
-            {
-                byte[] log = m_ReceiveBuffer.ToArray();
-                int actualLen = Math.Min(log.Length, maxlen);
-                byte[] res = new byte[actualLen];
-                Array.Copy(log, 0, res, 0, actualLen);
-                return res;
-            }
-            catch (Exception ex)
-            {
-                m_LogError.Error(ex.Message);
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        ///读取缓冲区全部数据
-        /// </summary>
-        /// <returns></returns>
-        public byte[] ReadAll()
-        {
-            return m_ReceiveBuffer.ToArray();
         }
 
         public bool Write(byte[] frame, int start, int len)
@@ -374,23 +293,59 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error(ex.Message);
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
         }
 
-        public bool FlushAll()
+        public async Task<MaintainParseRes> ReadOneFrame(long timeout)
         {
+            m_ReceiveBuffer.Clear();
+            m_StopWatch.Reset();
+            m_StopWatch.Start();
+            MaintainParseRes res = null;
+
             try
             {
-                m_ReceiveBuffer.Clear();
-                return m_ReceiveBuffer.Count == 0;
+                while (m_StopWatch.ElapsedMilliseconds < timeout)
+                {
+                    byte[] b = m_ReceiveBuffer.ToArray();
+                    if (b != null)
+                    {
+                        bool found = MaintainProtocol.FindOneFrame(b, out int start, out int len, out byte mainFunc, out byte subFucn, out byte[] data);
+
+                        if (found)
+                        {
+                            byte[] frame = new byte[len];
+                            Array.Copy(b, start, frame, 0, len);
+
+                            res = new MaintainParseRes
+                            {
+                                MainFunc = mainFunc,
+                                SubFucn = subFucn,
+                                Start = start,
+                                Len = len,
+                                Data = data,
+                                Frame = frame
+                            };
+
+                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(frame, start, len);
+                            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+                            m_ReceiveBuffer.RemoveRange(0, start + len);
+                            break;
+                        }
+                    }
+
+                    await Task.Delay(100);
+                }
             }
             catch (Exception ex)
             {
-                m_LogError.Error(ex.Message);
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
+
+            return res;
         }
 
         public DataTable GetPortNames()
@@ -431,9 +386,73 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error(ex.Message);
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
+        }
+    }
+
+    public class CommunicationPort
+    {
+        private AbstractPort m_AbstractPort;
+
+        public CommunicationPort(PortTypeEnum portType)
+        {
+            switch (portType)
+            {
+                case PortTypeEnum.PortType_Serial:
+                    m_AbstractPort = new UartPort();
+                    break;
+
+                case PortTypeEnum.PortType_Net_UDP_Client:
+                    m_AbstractPort = new UdpClientNetPort();
+                    break;
+
+                case PortTypeEnum.PortType_Net_TCP_Client:
+                    m_AbstractPort = new TcpClientNetPort();
+                    break;
+
+                case PortTypeEnum.PortType_Net_TCP_Server:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public bool IsOpen()
+        {
+            return m_AbstractPort != null && m_AbstractPort.IsOpen();
+        }
+
+        public PortTypeEnum GetPortType()
+        {
+            return m_AbstractPort == null ? PortTypeEnum.PortType_Error : m_AbstractPort.GetPortType();
+        }
+
+        public bool Open(object para)
+        {
+            return para != null && m_AbstractPort != null && m_AbstractPort.Open(para);
+        }
+
+        public bool Close()
+        {
+            return m_AbstractPort != null && m_AbstractPort.Close();
+        }
+
+        public bool Write(byte[] frame, int start, int len)
+        {
+            return m_AbstractPort != null && m_AbstractPort.Write(frame, start, len);
+        }
+
+        public async Task<MaintainParseRes> ReadOneFrame(long timeout)
+        {
+            if (m_AbstractPort == null)
+            {
+                return null;
+            }
+
+            return await m_AbstractPort.ReadOneFrame(timeout);
         }
     }
 }

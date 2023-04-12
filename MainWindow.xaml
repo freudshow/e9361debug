@@ -16,7 +16,7 @@
         Title="E9361调试软件" Height="auto" Width="auto">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <materialDesign:Card Padding="32" Margin="3">
+            <materialDesign:Card Padding="5" Margin="3">
                 <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
                            Text="E9361-C0 DEBUG App"
                            TextAlignment="Center">
@@ -28,7 +28,7 @@
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                     ToolTip="Resource name: MaterialDesignRaisedLightButton">
             </Button>
-            <materialDesign:Card Padding="32" Margin="5">
+            <materialDesign:Card Padding="5" Margin="5">
                 <TextBox x:Name="TextBox_Result"
                          Height="auto"
                          VerticalAlignment="Top"

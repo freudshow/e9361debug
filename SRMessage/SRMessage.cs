@@ -88,4 +88,22 @@ namespace E9361App.Log
             OnSRMsg += _OnSRMsg;
         }
     }
+
+    public static class FileFunctionLine
+    {
+        public static string GetLineNumber([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return $"[{lineNumber}]";
+        }
+
+        public static string GetFunctionName([System.Runtime.CompilerServices.CallerMemberName] string func = "")
+        {
+            return $"[{func}()]";
+        }
+
+        public static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string fileName = "")
+        {
+            return $"[{fileName}]";
+        }
+    }
 }

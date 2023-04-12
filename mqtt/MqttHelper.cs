@@ -7,12 +7,14 @@ using System.Threading;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Server;
+using E9361App.Log;
 
 namespace E9361App.Mqtt
 {
     public class MqttHelper
     {
         private static readonly IMqttClient mqttClient = new MqttFactory().CreateMqttClient();
+        private static readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
 
         public static void Reconnect_Using_Timer(string svr, int? port = 1883)
         {
@@ -28,39 +30,18 @@ namespace E9361App.Mqtt
                             if (!await mqttClient.TryPingAsync())
                             {
                                 await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-                                Console.WriteLine($"{GetFilePath()}{GetFunctionName()}{GetLineNumber()}The MQTT client is connected.");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{GetFilePath()}{GetFunctionName()}{GetLineNumber()}already connected.");
                             }
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"{GetFilePath()}{GetFunctionName()}{GetLineNumber()}Exception: {ex.Message}");
+                            m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                         }
                         finally
                         {
-                            Console.WriteLine($"{GetFilePath()}{GetFunctionName()}{GetLineNumber()}checking...");
                             await Task.Delay(TimeSpan.FromSeconds(2));
                         }
                     }
                 });
-        }
-
-        public static string GetLineNumber([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
-        {
-            return $"[{lineNumber}]";
-        }
-
-        public static string GetFunctionName([System.Runtime.CompilerServices.CallerMemberName] string func = "")
-        {
-            return $"[{func}()]";
-        }
-
-        public static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string fileName = "")
-        {
-            return $"[{fileName}]";
         }
     }
 }
