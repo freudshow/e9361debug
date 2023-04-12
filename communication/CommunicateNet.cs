@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace E9361App.Communication
@@ -316,7 +315,7 @@ namespace E9361App.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Debug(ex.ToString());
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
         }
@@ -363,7 +362,7 @@ namespace E9361App.Communication
                                 Frame = frame
                             };
 
-                            string msg = "接收报文:<<<" + MaintainProtocol.ByteArryToString(frame, start, len);
+                            string msg = "接收报文: + MaintainProtocol.ByteArryToString(frame, start, len)";
                             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
                             m_ReceiveBuffer.RemoveRange(0, start + len);
                             break;

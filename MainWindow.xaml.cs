@@ -1,8 +1,5 @@
 ﻿using E9361App.Communication;
-using E9361App.DBHelper;
-using E9361App.Log;
 using E9361App.Maintain;
-using System.Threading;
 using System.Windows;
 using System.Threading.Tasks;
 using System;

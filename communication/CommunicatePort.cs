@@ -3,16 +3,11 @@ using E9361App.Maintain;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Threading;
 using System.Management;
 using System.Text.RegularExpressions;
 using System.Data;
-using System.Web.UI.WebControls.WebParts;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Collections;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace E9361App.Communication
 {
