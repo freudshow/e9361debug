@@ -144,7 +144,7 @@ namespace E9361App.Communication
             }
         }
 
-        public async Task<MaintainParseRes> ReadOneFrame(long timeout)
+        public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             if (m_TcpClient == null || m_Stream == null)
             {
@@ -320,7 +320,7 @@ namespace E9361App.Communication
             }
         }
 
-        public async Task<MaintainParseRes> ReadOneFrame(long timeout)
+        public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             m_ReceiveBuffer.Clear();
             m_StopWatch.Reset();

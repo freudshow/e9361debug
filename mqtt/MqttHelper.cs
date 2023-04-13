@@ -13,12 +13,24 @@ namespace E9361App.Mqtt
 {
     public class MqttHelper
     {
-        private static readonly IMqttClient mqttClient = new MqttFactory().CreateMqttClient();
-        private static readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
+        private readonly IMqttClient m_MqttClient = new MqttFactory().CreateMqttClient();
+        private readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
+        private string m_Server;
+        private int m_Port;
+        private string m_PublishTopic;//向终端发送命令的主题
+        private string m_ResponseTopic;//终端应答的主题
 
-        public static void Reconnect_Using_Timer(string svr, int? port = 1883)
+        public MqttHelper(string server, int port, string pub, string response)
         {
-            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(svr, port).Build();
+            m_Server = server;
+            m_Port = port;
+            m_PublishTopic = pub;
+            m_ResponseTopic = response;
+        }
+
+        public void ConnectAndSubscribe(Func<MqttApplicationMessageReceivedEventArgs, Task> arrived)
+        {
+            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(m_Server, m_Port).Build();
 
             _ = Task.Run(
                 async () =>
@@ -27,9 +39,19 @@ namespace E9361App.Mqtt
                     {
                         try
                         {
-                            if (!await mqttClient.TryPingAsync())
+                            if (!await m_MqttClient.TryPingAsync())
                             {
-                                await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+                                await m_MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+                                m_MqttClient.ApplicationMessageReceivedAsync += arrived;//收到消息后的处理函数
+                                var mqttSubscribeOptions = new MqttFactory().CreateSubscribeOptionsBuilder()
+                                                            .WithTopicFilter(
+                                                                f =>
+                                                                {
+                                                                    f.WithTopic(m_ResponseTopic);
+                                                                })
+                                                            .Build();
+
+                                await m_MqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
                             }
                         }
                         catch (Exception ex)
@@ -42,6 +64,16 @@ namespace E9361App.Mqtt
                         }
                     }
                 });
+        }
+
+        public void PublishMessage(string msg)
+        {
+            var applicationMessage = new MqttApplicationMessageBuilder()
+                                .WithTopic(m_PublishTopic)
+                                .WithPayload(msg)
+                                .Build();
+
+            m_MqttClient.PublishAsync(applicationMessage, CancellationToken.None);
         }
     }
 }

@@ -3,6 +3,7 @@ using E9361App.Maintain;
 using System.Windows;
 using System.Threading.Tasks;
 using System;
+using E9361App.MsgBox;
 
 namespace e9361debug
 {
@@ -31,7 +32,7 @@ namespace e9361debug
             {
                 MaintainProtocol.GetTerminalTime(out byte[] writeFrame);
                 m_CommunicationPort.Write(writeFrame, 0, writeFrame.Length);
-                Task<MaintainParseRes> res = m_CommunicationPort.ReadOneFrame(5000);
+                Task<MaintainParseRes> res = m_CommunicationPort.ReadOneFrameAsync(5000);
 
                 var frame = await res;
                 if (frame != null)
@@ -41,7 +42,7 @@ namespace e9361debug
                 }
                 else
                 {
-                    MessageBox.Show("超时!");
+                    ShowMsg.ShowMessageBoxTimeout("超时!", "温馨提示", MessageBoxButton.OK, 1000);
                 }
             }
             catch (Exception ex)

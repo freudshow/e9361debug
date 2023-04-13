@@ -30,7 +30,7 @@ namespace E9361App.Communication
 
         bool Write(byte[] frame, int index, int len);
 
-        Task<MaintainParseRes> ReadOneFrame(long timeout);
+        Task<MaintainParseRes> ReadOneFrameAsync(long timeout);
 
         PortTypeEnum GetPortType();
     }
@@ -293,7 +293,7 @@ namespace E9361App.Communication
             }
         }
 
-        public async Task<MaintainParseRes> ReadOneFrame(long timeout)
+        public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             m_ReceiveBuffer.Clear();
             m_StopWatch.Reset();
@@ -440,14 +440,14 @@ namespace E9361App.Communication
             return m_AbstractPort != null && m_AbstractPort.Write(frame, start, len);
         }
 
-        public async Task<MaintainParseRes> ReadOneFrame(long timeout)
+        public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             if (m_AbstractPort == null)
             {
                 return null;
             }
 
-            return await m_AbstractPort.ReadOneFrame(timeout);
+            return await m_AbstractPort.ReadOneFrameAsync(timeout);
         }
     }
 }
