@@ -35,59 +35,50 @@ namespace E9361App.Communication
         PortTypeEnum GetPortType();
     }
 
-    public delegate void USBDetectionEventHander(object sender, EventArgs e);
-
-    public class UsbDection
+    public static class UsbDection
     {
-        private static ManagementEventWatcher watchingObect = null;
-        private static WqlEventQuery watcherQuery;
-        private static ManagementScope scope;
+        private static ManagementEventWatcher m_InsertWatchingObect = null;
+        private static ManagementEventWatcher m_RemoveWatchingObect = null;
+        private static ManagementScope m_Scope = new ManagementScope { Options = new ConnectionOptions { EnablePrivileges = true }, Path = new ManagementPath("root\\CIMV2") };
 
-        public UsbDection()
-        {
-            scope = new ManagementScope("root\\CIMV2");
-            scope.Options.EnablePrivileges = true;
-        }
-
-        public static void AddRemoveUSBHandler(USBDetectionEventHander h)
+        public static void AddRemoveUSBHandler(EventArrivedEventHandler h)
         {
             try
             {
-                USBWatcherSetUp("__InstanceDeletionEvent");
-                watchingObect.EventArrived += new EventArrivedEventHandler(h);
-                watchingObect.Start();
+                if (m_RemoveWatchingObect == null)
+                {
+                    m_RemoveWatchingObect = new ManagementEventWatcher(m_Scope, new WqlEventQuery { EventClassName = "__InstanceDeletionEvent", WithinInterval = new TimeSpan(0, 0, 1), Condition = @"TargetInstance ISA 'Win32_USBControllerdevice'" });
+                }
+
+                m_RemoveWatchingObect.EventArrived += new EventArrivedEventHandler(h);
+                m_RemoveWatchingObect.Start();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                if (watchingObect != null)
-                    watchingObect.Stop();
+                if (m_RemoveWatchingObect != null)
+                    m_RemoveWatchingObect.Stop();
             }
         }
 
-        public static void AddInsetUSBHandler(USBDetectionEventHander h)
+        public static void AddInsetUSBHandler(EventArrivedEventHandler h)
         {
             try
             {
-                USBWatcherSetUp("__InstanceCreationEvent");
-                watchingObect.EventArrived += new EventArrivedEventHandler(h);
-                watchingObect.Start();
+                if (m_RemoveWatchingObect == null)
+                {
+                    m_InsertWatchingObect = new ManagementEventWatcher(m_Scope, new WqlEventQuery { EventClassName = "__InstanceCreationEvent", WithinInterval = new TimeSpan(0, 0, 1), Condition = @"TargetInstance ISA 'Win32_USBControllerdevice'" });
+                }
+
+                m_InsertWatchingObect.EventArrived += new EventArrivedEventHandler(h);
+                m_InsertWatchingObect.Start();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                if (watchingObect != null)
-                    watchingObect.Stop();
+                if (m_InsertWatchingObect != null)
+                    m_InsertWatchingObect.Stop();
             }
-        }
-
-        private static void USBWatcherSetUp(string eventType)
-        {
-            watcherQuery = new WqlEventQuery();
-            watcherQuery.EventClassName = eventType;
-            watcherQuery.WithinInterval = new TimeSpan(0, 0, 2);
-            watcherQuery.Condition = @"TargetInstance ISA 'Win32_USBControllerdevice'";
-            watchingObect = new ManagementEventWatcher(scope, watcherQuery);
         }
     }
 
