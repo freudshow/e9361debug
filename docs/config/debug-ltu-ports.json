@@ -1,0 +1,11 @@
+{
+	"token":9876521,
+	"DebugType": 1,
+	"Parameter": {
+		"SendPort": 1,
+		"TimeOut": 1000,
+		"TestCount": 3,
+		"SendFrame": "qv//DgESAQAgAxkEIiD/AKr//4oDAQYAAHsNCiAgIkRldlNlbGZEYXRhY2xhc3NSb290IjogWw0KICAgIHsNCiAgICAgICJsaW5rTm8iOiAwLA0KICAgICAgImRldk5vIjogMCwNCiAgICAgICJSZWdObyI6IDAsDQogICAgICAidHlwZSI6IDAsDQogICAgICAiTmFtZSI6ICLorqHph4/oiq/niYfnmoTohInlhrLovpPlhaXkv6Hlj7cx77yI5aSH55So77yJIiwNCiAgICAgICJVbml0IjogbnVsbCwNCiAgICAgICJSYXRpbyI6IDAsDQogICAgICAiVHlwZVByb3BlcnR564K8ibFmscB0AAC8/kk=",
+		"ExpectedFrame": "qv//DgESAQAgAxkEIiD/AKr//4oDAQYAAHsNCiAgIkRldlNlbGZEYXRhY2xhc3NSb290IjogWw0KICAgIHsNCiAgICAgICJsaW5rTm8iOiAwLA0KICAgICAgImRldk5vIjogMCwNCiAgICAgICJSZWdObyI6IDAsDQogICAgICAidHlwZSI6IDAsDQogICAgICAiTmFtZSI6ICLorqHph4/oiq/niYfnmoTohInlhrLovpPlhaXkv6Hlj7cx77yI5aSH55So77yJIiwNCiAgICAgICJVbml0IjogbnVsbCwNCiAgICAgICJSYXRpbyI6IDAsDQogICAgICAiVHlwZVByb3BlcnR564K8ibFmscB0AAC8/kk="
+	}
+}
