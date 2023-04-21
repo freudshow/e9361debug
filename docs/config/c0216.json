@@ -1,0 +1,65 @@
+{
+  "DataItem": [
+    {
+      "RtDBNo": 128,
+      "Ratio": 1.0,
+      "desc": "A相电压",
+      "Unit": "V",
+      "dead": 1.0,
+      "type": 1
+    },
+    {
+      "RtDBNo": 129,
+      "Ratio": 1.0,
+      "desc": "B相电压",
+      "Unit": "V",
+      "dead": 1.0,
+      "type": 1
+    },
+    {
+      "RtDBNo": 130,
+      "Ratio": 1.0,
+      "desc": "C相电压",
+      "Unit": "V",
+      "dead": 1.0,
+      "type": 1
+    },
+    {
+      "RtDBNo": 144,
+      "Ratio": 1.0,
+      "desc": "A相电网频率",
+      "Unit": "HZ",
+      "dead": 1.0,
+      "type": 1
+    },
+    {
+      "RtDBNo": 145,
+      "Ratio": 1.0,
+      "desc": "B相电网频率",
+      "Unit": "HZ",
+      "dead": 1.0,
+      "type": 1
+    },
+    {
+      "RtDBNo": 146,
+      "Ratio": 1.0,
+      "desc": "C相电网频率",
+      "Unit": "HZ",
+      "dead": 1.0,
+      "type": 1
+    },
+    {
+      "RtDBNo": 147,
+      "Ratio": 1.0,
+      "desc": "电网频率",
+      "Unit": "HZ",
+      "dead": 1.0,
+      "type": 1
+    }
+  ],
+  "OnPageKeep": 5,
+  "LoopFreq": 5,
+  "SupHardKey": 1,
+  "SplitRow": 1,
+  "DescWidth": 8
+}

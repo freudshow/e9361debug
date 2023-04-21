@@ -1,0 +1,7 @@
+{
+  "Mult_Fft_Enable1": 0,
+  "ThreadInteral": 10,
+  "ReadEngTimeInterval": 50,
+  "Ade9078Count": 1,
+  "Ade9078DataTypes": 27
+}
