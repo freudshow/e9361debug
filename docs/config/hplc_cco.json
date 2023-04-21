@@ -1,0 +1,36 @@
+{
+  "CCOTimeOut": 90,
+  "ReadMeterMode": 0,
+  "ReadintervalMs": 2000,
+  "WaitCount": 10,
+  "PortConfig": {
+    "PortType": 0,
+    "PortPara": {
+      "Number": 5,
+      "BaudRate": 9600,
+      "Parity": 1,
+      "DataBits": 8,
+      "Stop": 1
+    },
+    "NetPara": {
+      "NetType": 0,
+      "LocalIP": "192.168.1.101",
+      "LocalPort": 7224,
+      "RemoteIP": "192.168.1.201",
+      "RemotePort": 7225
+    }
+  },
+  "MeterList": [
+    {
+      "Name": null,
+      "Depth": 0,
+      "Children": [],
+      "Sequence": 0,
+      "Address": "202304030837",
+      "Model": "LTU",
+      "ModbusSeq": 0,
+      "LinkNo": 3,
+      "LinkDevNo": 1
+    }
+  ]
+}
