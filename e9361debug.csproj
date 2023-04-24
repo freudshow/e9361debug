@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E202CDF4-8BAB-4214-BEB3-3B49AE8D8833}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>e9361debug</RootNamespace>
-    <AssemblyName>e9361debug</AssemblyName>
+    <RootNamespace>E9361Debug</RootNamespace>
+    <AssemblyName>E9361Debug</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -137,15 +137,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="common\common.cs" />
     <Compile Include="communication\CommunicateNet.cs" />
     <Compile Include="communication\CommunicatePort.cs" />
+    <Compile Include="Controls\CheckTree.xaml.cs">
+      <DependentUpon>CheckTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="json\JsonProcess.cs" />
+    <Compile Include="logical\CheckItems.cs" />
     <Compile Include="messgebox\msg.cs" />
     <Compile Include="mqtt\MqttHelper.cs" />
+    <Compile Include="logical\DataBaseLogical.cs" />
     <Compile Include="SRMessage\SRMessage.cs" />
     <Compile Include="maintain\MaintainProtocol.cs" />
     <Compile Include="sqlite\SqliteHelper.cs" />
     <Compile Include="ssh\SshClientClass.cs" />
+    <Page Include="Controls\CheckTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -189,9 +199,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="img\favicon.ico" />
     <Resource Include="img\ms-icon-310x310.png" />

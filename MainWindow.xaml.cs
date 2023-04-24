@@ -4,8 +4,9 @@ using System.Windows;
 using System.Threading.Tasks;
 using System;
 using E9361App.MsgBox;
+using E9361App.Common;
 
-namespace e9361debug
+namespace E9361DEBUG
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -49,6 +50,11 @@ namespace e9361debug
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void Menu_About_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"E9361-C检测软件\n软件版本:{Common.Version}");
         }
     }
 }

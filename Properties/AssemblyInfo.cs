@@ -5,11 +5,11 @@ using System.Windows;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("e9361debug")]
+[assembly: AssemblyTitle("E9361DEBUG")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Administrator")]
-[assembly: AssemblyProduct("e9361debug")]
+[assembly: AssemblyProduct("E9361DEBUG")]
 [assembly: AssemblyCopyright("Copyright © Administrator 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

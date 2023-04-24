@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace e9361debug
+namespace E9361DEBUG
 {
     /// <summary>
     /// App.xaml 的交互逻辑
