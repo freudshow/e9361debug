@@ -56,5 +56,9 @@ namespace E9361DEBUG
         {
             MessageBox.Show($"E9361-C检测软件\n软件版本:{Common.Version}");
         }
+
+        private void RestartButton_OnClick(object sender, RoutedEventArgs e)
+        {
+        }
     }
 }

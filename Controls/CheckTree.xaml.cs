@@ -25,9 +25,6 @@ namespace E9361DEBUG.Controls
         public CheckTree()
         {
             InitializeComponent();
-
-            m_CheckItems = new CheckItems { ChildTableName = DataBaseLogical.GetBaseCheckTableName() };
-            TreeView_CheckTree.ItemsSource = m_CheckItems.Children;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -37,6 +34,8 @@ namespace E9361DEBUG.Controls
 
         private void InitCheckTree()
         {
+            m_CheckItems = new CheckItems { ChildTableName = DataBaseLogical.GetBaseCheckTableName() };
+            TreeView_CheckTree.ItemsSource = m_CheckItems.Children;
         }
 
         private void TreeView_CheckTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)

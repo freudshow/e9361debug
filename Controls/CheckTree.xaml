@@ -37,23 +37,10 @@
                     VerticalAlignment="Stretch"
                     MouseDoubleClick="TreeView_CheckTree_MouseDoubleClick"
                     PreviewMouseRightButtonDown="TreeView_CheckTree_PreviewMouseRightButtonDown">
-                    <materialDesign:TreeViewAssist.AdditionalTemplate>
-                        <DataTemplate>
-                            <materialDesign:ColorZone CornerRadius="6" Mode="PrimaryLight">
-                                <TextBlock
-                                    Margin="8,1,8,1"
-                                    FontSize="10"
-                                    FontStyle="Italic" />
-                            </materialDesign:ColorZone>
-                        </DataTemplate>
-                    </materialDesign:TreeViewAssist.AdditionalTemplate>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox
-                                    IsChecked="{Binding IsChecked}"
-                                    IsEnabled="{Binding IsEnabled}"
-                                    Visibility="{Binding IsVisible}" />
+                                <CheckBox IsChecked="{Binding IsEnable}" Visibility="{Binding IsVisible}" />
                                 <TextBlock Text="{Binding Description}" />
                             </StackPanel>
                         </HierarchicalDataTemplate>

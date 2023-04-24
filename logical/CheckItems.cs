@@ -30,7 +30,7 @@ namespace E9361Debug.Logical
 
     public enum ResultSignEnum
     {
-        Result_Sign__Invalid = -1,
+        Result_Sign_Invalid = -1,
         Result_Sign_Equal = 0,
         Result_Sign_Greater_Than,
         Result_Sign_Less_Than,
@@ -133,6 +133,14 @@ namespace E9361Debug.Logical
             set
             {
                 m_IsEnable = value;
+                if (Children != null && Children.Count > 0)
+                {
+                    foreach (CheckItems item in Children)
+                    {
+                        item.IsEnable = value;
+                    }
+                }
+
                 OnPropertyChanged(nameof(IsEnable));
             }
         }
@@ -159,7 +167,7 @@ namespace E9361Debug.Logical
                                 CmdParam = dr["cmdParam"] == DBNull.Value ? "" : dr["cmdParam"].ToString(),
                                 ResultType = dr["resultType"] == DBNull.Value ? ResultTypeEnum.Result_Type_Invalid : (ResultTypeEnum)Convert.ToInt32(dr["resultType"]),
                                 ResultValue = dr["resultValue"] == DBNull.Value ? "" : dr["resultValue"].ToString(),
-                                ResultSign = dr["resultSign"] == DBNull.Value ? ResultSignEnum.Result_Sign__Invalid : (ResultSignEnum)Convert.ToInt32(dr["resultSign"]),
+                                ResultSign = dr["resultSign"] == DBNull.Value ? ResultSignEnum.Result_Sign_Invalid : (ResultSignEnum)Convert.ToInt32(dr["resultSign"]),
                                 Description = dr["description"] == DBNull.Value ? "" : dr["description"].ToString(),
                                 IsEnable = dr["isEnable"] == DBNull.Value ? false : Convert.ToInt32(dr["isEnable"]) == 1 ? true : false,
                                 ChildTableName = dr["childTableName"].ToString(),
