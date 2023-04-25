@@ -171,17 +171,12 @@ namespace E9361App.Communication
                         }
                     }
 
-                    if (m_ReceiveBuffer.Count > 0)
+                    if (m_ReceiveBuffer.Count > 0 && MaintainProtocol.FindOneFrame(m_ReceiveBuffer.ToArray(), out res))
                     {
-                        bool found = MaintainProtocol.FindOneFrame(m_ReceiveBuffer.ToArray(), out res);
-
-                        if (found)
-                        {
-                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, 0, res.Len);
-                            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
-                            m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
-                            break;
-                        }
+                        string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, 0, res.Len);
+                        m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+                        m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
+                        break;
                     }
 
                     await Task.Delay(100);
@@ -327,17 +322,12 @@ namespace E9361App.Communication
                         m_ReceiveBuffer.AddRange(m_UdpClient.Receive(ref m_RemoteIPEndPoint));
                     }
 
-                    if (m_ReceiveBuffer.Count > 0)
+                    if (m_ReceiveBuffer.Count > 0 && MaintainProtocol.FindOneFrame(m_ReceiveBuffer.ToArray(), out res))
                     {
-                        bool found = MaintainProtocol.FindOneFrame(m_ReceiveBuffer.ToArray(), out res);
-
-                        if (found)
-                        {
-                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, 0, res.Len);
-                            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
-                            m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
-                            break;
-                        }
+                        string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, 0, res.Len);
+                        m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
+                        m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
+                        break;
                     }
 
                     await Task.Delay(100);

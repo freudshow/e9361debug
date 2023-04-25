@@ -34,6 +34,10 @@ namespace E9361DEBUG
         {
             m_CheckItems = new CheckItems { ChildTableName = DataBaseLogical.GetBaseCheckTableName() };
             Controls_CheckTree.SetDataSource(m_CheckItems);
+            for (int i = 0; i < 3; i++)
+            {
+                ReadTime();
+            }
         }
 
         private async void ReadTime()
