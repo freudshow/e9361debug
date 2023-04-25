@@ -298,26 +298,13 @@ namespace E9361App.Communication
                     byte[] b = m_ReceiveBuffer.ToArray();
                     if (b != null)
                     {
-                        bool found = MaintainProtocol.FindOneFrame(b, out int start, out int len, out byte mainFunc, out byte subFucn, out byte[] data);
+                        bool found = MaintainProtocol.FindOneFrame(b, out res);
 
                         if (found)
                         {
-                            byte[] frame = new byte[len];
-                            Array.Copy(b, start, frame, 0, len);
-
-                            res = new MaintainParseRes
-                            {
-                                MainFunc = mainFunc,
-                                SubFucn = subFucn,
-                                Start = start,
-                                Len = len,
-                                Data = data,
-                                Frame = frame
-                            };
-
-                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(frame, start, len);
+                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, res.Start, res.Len);
                             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
-                            m_ReceiveBuffer.RemoveRange(0, start + len);
+                            m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
                             break;
                         }
                     }

@@ -25,8 +25,8 @@ namespace E9361DEBUG
             NetPara tcpclientpara = new NetPara { ServerIP = "192.168.1.232", ServerPort = 5001, Mode = PortTypeEnum.PortType_Net_TCP_Client };
             UartPortPara uartPortPara = new UartPortPara { PortName = "COM3" };
 
-            m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Serial);
-            m_CommunicationPort.Open(uartPortPara);
+            m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_UDP_Client);
+            m_CommunicationPort.Open(udpclientpara);
             InitCheckTree();
         }
 

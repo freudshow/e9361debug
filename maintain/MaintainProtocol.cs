@@ -41,7 +41,7 @@ namespace E9361App.Maintain
             set { m_MainFunc = value; }
         }
 
-        public byte SubFucn
+        public byte SubFunc
         {
             get { return m_SubFucn; }
             set { m_SubFucn = value; }
@@ -314,13 +314,10 @@ namespace E9361App.Maintain
         /// <param name="subFunc">子功能码</param>
         /// <param name="data">去掉主功能码和子功能码后的数据域</param>
         /// <returns>true-查找到一帧完整的报文; false-未查找到一帧完整的报文</returns>
-        public static bool FindOneFrame(byte[] buf, out int start, out int len, out byte mainFunc, out byte subFunc, out byte[] data)
+        public static bool FindOneFrame(byte[] buf, out MaintainParseRes res)
         {
-            start = -1;
-            len = 0;
-            mainFunc = 0;
-            subFunc = 0;
-            data = null;
+            int start = -1;
+            res = null;
 
             if (buf == null || buf.Length <= m_minLen)
             {
@@ -372,11 +369,10 @@ namespace E9361App.Maintain
             }
 
             ushort dataLen = BitConverter.ToUInt16(buf, start + Marshal.SizeOf(m_startCode) + Marshal.SizeOf(m_address));
-            len = dataLen + m_removeDataLen;
+            int len = dataLen + m_removeDataLen;
 
             if (dataLen < 2 || buf.Length < (start + len))
             {
-                len = 0;
                 return false;
             }
 
@@ -384,16 +380,23 @@ namespace E9361App.Maintain
 
             if (buf[start + Marshal.SizeOf(m_startCode) + Marshal.SizeOf(m_address) + Marshal.SizeOf(dataLen) + dataLen] != chk)
             {
-                len = 0;
                 return false;
             }
 
-            mainFunc = buf[start + 5];
-            subFunc = buf[start + 6];
+            res = new MaintainParseRes
+            {
+                MainFunc = buf[start + 5],
+                SubFunc = buf[start + 6],
+                Start = start,
+                Len = len
+            };
 
-            int dataBufLen = dataLen - Marshal.SizeOf(mainFunc) - Marshal.SizeOf(subFunc);
-            data = new byte[dataBufLen];
-            Array.Copy(buf, start + m_headLen + Marshal.SizeOf(mainFunc) + Marshal.SizeOf(subFunc), data, 0, dataBufLen);
+            int dataBufLen = dataLen - Marshal.SizeOf(res.MainFunc) - Marshal.SizeOf(res.SubFunc);
+            res.Data = new byte[dataBufLen];
+            Array.Copy(buf, start + m_headLen + Marshal.SizeOf(res.MainFunc) + Marshal.SizeOf(res.SubFunc), res.Data, 0, dataBufLen);
+
+            res.Frame = new byte[len];
+            Array.Copy(buf, start, res.Frame, 0, len);
 
             return true;
         }
