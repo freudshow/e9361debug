@@ -178,7 +178,7 @@ namespace E9361App.Communication
 
                         if (found)
                         {
-                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, res.Start, res.Len);
+                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, 0, res.Len);
                             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
                             m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
                             break;
@@ -335,7 +335,7 @@ namespace E9361App.Communication
 
                         if (found)
                         {
-                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, res.Start, res.Len);
+                            string msg = "接收报文:" + MaintainProtocol.ByteArryToString(res.Frame, 0, res.Len);
                             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, msg);
                             m_ReceiveBuffer.RemoveRange(0, res.Start + res.Len);
                             break;
