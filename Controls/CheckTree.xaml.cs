@@ -27,14 +27,14 @@ namespace E9361DEBUG.Controls
             InitializeComponent();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        internal void SetDataSource(CheckItems items)
         {
-            InitCheckTree();
-        }
+            if (items == null)
+            {
+                return;
+            }
 
-        private void InitCheckTree()
-        {
-            m_CheckItems = new CheckItems { ChildTableName = DataBaseLogical.GetBaseCheckTableName() };
+            m_CheckItems = items;
             TreeView_CheckTree.ItemsSource = m_CheckItems.Children;
         }
 

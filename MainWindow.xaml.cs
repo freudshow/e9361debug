@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using E9361App.MsgBox;
 using E9361App.Common;
+using E9361Debug.Logical;
 
 namespace E9361DEBUG
 {
@@ -14,6 +15,7 @@ namespace E9361DEBUG
     public partial class MainWindow : Window
     {
         private CommunicationPort m_CommunicationPort;
+        private CheckItems m_CheckItems;
 
         public MainWindow()
         {
@@ -25,6 +27,13 @@ namespace E9361DEBUG
 
             m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Serial);
             m_CommunicationPort.Open(uartPortPara);
+            InitCheckTree();
+        }
+
+        private void InitCheckTree()
+        {
+            m_CheckItems = new CheckItems { ChildTableName = DataBaseLogical.GetBaseCheckTableName() };
+            Controls_CheckTree.SetDataSource(m_CheckItems);
         }
 
         private async void Button_ReadTime_Click(object sender, RoutedEventArgs e)
@@ -57,7 +66,7 @@ namespace E9361DEBUG
             MessageBox.Show($"E9361-C检测软件\n软件版本:{Common.Version}");
         }
 
-        private void RestartButton_OnClick(object sender, RoutedEventArgs e)
+        private void Button_StartDebug_Click(object sender, RoutedEventArgs e)
         {
         }
     }
