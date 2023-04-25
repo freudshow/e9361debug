@@ -171,10 +171,9 @@ namespace E9361App.Communication
                         }
                     }
 
-                    byte[] b = m_ReceiveBuffer.ToArray();
-                    if (b != null)
+                    if (m_ReceiveBuffer.Count > 0)
                     {
-                        bool found = MaintainProtocol.FindOneFrame(b, out res);
+                        bool found = MaintainProtocol.FindOneFrame(m_ReceiveBuffer.ToArray(), out res);
 
                         if (found)
                         {
@@ -328,10 +327,9 @@ namespace E9361App.Communication
                         m_ReceiveBuffer.AddRange(m_UdpClient.Receive(ref m_RemoteIPEndPoint));
                     }
 
-                    byte[] b = m_ReceiveBuffer.ToArray();
-                    if (b != null)
+                    if (m_ReceiveBuffer.Count > 0)
                     {
-                        bool found = MaintainProtocol.FindOneFrame(b, out res);
+                        bool found = MaintainProtocol.FindOneFrame(m_ReceiveBuffer.ToArray(), out res);
 
                         if (found)
                         {

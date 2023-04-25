@@ -36,7 +36,7 @@ namespace E9361DEBUG
             Controls_CheckTree.SetDataSource(m_CheckItems);
         }
 
-        private async void Button_ReadTime_Click(object sender, RoutedEventArgs e)
+        private async void ReadTime()
         {
             try
             {
