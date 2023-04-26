@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
 
 namespace E9361App.Maintain
 {
@@ -421,6 +423,51 @@ namespace E9361App.Maintain
             byte subFunc = 0x01;
             byte[] data = new byte[1];
             data[0] = 0x00;
+            ComposeFrame(mainFunc, subFunc, data, out outframe);
+        }
+
+        public static DateTime ParseTerminalTime(byte[] frame)
+        {
+            byte[] b = new byte[7];
+            Array.Copy(frame, 7, b, 0, 7);
+
+            int year = (int)(b[6] & 0x7F) + 2000;
+            int month = (int)(b[5] & 0x0F);
+            int day = (int)(b[4] & 0x1F);
+            int hour = (int)(b[3] & 0x1F);
+            int minute = (int)(b[2] & 0x3F);
+            int second = (int)((b[1] << 8) + b[0]) / 1000;
+            int milisec = (int)((b[1] << 8) + b[0]) % 1000;
+
+            return new DateTime(year, month, day, hour, minute, second, milisec);
+        }
+
+        /// <summary>
+        /// 读取实时库中同一遥测/遥信类型的,
+        /// 且同一数据类型的, 连续数量的数值
+        /// </summary>
+        /// <param name="startIdx">起始实时库号</param>
+        /// <param name="count">连续读取的实时库数据项数量</param>
+        /// <param name="teleType">遥测/遥信类型, 0 - 遥信, 1 - 遥测, 2 - 遥控, 3 - 电度, 4 - 参数</param>
+        /// <param name="dataType">数据类型, 0 - float, 1 - char</param>
+        /// <param name="outframe">输出的读取报文</param>
+        public static void GetContinueRealDataBaseValue(ushort startIdx, byte teleType, byte dataType, byte count, out byte[] outframe)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_RealdataWatch;
+            byte subFunc = 0x01;
+            int datalen = sizeof(ushort) + sizeof(byte) + sizeof(byte) + sizeof(byte) + sizeof(byte);
+            byte[] data = new byte[datalen];
+
+            int pos = 0;
+            byte[] start = BitConverter.GetBytes(startIdx);
+            Array.Copy(start, 0, data, pos, sizeof(ushort));
+            pos += sizeof(ushort);
+
+            data[pos++] = teleType;//遥测/遥信类型
+            data[pos++] = dataType;//数据类型
+            data[pos++] = count;//数据项数量
+            data[pos++] = 0x00;//预留
+
             ComposeFrame(mainFunc, subFunc, data, out outframe);
         }
     }

@@ -192,4 +192,8 @@ namespace E9361Debug.Logical
             }
         }
     }
+
+    internal class CheckProcess
+    {
+    }
 }

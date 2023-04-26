@@ -64,7 +64,7 @@
                 <ToggleButton />
             </ToolBar>
         </ToolBarTray>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="12" />
@@ -77,10 +77,24 @@
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch" />
-            <StackPanel Grid.Column="2" Orientation="Vertical">
+            <StackPanel
+                Grid.Column="2"
+                VerticalAlignment="Stretch"
+                Orientation="Vertical">
                 <materialDesign:Card Margin="5" Padding="5">
                     <TextBox
                         x:Name="TextBox_Result"
+                        Height="300"
+                        VerticalAlignment="Top"
+                        AcceptsReturn="True"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        TextAlignment="Justify"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
+                </materialDesign:Card>
+                <materialDesign:Card Margin="5" Padding="5">
+                    <TextBox
+                        x:Name="TextBox_Exception"
                         Height="auto"
                         VerticalAlignment="Top"
                         AcceptsReturn="True"
