@@ -35,6 +35,8 @@ namespace E9361Debug.Logical
         Result_Sign_Greater_Than,
         Result_Sign_Less_Than,
         Result_Sign_Interval,
+        Result_Sign_Regex,
+        Result_Sign_Lamda
     }
 
     internal class PropertyChangedClass : INotifyPropertyChanged
@@ -60,6 +62,7 @@ namespace E9361Debug.Logical
         private ResultSignEnum m_ResultSign;
         private string m_Description;
         private bool m_IsEnable;
+        private int m_TimeOut;
         private string m_ChildTableName;
         private ObservableCollection<CheckItems> m_Children;
 
@@ -142,6 +145,16 @@ namespace E9361Debug.Logical
                 }
 
                 OnPropertyChanged(nameof(IsEnable));
+            }
+        }
+
+        public int TimeOut
+        {
+            get => m_TimeOut;
+            set
+            {
+                m_TimeOut = value;
+                OnPropertyChanged(nameof(TimeOut));
             }
         }
 

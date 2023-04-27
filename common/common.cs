@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Windows;
+using System.Threading.Tasks;
 
 namespace E9361App.Common
 {
@@ -111,6 +112,11 @@ namespace E9361App.Common
             {
                 throw ex;
             }
+        }
+
+        public static async Task<Func<T, bool>> GetLamdaAsync<T>(string s)
+        {
+            return await CSharpScript.EvaluateAsync<Func<T, bool>>(s);
         }
     }
 }

@@ -92,6 +92,7 @@
                         AcceptsReturn="True"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         TextAlignment="Justify"
+                        TextChanged="TextBox_Result_TextChanged"
                         TextWrapping="Wrap"
                         VerticalScrollBarVisibility="Auto" />
                 </materialDesign:Card>
@@ -103,8 +104,10 @@
                         AcceptsReturn="True"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         TextAlignment="Justify"
+                        TextChanged="TextBox_Exception_TextChanged"
                         TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto" />
+                        VerticalScrollBarVisibility="Auto"
+                        Foreground="Red" />
                 </materialDesign:Card>
             </StackPanel>
         </Grid>
