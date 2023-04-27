@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using E9361App.Common;
+using E9361App.Communication;
 using E9361App.DBHelper;
 
 namespace E9361Debug.Logical
@@ -19,6 +21,7 @@ namespace E9361Debug.Logical
         Base_Para_Mqtt_Port,
         Base_Para_Maintain_Default_UDP_Port,
         Base_Para_Main_Check_Table,
+        Base_Para_Maintain_Port_Type,
     }
 
     public static class ExtendEnum
@@ -87,6 +90,39 @@ namespace E9361Debug.Logical
             }
 
             return dt.Tables[0];
+        }
+
+        public static string GetTerminalIP()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_IP_Address.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return null;
+            }
+
+            return dt.Rows[0]["value"].ToString();
+        }
+
+        public static int GetTerminalUDPPort()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Maintain_Default_UDP_Port.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return -1;
+            }
+
+            return Convert.ToInt32(dt.Rows[0]["value"].ToString());
+        }
+
+        public static PortTypeEnum GetMaintainPortType()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Maintain_Port_Type.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return PortTypeEnum.PortType_Error;
+            }
+
+            return Common.GetEnumByString<PortTypeEnum>(dt.Rows[0]["value"].ToString());
         }
     }
 }

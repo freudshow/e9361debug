@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周四 4月 27 17:04:37 2023
+-- SQLiteStudio v3.4.4 生成的文件，周四 4月 27 18:53:49 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -24,6 +24,7 @@ INSERT INTO t_basePara (seq, name, value) VALUES (6, 'Base_Para_Mqtt_Response_To
 INSERT INTO t_basePara (seq, name, value) VALUES (7, 'Base_Para_Mqtt_Port', '1883');
 INSERT INTO t_basePara (seq, name, value) VALUES (8, 'Base_Para_Maintain_Default_UDP_Port', '5000');
 INSERT INTO t_basePara (seq, name, value) VALUES (9, 'Base_Para_Main_Check_Table', 't_checkItemsBase');
+INSERT INTO t_basePara (seq, name, value) VALUES (10, 'Base_Para_Maintain_Port_Type', 'PortType_Net_UDP_Client');
 
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
