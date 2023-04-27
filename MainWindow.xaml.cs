@@ -7,6 +7,7 @@ using E9361App.MsgBox;
 using E9361App.Common;
 using E9361Debug.Logical;
 using System.Web.Hosting;
+using System.Windows.Media;
 
 namespace E9361DEBUG
 {
@@ -29,11 +30,6 @@ namespace E9361DEBUG
             m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_UDP_Client);
             m_CommunicationPort.Open(udpclientpara);
             InitCheckTree();
-
-            for (int i = 0; i < 3; i++)
-            {
-                ReadRealDatabase();
-            }
         }
 
         private void InitCheckTree()
@@ -57,20 +53,21 @@ namespace E9361DEBUG
                 }
                 else
                 {
-                    ShowMsg.ShowMessageBoxTimeout("超时!", "温馨提示", MessageBoxButton.OK, 1000);
+                    TextBox_Exception.Foreground = new SolidColorBrush(Colors.Red);
+                    TextBox_Exception.Text += "连接超时\n";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                TextBox_Exception.Text += $"异常:{ex.Message}\n";
             }
         }
 
-        private async void ReadRealDatabase()
+        private async Task ReadRealDatabase()
         {
             try
             {
-                MaintainProtocol.GetContinueRealDataBaseValue(321, 1, 0, 1, out byte[] b);
+                MaintainProtocol.GetContinueRealDataBaseValue(317, RealDataTeleTypeEnum.Real_Data_TeleType_YC, RealDataDataTypeEnum.Real_Data_type_Float, 5, out byte[] b);
                 m_CommunicationPort.Write(b, 0, b.Length);
                 MaintainParseRes res = await m_CommunicationPort.ReadOneFrameAsync(5000);
 
@@ -78,16 +75,53 @@ namespace E9361DEBUG
                 {
                     byte[] f = res.Frame;
                     TextBox_Result.Text += $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(f, 0, f.Length)}\n";
+                    ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(f);
+
+                    if (data.IsValid && data.RealDataArray != null && data.RealDataArray.Length > 0)
+                    {
+                        TextBox_Result.Text += $"Values[{data.RealDataArray.Length}]: ";
+                        foreach (var item in data.RealDataArray)
+                        {
+                            switch (data.DataType)
+                            {
+                                case RealDataDataTypeEnum.Real_Data_type_Float:
+                                    TextBox_Result.Text += $"{item.FloatValue}";
+                                    break;
+
+                                case RealDataDataTypeEnum.Real_Data_type_Char:
+                                    TextBox_Result.Text += $"{item.CharValue}";
+                                    break;
+
+                                case RealDataDataTypeEnum.Real_Data_type_Int:
+                                    TextBox_Result.Text += $"{item.IntValue}";
+                                    break;
+
+                                case RealDataDataTypeEnum.Real_Data_type_Invalid:
+                                default:
+                                    break;
+                            }
+
+                            TextBox_Result.Text += ", ";
+                        }
+
+                        TextBox_Result.Text.TrimEnd().TrimEnd(',');
+                        TextBox_Result.Text += "\n";
+                    }
                 }
                 else
                 {
-                    ShowMsg.ShowMessageBoxTimeout("超时!", "温馨提示", MessageBoxButton.OK, 1000);
+                    TextBox_Exception.Foreground = new SolidColorBrush(Colors.Red);
+                    TextBox_Exception.Text += "连接超时\n";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                TextBox_Exception.Foreground = new SolidColorBrush(Colors.Red);
+                TextBox_Exception.Text += $"异常:{ex.Message}\n";
             }
+
+            TextBox_Result.ScrollToEnd();
+            TextBox_Exception.ScrollToEnd();
         }
 
         private void Menu_About_Click(object sender, RoutedEventArgs e)
@@ -95,9 +129,12 @@ namespace E9361DEBUG
             MessageBox.Show($"E9361-C检测软件\n软件版本:{Common.Version}");
         }
 
-        private void Button_StartDebug_Click(object sender, RoutedEventArgs e)
+        private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)
         {
-            CheckAllItems();
+            for (int i = 0; i < 100; i++)
+            {
+                await ReadRealDatabase();
+            }
         }
 
         private async void CheckAllItems()

@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周一 4月 24 18:38:32 2023
+-- SQLiteStudio v3.4.4 生成的文件，周四 4月 27 14:46:46 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -62,11 +62,11 @@ CREATE TABLE IF NOT EXISTS t_checkPorts (
     childTableName TEXT
 );
 
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (1, 3, '317', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'RS485-1测试', 1, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (2, 3, '318', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'RS485-2测试', 1, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (3, 3, '319', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'RS485-3测试', 1, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (4, 3, '320', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'CAN测试', 1, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (5, 3, '321', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'CCO测试', 1, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (1, 3, '317,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'RS485-1测试', 1, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (2, 3, '318,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'RS485-2测试', 1, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (3, 3, '319,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'RS485-3测试', 1, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (4, 3, '320,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'CAN测试', 1, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (5, 3, '321,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 3, 'CCO测试', 1, NULL);
 
 -- 表：t_cmdTypeEnum
 DROP TABLE IF EXISTS t_cmdTypeEnum;

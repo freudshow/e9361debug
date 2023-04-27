@@ -64,7 +64,10 @@
                 <ToggleButton />
             </ToolBar>
         </ToolBarTray>
-        <Grid Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="12" />

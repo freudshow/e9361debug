@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using System.Windows.Documents;
 using System.Windows.Markup;
 
 namespace E9361App.Maintain
@@ -24,6 +27,24 @@ namespace E9361App.Maintain
         MaintainMainFuction_Ade9078Mult = 0x0F,
         MaintainMainFuction_SSHPassThrough = 0x11
     };
+
+    public enum RealDataTeleTypeEnum
+    {
+        Real_Data_TeleType_Invalid = -1,
+        Real_Data_TeleType_YX = 0,
+        Real_Data_TeleType_YC = 1,
+        Real_Data_TeleType_YK = 2,
+        Real_Data_TeleType_DD = 3,
+        Real_Data_TeleType_Parameter = 4
+    }
+
+    public enum RealDataDataTypeEnum
+    {
+        Real_Data_type_Invalid = -1,
+        Real_Data_type_Float = 0,
+        Real_Data_type_Char = 1,
+        Real_Data_type_Int = 2,
+    }
 
     public class MaintainParseRes
     {
@@ -234,6 +255,14 @@ namespace E9361App.Maintain
             return x;
         }
 
+        /// <summary>
+        /// 将byte数组转为字符串
+        /// </summary>
+        /// <param name="buf">byte数组</param>
+        /// <param name="start">数组的起始位置</param>
+        /// <param name="len">要转换的数组长度</param>
+        /// <returns>转换好的字符串</returns>
+        /// <exception cref="ArgumentOutOfRangeException">数组为空或者索引值不合法</exception>
         public static string ByteArryToString(byte[] buf, int start, int len)
         {
             int end = start + len;
@@ -252,10 +281,17 @@ namespace E9361App.Maintain
                 throw new ArgumentOutOfRangeException("len");
             }
 
-            byte[] b = new byte[len];
-            Array.Copy(buf, start, b, 0, len);
+            try
+            {
+                byte[] b = new byte[len];
+                Array.Copy(buf, start, b, 0, len);
 
-            return BitConverter.ToString(b).Replace('-', ' ');
+                return BitConverter.ToString(b).Replace('-', ' ');
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -307,14 +343,10 @@ namespace E9361App.Maintain
         }
 
         /// <summary>
-        /// 查找一帧报文
+        /// 查找一帧完整的报文
         /// </summary>
         /// <param name="buf">报文缓冲区</param>
-        /// <param name="start">报文起始位置</param>
-        /// <param name="len">一帧报文长度, 不包括无用的字符</param>
-        /// <param name="mainFunc">主功能码</param>
-        /// <param name="subFunc">子功能码</param>
-        /// <param name="data">去掉主功能码和子功能码后的数据域</param>
+        /// <param name="res">如果查找到完整报文, 将解析结果存入res; 否则res返回null</param>
         /// <returns>true-查找到一帧完整的报文; false-未查找到一帧完整的报文</returns>
         public static bool FindOneFrame(byte[] buf, out MaintainParseRes res)
         {
@@ -403,11 +435,19 @@ namespace E9361App.Maintain
             return true;
         }
 
+        /// <summary>
+        /// 终端的地址, 默认为0xFFFF
+        /// </summary>
+        /// <param name="address">终端的地址</param>
         public static void SetAddress(ushort address)
         {
             m_address = address;
         }
 
+        /// <summary>
+        /// 组一个重启终端帧
+        /// </summary>
+        /// <param name="outframe">组合好的报文</param>
         public static void GetResetFrame(out byte[] outframe)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ParameterSet;
@@ -417,6 +457,10 @@ namespace E9361App.Maintain
             ComposeFrame(mainFunc, subFunc, data, out outframe);
         }
 
+        /// <summary>
+        /// 组一个读取终端时间帧
+        /// </summary>
+        /// <param name="outframe">组合好的报文</param>
         public static void GetTerminalTime(out byte[] outframe)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ReadTime;
@@ -426,6 +470,11 @@ namespace E9361App.Maintain
             ComposeFrame(mainFunc, subFunc, data, out outframe);
         }
 
+        /// <summary>
+        /// 解析终端返回的读取时间的报文
+        /// </summary>
+        /// <param name="frame">一帧完整的时间应答报文</param>
+        /// <returns>报文里的时间, DateTime格式</returns>
         public static DateTime ParseTerminalTime(byte[] frame)
         {
             byte[] b = new byte[7];
@@ -451,7 +500,7 @@ namespace E9361App.Maintain
         /// <param name="teleType">遥测/遥信类型, 0 - 遥信, 1 - 遥测, 2 - 遥控, 3 - 电度, 4 - 参数</param>
         /// <param name="dataType">数据类型, 0 - float, 1 - char</param>
         /// <param name="outframe">输出的读取报文</param>
-        public static void GetContinueRealDataBaseValue(ushort startIdx, byte teleType, byte dataType, byte count, out byte[] outframe)
+        public static void GetContinueRealDataBaseValue(ushort startIdx, RealDataTeleTypeEnum teleType, RealDataDataTypeEnum dataType, byte count, out byte[] outframe)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_RealdataWatch;
             byte subFunc = 0x01;
@@ -463,12 +512,126 @@ namespace E9361App.Maintain
             Array.Copy(start, 0, data, pos, sizeof(ushort));
             pos += sizeof(ushort);
 
-            data[pos++] = teleType;//遥测/遥信类型
-            data[pos++] = dataType;//数据类型
+            data[pos++] = (byte)teleType;//遥测/遥信类型
+            data[pos++] = (byte)dataType;//数据类型
             data[pos++] = count;//数据项数量
             data[pos++] = 0x00;//预留
 
             ComposeFrame(mainFunc, subFunc, data, out outframe);
         }
+
+        public static ContinueRealData ParseContinueRealDataValue(byte[] frame)
+        {
+            if (frame == null || frame.Length < m_minLen)
+            {
+                return null;
+            }
+
+            if (!FindOneFrame(frame, out MaintainParseRes res))
+            {
+                return null;
+            }
+
+            if (res.MainFunc != (byte)MaintainMainFuction.MaintainMainFuction_RealdataWatch || res.SubFunc != 0x01)
+            {
+                return null;
+            }
+
+            if (res.Data == null || res.Data.Length < 6)
+            {
+                return null;
+            }
+
+            ContinueRealData realData = new ContinueRealData();
+
+            int pos = 0;
+            realData.StartIdx = BitConverter.ToUInt16(res.Data, 0);
+            pos += sizeof(ushort);
+
+            realData.TeleType = (RealDataTeleTypeEnum)res.Data[pos++];
+            realData.DataType = (RealDataDataTypeEnum)res.Data[pos++];
+            realData.IsValid = res.Data[pos++] == 0x00;
+            realData.ByteCount = res.Data[pos++];
+
+            if (!realData.IsValid)
+            {
+                return null;
+            }
+
+            int delta = 0;
+            switch (realData.DataType)
+            {
+                case RealDataDataTypeEnum.Real_Data_type_Float:
+                case RealDataDataTypeEnum.Real_Data_type_Int:
+                    delta = 4;
+                    break;
+
+                case RealDataDataTypeEnum.Real_Data_type_Char:
+                    delta = 1;
+                    break;
+
+                case RealDataDataTypeEnum.Real_Data_type_Invalid:
+                default:
+                    delta = 0;
+                    break;
+            }
+
+            if (delta <= 0 || res.Data.Length < realData.ByteCount + 6)
+            {
+                return null;
+            }
+
+            int regCount = (realData.ByteCount / delta);
+            realData.RealDataArray = new RealDataType[regCount];
+
+            pos = 6;
+            for (int i = 0; i < regCount; i++)
+            {
+                realData.RealDataArray[i] = new RealDataType();
+                switch (realData.DataType)
+                {
+                    case RealDataDataTypeEnum.Real_Data_type_Float:
+                        realData.RealDataArray[i].FloatValue = BitConverter.ToSingle(res.Data, pos);
+                        break;
+
+                    case RealDataDataTypeEnum.Real_Data_type_Char:
+                        realData.RealDataArray[i].CharValue = (sbyte)res.Data[pos];
+                        break;
+
+                    case RealDataDataTypeEnum.Real_Data_type_Int:
+                        realData.RealDataArray[i].IntValue = BitConverter.ToInt32(res.Data, pos);
+                        break;
+
+                    case RealDataDataTypeEnum.Real_Data_type_Invalid:
+                    default:
+                        break;
+                }
+
+                pos += delta;
+            }
+
+            return realData;
+        }
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 16, CharSet = CharSet.Ansi)]
+    public class RealDataType
+    {
+        [FieldOffset(0)] public float FloatValue;
+        [FieldOffset(0)] public sbyte CharValue;
+        [FieldOffset(0)] public int IntValue;
+        [FieldOffset(0)] public Double DoubleValue;
+        [FieldOffset(0)] public long LongValue;
+    }
+
+    public class ContinueRealData
+    {
+        public ushort StartIdx;
+        public RealDataTeleTypeEnum TeleType;
+        public RealDataDataTypeEnum DataType;
+        public bool IsValid;
+        public byte ByteCount;
+
+        public RealDataType[] RealDataArray;
     }
 }
