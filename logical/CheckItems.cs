@@ -4,6 +4,9 @@ using System.Linq;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Data;
+using E9361App.Common;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace E9361Debug.Logical
 {
@@ -206,7 +209,56 @@ namespace E9361Debug.Logical
         }
     }
 
-    internal class CheckProcess
+    public class CheckProcess
     {
+        public static async Task<bool> JudgeResultBySign<S, T>(S result, T target, ResultSignEnum sign)
+        {
+            bool testResult = false;
+
+            switch (sign)
+            {
+                case ResultSignEnum.Result_Sign_Equal://相等
+                    Func<S, bool> equalEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x=={target}");
+                    testResult = equalEvaluate(result);
+                    break;
+
+                case ResultSignEnum.Result_Sign_Greater_Than://大于等于
+                    Func<S, bool> greaterEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x>={target}");
+                    testResult = greaterEvaluate(result);
+                    break;
+
+                case ResultSignEnum.Result_Sign_Less_Than://小于等于
+                    Func<S, bool> lessEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x<={target}");
+                    testResult = lessEvaluate(result);
+                    break;
+
+                case ResultSignEnum.Result_Sign_Interval://区间
+                    string[] bounds = target.ToString().Split(',');
+                    Func<S, bool> intervalEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x>={bounds[0]}&&x<={bounds[1]}");
+                    testResult = intervalEvaluate(result);
+                    break;
+
+                case ResultSignEnum.Result_Sign_Regex://正则表达式
+                    Regex re = new Regex(target.ToString(), RegexOptions.Compiled);
+                    if (result != null && !string.IsNullOrEmpty(result.ToString()))
+                    {
+                        testResult = re.IsMatch(result.ToString());
+                    }
+
+                    break;
+
+                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
+                    Func<S, bool> lambdaEvaluate = await Common.GetLambdaAsync<S>(target.ToString());
+                    testResult = lambdaEvaluate(result);
+                    break;
+
+                case ResultSignEnum.Result_Sign_Invalid://无效
+                default:
+                    testResult &= false;
+                    break;
+            }
+
+            return testResult;
+        }
     }
 }

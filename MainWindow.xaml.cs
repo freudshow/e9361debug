@@ -143,119 +143,17 @@ namespace E9361DEBUG
                     {
                         case RealDataDataTypeEnum.Real_Data_type_Float:
                             TextBox_Result.Text += $"{item.FloatValue}";
-                            switch (c.ResultSign)
-                            {
-                                case ResultSignEnum.Result_Sign_Equal://相等
-                                    testResult &= (item.FloatValue == Convert.ToSingle(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Greater_Than://大于等于
-                                    testResult &= (item.FloatValue >= Convert.ToSingle(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Less_Than://小于等于
-                                    testResult &= (item.FloatValue <= Convert.ToSingle(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Interval://区间
-                                    string[] bounds = c.ResultValue.Split(',');
-                                    float lower = Convert.ToSingle(bounds[0]);
-                                    float upper = Convert.ToSingle(bounds[1]);
-                                    testResult &= (item.FloatValue >= lower && item.FloatValue <= upper);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Regex://正则表达式
-                                    Regex re = new Regex(c.ResultValue, RegexOptions.Compiled);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
-                                    Func<float, bool> resultEvaluate = await Common.GetLambdaAsync<float>(c.ResultValue);
-                                    testResult &= resultEvaluate(item.FloatValue);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Invalid://无效
-                                default:
-                                    testResult &= false;
-                                    break;
-                            }
+                            testResult &= await CheckProcess.JudgeResultBySign<float, float>(item.FloatValue, Convert.ToSingle(c.ResultValue), c.ResultSign);
                             break;
 
                         case RealDataDataTypeEnum.Real_Data_type_Char:
                             TextBox_Result.Text += $"{item.CharValue}";
-                            switch (c.ResultSign)
-                            {
-                                case ResultSignEnum.Result_Sign_Equal://相等
-                                    testResult &= (item.CharValue == Convert.ToSByte(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Greater_Than://大于等于
-                                    testResult &= (item.CharValue >= Convert.ToSByte(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Less_Than://小于等于
-                                    testResult &= (item.CharValue <= Convert.ToSByte(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Interval://区间
-                                    string[] bounds = c.ResultValue.Split(',');
-                                    sbyte lower = Convert.ToSByte(bounds[0]);
-                                    sbyte upper = Convert.ToSByte(bounds[1]);
-                                    testResult &= (item.CharValue >= lower && item.IntValue <= upper);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Regex://正则表达式
-                                    Regex re = new Regex(c.ResultValue, RegexOptions.Compiled);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
-                                    Func<sbyte, bool> resultEvaluate = await Common.GetLambdaAsync<sbyte>(c.ResultValue);
-                                    testResult &= resultEvaluate(item.CharValue);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Invalid://无效
-                                default:
-                                    testResult &= false;
-                                    break;
-                            }
+                            testResult &= await CheckProcess.JudgeResultBySign<sbyte, sbyte>(item.CharValue, Convert.ToSByte(c.ResultValue), c.ResultSign);
                             break;
 
                         case RealDataDataTypeEnum.Real_Data_type_Int:
                             TextBox_Result.Text += $"{item.IntValue}";
-                            switch (c.ResultSign)
-                            {
-                                case ResultSignEnum.Result_Sign_Equal://相等
-                                    testResult &= (item.IntValue == Convert.ToInt32(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Greater_Than://大于等于
-                                    testResult &= (item.IntValue >= Convert.ToInt32(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Less_Than://小于等于
-                                    testResult &= (item.IntValue <= Convert.ToInt32(c.ResultValue));
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Interval://区间
-                                    string[] bounds = c.ResultValue.Split(',');
-                                    int lower = Convert.ToInt32(bounds[0]);
-                                    int upper = Convert.ToInt32(bounds[1]);
-                                    testResult &= (item.IntValue >= lower && item.IntValue <= upper);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Regex://正则表达式
-                                    Regex re = new Regex(c.ResultValue, RegexOptions.Compiled);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
-                                    Func<int, bool> resultEvaluate = await Common.GetLambdaAsync<int>(c.ResultValue);
-                                    testResult &= resultEvaluate(item.IntValue);
-                                    break;
-
-                                case ResultSignEnum.Result_Sign_Invalid://无效
-                                default:
-                                    testResult &= false;
-                                    break;
-                            }
+                            testResult &= await CheckProcess.JudgeResultBySign<int, int>(item.IntValue, Convert.ToInt32(c.ResultValue), c.ResultSign);
                             break;
 
                         case RealDataDataTypeEnum.Real_Data_type_Invalid:
