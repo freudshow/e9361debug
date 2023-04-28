@@ -22,6 +22,7 @@ namespace E9361Debug.Logical
         Base_Para_Maintain_Default_UDP_Port,
         Base_Para_Main_Check_Table,
         Base_Para_Maintain_Port_Type,
+        Base_Para_Maintain_Default_TCP_Client_Port,
     }
 
     public static class ExtendEnum
@@ -106,6 +107,17 @@ namespace E9361Debug.Logical
         public static int GetTerminalUDPPort()
         {
             DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Maintain_Default_UDP_Port.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return -1;
+            }
+
+            return Convert.ToInt32(dt.Rows[0]["value"].ToString());
+        }
+
+        public static int GetTerminalTCPClientPort()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Maintain_Default_TCP_Client_Port.ToInt());
             if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
             {
                 return -1;

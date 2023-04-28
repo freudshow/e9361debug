@@ -25,9 +25,15 @@ namespace E9361DEBUG
         {
             InitializeComponent();
 
-            NetPara tcpclientpara = new NetPara { ServerIP = "192.168.1.232", ServerPort = 5001, Mode = PortTypeEnum.PortType_Net_TCP_Client };
-            UartPortPara uartPortPara = new UartPortPara { PortName = "COM3" };
+            InitCheckTree();
+            OpenTerminalMaintain();
+        }
 
+        /// <summary>
+        /// 通过网络打开维护规约通道
+        /// </summary>
+        private void OpenTerminalMaintain()
+        {
             PortTypeEnum e = DataBaseLogical.GetMaintainPortType();
             switch (e)
             {
@@ -45,6 +51,9 @@ namespace E9361DEBUG
                     break;
 
                 case PortTypeEnum.PortType_Net_TCP_Client:
+                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_TCP_Client);
+                    NetPara tcpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalTCPClientPort(), Mode = PortTypeEnum.PortType_Net_TCP_Client };
+                    m_CommunicationPort.Open(tcpclientpara);
                     break;
 
                 case PortTypeEnum.PortType_Net_TCP_Server:
@@ -53,8 +62,14 @@ namespace E9361DEBUG
                 default:
                     break;
             }
+        }
 
-            InitCheckTree();
+        /// <summary>
+        /// 打开终端的Console口
+        /// </summary>
+        private void OpenConsole()
+        {
+            UartPortPara uartPortPara = new UartPortPara { PortName = "COM3" };
         }
 
         private void InitCheckTree()
@@ -146,16 +161,16 @@ namespace E9361DEBUG
                                     string[] bounds = c.ResultValue.Split(',');
                                     float lower = Convert.ToSingle(bounds[0]);
                                     float upper = Convert.ToSingle(bounds[1]);
-                                    testResult &= (item.FloatValue > lower && item.FloatValue <= upper);
+                                    testResult &= (item.FloatValue >= lower && item.FloatValue <= upper);
                                     break;
 
                                 case ResultSignEnum.Result_Sign_Regex://正则表达式
                                     Regex re = new Regex(c.ResultValue, RegexOptions.Compiled);
                                     break;
 
-                                case ResultSignEnum.Result_Sign_Lamda://lamda表达式
-                                    Func<float, bool> resultEvalue = await Common.GetLamdaAsync<float>(c.ResultValue);
-                                    testResult &= resultEvalue(item.FloatValue);
+                                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
+                                    Func<float, bool> resultEvaluate = await Common.GetLambdaAsync<float>(c.ResultValue);
+                                    testResult &= resultEvaluate(item.FloatValue);
                                     break;
 
                                 case ResultSignEnum.Result_Sign_Invalid://无效
@@ -185,16 +200,16 @@ namespace E9361DEBUG
                                     string[] bounds = c.ResultValue.Split(',');
                                     sbyte lower = Convert.ToSByte(bounds[0]);
                                     sbyte upper = Convert.ToSByte(bounds[1]);
-                                    testResult &= (item.CharValue > lower && item.IntValue <= upper);
+                                    testResult &= (item.CharValue >= lower && item.IntValue <= upper);
                                     break;
 
                                 case ResultSignEnum.Result_Sign_Regex://正则表达式
                                     Regex re = new Regex(c.ResultValue, RegexOptions.Compiled);
                                     break;
 
-                                case ResultSignEnum.Result_Sign_Lamda://lamda表达式
-                                    Func<sbyte, bool> resultEvalue = await Common.GetLamdaAsync<sbyte>(c.ResultValue);
-                                    testResult &= resultEvalue(item.CharValue);
+                                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
+                                    Func<sbyte, bool> resultEvaluate = await Common.GetLambdaAsync<sbyte>(c.ResultValue);
+                                    testResult &= resultEvaluate(item.CharValue);
                                     break;
 
                                 case ResultSignEnum.Result_Sign_Invalid://无效
@@ -224,16 +239,16 @@ namespace E9361DEBUG
                                     string[] bounds = c.ResultValue.Split(',');
                                     int lower = Convert.ToInt32(bounds[0]);
                                     int upper = Convert.ToInt32(bounds[1]);
-                                    testResult &= (item.IntValue > lower && item.IntValue <= upper);
+                                    testResult &= (item.IntValue >= lower && item.IntValue <= upper);
                                     break;
 
                                 case ResultSignEnum.Result_Sign_Regex://正则表达式
                                     Regex re = new Regex(c.ResultValue, RegexOptions.Compiled);
                                     break;
 
-                                case ResultSignEnum.Result_Sign_Lamda://lamda表达式
-                                    Func<int, bool> resultEvalue = await Common.GetLamdaAsync<int>(c.ResultValue);
-                                    testResult &= resultEvalue(item.IntValue);
+                                case ResultSignEnum.Result_Sign_Lambda://lambda表达式
+                                    Func<int, bool> resultEvaluate = await Common.GetLambdaAsync<int>(c.ResultValue);
+                                    testResult &= resultEvaluate(item.IntValue);
                                     break;
 
                                 case ResultSignEnum.Result_Sign_Invalid://无效

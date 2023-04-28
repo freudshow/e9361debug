@@ -36,7 +36,7 @@ namespace E9361Debug.Logical
         Result_Sign_Less_Than,
         Result_Sign_Interval,
         Result_Sign_Regex,
-        Result_Sign_Lamda
+        Result_Sign_Lambda
     }
 
     internal class PropertyChangedClass : INotifyPropertyChanged

@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周四 4月 27 18:53:49 2023
+-- SQLiteStudio v3.4.4 生成的文件，周五 4月 28 08:29:57 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -25,6 +25,7 @@ INSERT INTO t_basePara (seq, name, value) VALUES (7, 'Base_Para_Mqtt_Port', '188
 INSERT INTO t_basePara (seq, name, value) VALUES (8, 'Base_Para_Maintain_Default_UDP_Port', '5000');
 INSERT INTO t_basePara (seq, name, value) VALUES (9, 'Base_Para_Main_Check_Table', 't_checkItemsBase');
 INSERT INTO t_basePara (seq, name, value) VALUES (10, 'Base_Para_Maintain_Port_Type', 'PortType_Net_UDP_Client');
+INSERT INTO t_basePara (seq, name, value) VALUES (11, 'Base_Para_Maintain_Default_TCP_Client_Port', '5001');
 
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
@@ -150,7 +151,7 @@ INSERT INTO t_resultSignEnum (seq, enum, enumName) VALUES (2, 1, 'Result_Sign_Gr
 INSERT INTO t_resultSignEnum (seq, enum, enumName) VALUES (3, 2, 'Result_Sign_Less_Than');
 INSERT INTO t_resultSignEnum (seq, enum, enumName) VALUES (4, 3, 'Result_Sign_Interval');
 INSERT INTO t_resultSignEnum (seq, enum, enumName) VALUES (5, 4, 'Result_Sign_Regex');
-INSERT INTO t_resultSignEnum (seq, enum, enumName) VALUES (6, 5, 'Result_Sign_Lamda');
+INSERT INTO t_resultSignEnum (seq, enum, enumName) VALUES (6, 5, 'Result_Sign_Lambda');
 
 -- 表：t_runtimeVariable
 DROP TABLE IF EXISTS t_runtimeVariable;
@@ -162,6 +163,7 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
     value TEXT    NOT NULL
 );
 
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (1, 'Console_Port_name', 'COM3');
 
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;

@@ -114,7 +114,25 @@ namespace E9361App.Common
             }
         }
 
-        public static async Task<Func<T, bool>> GetLamdaAsync<T>(string s)
+        /// <summary>
+        /// 通过一个lambda表达式生成
+        /// 一个委托函数, 这个委托函数
+        /// 的输入参数是泛型的, 类型可以
+        /// 是int, float, double, short
+        /// 等等, 具体的类型视具体情况而定,
+        /// 返回值是bool类型.
+        /// 比如, 输入的lambda表达式为字符串:
+        /// "(f)=>f>100", 这个lambda表达式只是
+        /// 简单的计算一个变量是否大于100, f为lambda
+        /// 表达式的参数. 则调用方法为
+        /// GetLambdaAsync<float>("(f)=>f>100");
+        /// 本函数返回了1个委托Func<float, bool> comp,
+        /// 使用comp(100.1), 就能判断其实参是否比100大.
+        /// </summary>
+        /// <typeparam name="T">泛型参数, 调用时指定</typeparam>
+        /// <param name="s">lambda表达式的字符串</param>
+        /// <returns>返回一个有1个形参, 1个bool返回值的委托</returns>
+        public static async Task<Func<T, bool>> GetLambdaAsync<T>(string s)
         {
             return await CSharpScript.EvaluateAsync<Func<T, bool>>(s);
         }

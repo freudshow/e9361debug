@@ -71,8 +71,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
 
             <Controls:CheckTree
@@ -80,36 +80,47 @@
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch" />
-            <StackPanel
-                Grid.Column="2"
-                VerticalAlignment="Stretch"
-                Orientation="Vertical">
-                <materialDesign:Card Margin="5" Padding="5">
+            <Grid Grid.Column="2" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <materialDesign:Card
+                    Grid.Row="0"
+                    Margin="5"
+                    Padding="5"
+                    VerticalAlignment="Stretch">
                     <TextBox
                         x:Name="TextBox_Result"
-                        Height="300"
-                        VerticalAlignment="Top"
+                        Height="auto"
+                        VerticalAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="检测结果"
                         AcceptsReturn="True"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        TextAlignment="Justify"
+                        TextAlignment="Left"
                         TextChanged="TextBox_Result_TextChanged"
                         TextWrapping="Wrap"
                         VerticalScrollBarVisibility="Auto" />
                 </materialDesign:Card>
-                <materialDesign:Card Margin="5" Padding="5">
+                <materialDesign:Card
+                    Grid.Row="1"
+                    Margin="5"
+                    Padding="5"
+                    VerticalAlignment="Stretch">
                     <TextBox
                         x:Name="TextBox_Exception"
                         Height="auto"
-                        VerticalAlignment="Top"
+                        VerticalAlignment="Stretch"
+                        materialDesign:HintAssist.Hint="检测异常"
                         AcceptsReturn="True"
+                        Foreground="Red"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        TextAlignment="Justify"
+                        TextAlignment="Left"
                         TextChanged="TextBox_Exception_TextChanged"
                         TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"
-                        Foreground="Red" />
+                        VerticalScrollBarVisibility="Auto" />
                 </materialDesign:Card>
-            </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

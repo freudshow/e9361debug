@@ -36,6 +36,11 @@
                     VerticalAlignment="Stretch"
                     MouseDoubleClick="TreeView_CheckTree_MouseDoubleClick"
                     PreviewMouseRightButtonDown="TreeView_CheckTree_PreviewMouseRightButtonDown">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                             <StackPanel Orientation="Horizontal">
