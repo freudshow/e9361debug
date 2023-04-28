@@ -46,6 +46,19 @@ namespace E9361App.Maintain
         Real_Data_type_Int = 2,
     }
 
+    public enum YKOnOffEnum
+    {
+        YK_On = 0x51,
+        YK_Off = 0x91
+    }
+
+    public enum YKOperateTypeEnum
+    {
+        YK_Operate_Preset = 1,
+        YK_Operate_Actual = 2,
+        YK_Operate_Cancel_Preset = 3,
+    }
+
     public class MaintainParseRes
     {
         private byte m_MainFunc;
@@ -301,19 +314,17 @@ namespace E9361App.Maintain
         /// <param name="subFunc">子功能码</param>
         /// <param name="data">去掉主功能码和子功能码后的数据域</param>
         /// <param name="frameBuf">输出的完整的报文缓冲区</param>
-        public static void ComposeFrame(byte mainFunc, byte subFunc, byte[] data, out byte[] frameBuf)
+        public static byte[] ComposeFrame(byte mainFunc, byte subFunc, byte[] data)
         {
             //data len except mainFunc + subFunc
             ushort dataLen = 0;
-
-            //data length
             if (data != null && data.Length > 0)
             {
                 dataLen += (ushort)(data.Length);
             }
 
             int pos = 0;
-            frameBuf = new byte[m_minLen + dataLen];
+            byte[] frameBuf = new byte[m_minLen + dataLen];
 
             //start code
             frameBuf[pos++] = m_startCode;
@@ -340,6 +351,8 @@ namespace E9361App.Maintain
 
             //chksum
             frameBuf[pos++] = GetXor(frameBuf, 1, pos - 1);
+
+            return frameBuf;
         }
 
         /// <summary>
@@ -448,26 +461,26 @@ namespace E9361App.Maintain
         /// 组一个重启终端帧
         /// </summary>
         /// <param name="outframe">组合好的报文</param>
-        public static void GetResetFrame(out byte[] outframe)
+        public static byte[] GetResetFrame()
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ParameterSet;
             byte subFunc = 0x01;
             byte[] data = new byte[1];
             data[0] = 0x00;
-            ComposeFrame(mainFunc, subFunc, data, out outframe);
+            return ComposeFrame(mainFunc, subFunc, data);
         }
 
         /// <summary>
         /// 组一个读取终端时间帧
         /// </summary>
         /// <param name="outframe">组合好的报文</param>
-        public static void GetTerminalTime(out byte[] outframe)
+        public static byte[] GetTerminalTime()
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ReadTime;
             byte subFunc = 0x01;
             byte[] data = new byte[1];
             data[0] = 0x00;
-            ComposeFrame(mainFunc, subFunc, data, out outframe);
+            return ComposeFrame(mainFunc, subFunc, data);
         }
 
         /// <summary>
@@ -500,7 +513,7 @@ namespace E9361App.Maintain
         /// <param name="teleType">遥测/遥信类型, 0 - 遥信, 1 - 遥测, 2 - 遥控, 3 - 电度, 4 - 参数</param>
         /// <param name="dataType">数据类型, 0 - float, 1 - char</param>
         /// <param name="outframe">输出的读取报文</param>
-        public static void GetContinueRealDataBaseValue(ushort startIdx, RealDataTeleTypeEnum teleType, RealDataDataTypeEnum dataType, byte count, out byte[] outframe)
+        public static byte[] GetContinueRealDataBaseValue(ushort startIdx, RealDataTeleTypeEnum teleType, RealDataDataTypeEnum dataType, byte count)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_RealdataWatch;
             byte subFunc = 0x01;
@@ -517,7 +530,7 @@ namespace E9361App.Maintain
             data[pos++] = count;//数据项数量
             data[pos++] = 0x00;//预留
 
-            ComposeFrame(mainFunc, subFunc, data, out outframe);
+            return ComposeFrame(mainFunc, subFunc, data);
         }
 
         public static ContinueRealData ParseContinueRealDataValue(byte[] frame)
@@ -611,6 +624,56 @@ namespace E9361App.Maintain
             }
 
             return realData;
+        }
+
+        /// <summary>
+        /// 获取遥控预置合的报文
+        /// </summary>
+        /// <param name="YKNo">遥控号</param>
+        /// <returns>输出的报文</returns>
+        public static byte[] GetYKPresetOn(byte YKNo)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_YKOpera;
+            byte subFunc = (byte)YKOperateTypeEnum.YK_Operate_Preset;
+            int datalen = sizeof(byte) + sizeof(byte);
+            byte[] data = new byte[datalen];
+            data[0] = YKNo;
+            data[1] = (byte)YKOnOffEnum.YK_On;
+
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        /// <summary>
+        /// 获取遥控预置撤销的报文
+        /// </summary>
+        /// <param name="YKNo">遥控号</param>
+        /// <returns>输出的报文</returns>
+        public static byte[] GetYKPresetOff(byte YKNo)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_YKOpera;
+            byte subFunc = (byte)YKOperateTypeEnum.YK_Operate_Cancel_Preset;
+            int datalen = sizeof(byte);
+            byte[] data = new byte[datalen];
+            data[0] = YKNo;
+
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        /// <summary>
+        /// 获取遥控分/合的报文
+        /// </summary>
+        /// <param name="YKNo">遥控号</param>
+        /// <returns>输出的报文</returns>
+        public static byte[] GetYKOnOff(byte YKNo, YKOnOffEnum op)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_YKOpera;
+            byte subFunc = (byte)op;
+            int datalen = sizeof(byte) + sizeof(byte);
+            byte[] data = new byte[datalen];
+            data[0] = YKNo;
+            data[1] = (byte)YKOnOffEnum.YK_On;
+
+            return ComposeFrame(mainFunc, subFunc, data);
         }
     }
 

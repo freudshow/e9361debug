@@ -84,14 +84,13 @@ namespace E9361DEBUG
         {
             try
             {
-                MaintainProtocol.GetTerminalTime(out byte[] writeFrame);
-                m_CommunicationPort.Write(writeFrame, 0, writeFrame.Length);
+                byte[] b = MaintainProtocol.GetTerminalTime();
+                m_CommunicationPort.Write(b, 0, b.Length);
                 MaintainParseRes res = await m_CommunicationPort.ReadOneFrameAsync(5000);
 
                 if (res != null)
                 {
-                    byte[] b = res.Frame;
-                    TextBox_Result.Text += $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(b, 0, b.Length)}, {MaintainProtocol.ParseTerminalTime(res.Frame).ToString("yyyy-MM-dd HH:mm:ss")}\n";
+                    TextBox_Result.Text += $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}, {MaintainProtocol.ParseTerminalTime(res.Frame).ToString("yyyy-MM-dd HH:mm:ss")}\n";
                 }
                 else
                 {
@@ -110,6 +109,7 @@ namespace E9361DEBUG
             bool testResult = true;
             try
             {
+                //317,1,0,1: 317 - 实时库号,
                 string[] args = c.CmdParam.Split(',');
 
                 ushort startIdx = Convert.ToUInt16(args[0]);
@@ -117,7 +117,7 @@ namespace E9361DEBUG
                 RealDataDataTypeEnum dataType = (RealDataDataTypeEnum)Convert.ToUInt32(args[2]);
                 byte regCount = (byte)Convert.ToInt32(args[3]);
 
-                MaintainProtocol.GetContinueRealDataBaseValue(startIdx, teleTypeEnum, dataType, regCount, out byte[] b);
+                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(startIdx, teleTypeEnum, dataType, regCount);
                 m_CommunicationPort.Write(b, 0, b.Length);
                 MaintainParseRes res = await m_CommunicationPort.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
 

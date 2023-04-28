@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周五 4月 28 08:29:57 2023
+-- SQLiteStudio v3.4.4 生成的文件，周五 4月 28 14:26:48 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -36,13 +36,14 @@ CREATE TABLE IF NOT EXISTS t_checkItemsBase (
     cmdParam       TEXT,
     resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum),
     resultValue    TEXT,
-    resultSign     INTEGER REFERENCES t_resultExpectEnum (seq),
+    resultSign     INTEGER REFERENCES t_resultSignEnum (enum),
     description    TEXT    DEFAULT 测试项,
     isEnable       INTEGER REFERENCES t_isEnable (isEnable),
     childTableName TEXT
 );
 
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '端口检测', 1, 't_checkPorts');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (2, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 't_checkYKYX');
 
 -- 表：t_checkPorts
 DROP TABLE IF EXISTS t_checkPorts;
@@ -71,6 +72,42 @@ INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resul
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '320,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'CAN测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 3, '321,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'CCO测试', 1, 5000, NULL);
 
+-- 表：t_checkYKYX
+DROP TABLE IF EXISTS t_checkYKYX;
+
+CREATE TABLE IF NOT EXISTS t_checkYKYX (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 4, '1,0', 2, '0', 0, '使能预置', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 4, '2,1,81', 2, '0', 0, '遥控1合', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '9,0,1,1', 0, '1', 0, '读取遥信1的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '10,0,1,1', 0, '1', 0, '读取遥信2的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 4, '2,1,145', 2, '0', 0, '遥控1分', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '9,0,1,1', 0, '0', 0, '读取遥信1的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 3, '10,0,1,1', 0, '0', 0, '读取遥信2的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 4, '2,2,81', 2, '0', 0, '遥控2合', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 3, '11,0,1,1', 0, '1', 0, '读取遥信3的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 3, '12,0,1,1', 0, '1', 0, '读取遥信4的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (11, 4, '2,2,145', 2, '0', 0, '遥控2分', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (12, 3, '11,0,1,1', 0, '0', 0, '读取遥信3的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (13, 3, '12,0,1,1', 0, '0', 0, '读取遥信4的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (14, 4, '3,0', 2, '0', 0, '撤销预置', 1, 5, NULL);
+
 -- 表：t_cmdTypeEnum
 DROP TABLE IF EXISTS t_cmdTypeEnum;
 
@@ -87,6 +124,7 @@ INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (1, 0, 'Cmd_
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (2, 1, 'Cmd_Shell', '使用shell命令发送命令');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (3, 2, 'Cmd_Mqtt', '使用mqtt发送命令');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (4, 3, 'Cmd_MaintainReadRealDataBase', '读取一个实时库数值');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (5, 4, 'Cmd_MaintainWriteRealDataBaseYK', '控制一个遥控的开/合');
 
 -- 表：t_isEnable
 DROP TABLE IF EXISTS t_isEnable;
@@ -164,6 +202,19 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
 );
 
 INSERT INTO t_runtimeVariable (seq, name, value) VALUES (1, 'Console_Port_name', 'COM3');
+
+-- 表：t_YKOnOffEnum
+DROP TABLE IF EXISTS t_YKOnOffEnum;
+
+CREATE TABLE IF NOT EXISTS t_YKOnOffEnum (
+    seq         INTEGER PRIMARY KEY AUTOINCREMENT,
+    enum        INTEGER NOT NULL
+                        UNIQUE,
+    description TEXT
+);
+
+INSERT INTO t_YKOnOffEnum (seq, enum, description) VALUES (1, 81, '遥控合');
+INSERT INTO t_YKOnOffEnum (seq, enum, description) VALUES (2, 145, '遥控分');
 
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;
