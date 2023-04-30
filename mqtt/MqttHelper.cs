@@ -8,6 +8,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Server;
 using E9361App.Log;
+using System.Net.NetworkInformation;
 
 namespace E9361App.Mqtt
 {
@@ -17,22 +18,23 @@ namespace E9361App.Mqtt
         private readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
         private string m_Server;
         private int m_Port;
-        private string m_PublishTopic;//向终端发送命令的主题
-        private string m_ResponseTopic;//终端应答的主题
 
-        public MqttHelper(string server, int port, string pub, string response)
+        public MqttHelper(string server, int port)
         {
             m_Server = server;
             m_Port = port;
-            m_PublishTopic = pub;
-            m_ResponseTopic = response;
         }
 
-        public void ConnectAndSubscribe(Func<MqttApplicationMessageReceivedEventArgs, Task> arrived)
+        public async Task ConnectAndSubscribeAsync(List<string> topics, Func<MqttApplicationMessageReceivedEventArgs, Task> arrived)
         {
+            if (topics == null || topics.Count <= 0)
+            {
+                return;
+            }
+
             var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(m_Server, m_Port).Build();
 
-            _ = Task.Run(
+            await Task.Run(
                 async () =>
                 {
                     while (true)
@@ -42,16 +44,15 @@ namespace E9361App.Mqtt
                             if (!await m_MqttClient.TryPingAsync())
                             {
                                 await m_MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-                                m_MqttClient.ApplicationMessageReceivedAsync += arrived;//收到消息后的处理函数
-                                var mqttSubscribeOptions = new MqttFactory().CreateSubscribeOptionsBuilder()
-                                                            .WithTopicFilter(
-                                                                f =>
-                                                                {
-                                                                    f.WithTopic(m_ResponseTopic);
-                                                                })
-                                                            .Build();
+                                m_MqttClient.ApplicationMessageReceivedAsync += arrived;
+                                MqttClientSubscribeOptionsBuilder subscribeOptionsBuilder = new MqttFactory().CreateSubscribeOptionsBuilder();
 
-                                await m_MqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
+                                for (int i = 0; i < topics.Count; i++)
+                                {
+                                    _ = subscribeOptionsBuilder.WithTopicFilter(topics[i]);
+                                }
+
+                                await m_MqttClient.SubscribeAsync(subscribeOptionsBuilder.Build(), CancellationToken.None);
                             }
                         }
                         catch (Exception ex)
@@ -66,10 +67,10 @@ namespace E9361App.Mqtt
                 });
         }
 
-        public void PublishMessage(string msg)
+        public void PublishMessage(string publishTopic, string msg)
         {
             var applicationMessage = new MqttApplicationMessageBuilder()
-                                .WithTopic(m_PublishTopic)
+                                .WithTopic(publishTopic)
                                 .WithPayload(msg)
                                 .Build();
 
