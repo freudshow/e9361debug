@@ -90,16 +90,15 @@
                     Margin="5"
                     Padding="5"
                     VerticalAlignment="Stretch">
-                    <TextBox
-                        x:Name="TextBox_Result"
+                    <RichTextBox
+                        x:Name="RichTextBox_Result"
                         Height="auto"
                         VerticalAlignment="Stretch"
                         materialDesign:HintAssist.Hint="检测结果"
                         AcceptsReturn="True"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        TextAlignment="Left"
-                        TextChanged="TextBox_Result_TextChanged"
-                        TextWrapping="Wrap"
+                        IsReadOnly="True"
+                        Style="{StaticResource MaterialDesignRichTextBox}"
+                        TextChanged="RichTextBox_Result_TextChanged"
                         VerticalScrollBarVisibility="Auto" />
                 </materialDesign:Card>
                 <materialDesign:Card
@@ -107,17 +106,15 @@
                     Margin="5"
                     Padding="5"
                     VerticalAlignment="Stretch">
-                    <TextBox
-                        x:Name="TextBox_Exception"
+                    <RichTextBox
+                        x:Name="RichTextBox_Exception"
                         Height="auto"
                         VerticalAlignment="Stretch"
                         materialDesign:HintAssist.Hint="检测异常"
                         AcceptsReturn="True"
-                        Foreground="Red"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        TextAlignment="Left"
-                        TextChanged="TextBox_Exception_TextChanged"
-                        TextWrapping="Wrap"
+                        IsReadOnly="True"
+                        Style="{StaticResource MaterialDesignRichTextBox}"
+                        TextChanged="RichTextBox_Exception_TextChanged"
                         VerticalScrollBarVisibility="Auto" />
                 </materialDesign:Card>
             </Grid>

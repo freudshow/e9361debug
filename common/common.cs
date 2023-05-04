@@ -8,8 +8,19 @@ namespace E9361App.Common
 {
     public static class Common
     {
+        /// <summary>
+        /// 主版本号
+        /// </summary>
         private static readonly string MainVersion = "0";
+
+        /// <summary>
+        /// 次版本号
+        /// </summary>
         private static readonly string SubVersion = "1";
+
+        /// <summary>
+        /// 补丁号
+        /// </summary>
         private static readonly string PatchVersion = "0";
 
         /// <summary>
@@ -71,7 +82,7 @@ namespace E9361App.Common
         /// </summary>
         /// <param name="filename">完整文件名</param>
         /// <returns>文件的完整内容</returns>
-        public static string ReadTxtFile(string filename)
+        public static string ReadTextFile(string filename)
         {
             try
             {
@@ -96,7 +107,7 @@ namespace E9361App.Common
         /// <param name="filename">文件名</param>
         /// <param name="s">欲写入的字符串</param>
         /// <returns>true - 写入成功; false - 写入失败</returns>
-        public static bool WriteTxtFile(string filename, string s)
+        public static bool WriteTextFile(string filename, string s)
         {
             try
             {

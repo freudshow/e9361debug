@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Data;
 using E9361App.Common;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using E9361App.Communication;
+using E9361App.Maintain;
 
 namespace E9361Debug.Logical
 {
@@ -42,7 +42,14 @@ namespace E9361Debug.Logical
         Result_Sign_Lambda
     }
 
-    internal class PropertyChangedClass : INotifyPropertyChanged
+    public enum ResultInfoType
+    {
+        ResultInfo_Logs = 0,
+        ResultInfo_Result,
+        ResultInfo_Exception
+    }
+
+    public class PropertyChangedClass : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -55,7 +62,7 @@ namespace E9361Debug.Logical
         }
     }
 
-    internal class CheckItems : PropertyChangedClass
+    public class CheckItems : PropertyChangedClass
     {
         private int m_Seq;
         private CommandType m_CmdType;
@@ -68,6 +75,8 @@ namespace E9361Debug.Logical
         private int m_TimeOut;
         private string m_ChildTableName;
         private ObservableCollection<CheckItems> m_Children;
+        private int m_Depth;
+        private CheckItems m_Father;
 
         public int Seq
         {
@@ -161,6 +170,25 @@ namespace E9361Debug.Logical
             }
         }
 
+        public int Depth
+        {
+            get => m_Depth;
+            private set
+            {
+                m_Depth = value;
+            }
+        }
+
+        public CheckItems Father
+        {
+            get => m_Father;
+            private set
+            {
+                m_Father = value;
+                Depth = value.Depth + 1;
+            }
+        }
+
         public string ChildTableName
         {
             get => m_ChildTableName;
@@ -186,7 +214,8 @@ namespace E9361Debug.Logical
                                 ResultSign = dr["resultSign"] == DBNull.Value ? ResultSignEnum.Result_Sign_Invalid : (ResultSignEnum)Convert.ToInt32(dr["resultSign"]),
                                 Description = dr["description"] == DBNull.Value ? "" : dr["description"].ToString(),
                                 IsEnable = dr["isEnable"] == DBNull.Value ? false : Convert.ToInt32(dr["isEnable"]) == 1 ? true : false,
-                                ChildTableName = dr["childTableName"].ToString(),
+                                Father = this,
+                                ChildTableName = dr["childTableName"].ToString()
                             };
 
                             Children.Add(item);
@@ -195,6 +224,7 @@ namespace E9361Debug.Logical
                 }
 
                 OnPropertyChanged(nameof(ChildTableName));
+                OnPropertyChanged(nameof(Children));
             }
         }
 
@@ -211,7 +241,50 @@ namespace E9361Debug.Logical
 
     public class CheckProcess
     {
-        public static async Task<bool> JudgeResultBySign<S, T>(S result, T target, ResultSignEnum sign)
+        /// <summary>
+        /// 读取终端时间
+        /// </summary>
+        /// <param name="port">维护规约端口</param>
+        /// <param name="callbackOutput">用于输出信息的回调函数</param>
+        /// <returns>无</returns>
+        public async Task ReadTimeAsync(CommunicationPort port, Action<ResultInfoType, bool, string> callbackOutput)
+        {
+            try
+            {
+                byte[] b = MaintainProtocol.GetTerminalTime();
+                port.Write(b, 0, b.Length);
+                MaintainParseRes res = await port.ReadOneFrameAsync(5000);
+                if (callbackOutput != null)
+                {
+                    if (res != null)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}, {MaintainProtocol.ParseTerminalTime(res.Frame).ToString("yyyy-MM-dd HH:mm:ss")}\n");
+                    }
+                    else
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Result, false, "连接超时\n");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常:{ex.Message}\n");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 判断从终端读取的结果是否符合预期
+        /// </summary>
+        /// <typeparam name="S">从终端读取的结果的类型</typeparam>
+        /// <typeparam name="T">预期的结果的类型</typeparam>
+        /// <param name="result">从终端读取的结果</param>
+        /// <param name="target">预期的结果</param>
+        /// <param name="sign">符号的枚举</param>
+        /// <returns>结果符合预期, 返回true; 不符合预期, 返回false</returns>
+        public static async Task<bool> JudgeResultBySignAsync<S, T>(S result, T target, ResultSignEnum sign)
         {
             bool testResult = false;
 
@@ -252,13 +325,171 @@ namespace E9361Debug.Logical
                     testResult = lambdaEvaluate(result);
                     break;
 
-                case ResultSignEnum.Result_Sign_Invalid://无效
+                case ResultSignEnum.Result_Sign_Invalid://符号无效, 意即符号不生效, 只进行一项操作而不对比结果,
+                    testResult = true;
+                    break;
+
                 default:
-                    testResult &= false;
+                    testResult = false;
                     break;
             }
 
             return testResult;
+        }
+
+        public static async Task<bool> CheckOneItemAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            bool res = true;
+
+            if (c.Children != null)
+            {
+                foreach (CheckItems item in c.Children)
+                {
+                    res &= await CheckOneItemAsync(port, item, callbackOutput);
+                }
+
+                if (callbackOutput != null)
+                {
+                    if (res)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测通过\n", c.Depth);
+                    }
+                    else
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测不通过\n", c.Depth);
+                    }
+                }
+            }
+            else
+            {
+                if (c == null || !c.IsEnable)
+                {
+                    return true;
+                }
+
+                switch (c.CmdType)
+                {
+                    case CommandType.Cmd_Type_Invalid:
+                        break;
+
+                    case CommandType.Cmd_Type_Mqtt:
+                        break;
+
+                    case CommandType.Cmd_Type_MaintainFrame:
+                        break;
+
+                    case CommandType.Cmd_Type_Shell:
+                        break;
+
+                    case CommandType.Cmd_Type_MaintainReadRealDataBase:
+                        res = await ReadRealDatabaseAsync(port, c, callbackOutput);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (callbackOutput != null)
+                {
+                    if (res)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测通过\n", c.Depth);
+                    }
+                    else
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测不通过\n", c.Depth);
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        private static async Task<bool> ReadRealDatabaseAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            bool testResult = true;
+            try
+            {
+                //317,1,0,1: 317 - 实时库号,
+                string[] args = c.CmdParam.Split(',');
+
+                ushort startIdx = Convert.ToUInt16(args[0]);
+                RealDataTeleTypeEnum teleTypeEnum = (RealDataTeleTypeEnum)Convert.ToUInt32(args[1]);
+                RealDataDataTypeEnum dataType = (RealDataDataTypeEnum)Convert.ToUInt32(args[2]);
+                byte regCount = (byte)Convert.ToInt32(args[3]);
+
+                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(startIdx, teleTypeEnum, dataType, regCount);
+                port.Write(b, 0, b.Length);
+                MaintainParseRes res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
+
+                if (res == null)
+                {
+                    return false;
+                }
+
+                byte[] f = res.Frame;
+
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(f, 0, f.Length)}\n", c.Depth);
+                }
+
+                ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(f);
+
+                if (!data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
+                {
+                    return false;
+                }
+
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"Values[{data.RealDataArray.Length}]: ", c.Depth);
+                }
+
+                string valuesStr = "";
+                foreach (var item in data.RealDataArray)
+                {
+                    switch (data.DataType)
+                    {
+                        case RealDataDataTypeEnum.Real_Data_type_Float:
+                            valuesStr += $"{item.FloatValue}, ";
+                            testResult &= await JudgeResultBySignAsync<float, string>(item.FloatValue, c.ResultValue, c.ResultSign);
+                            break;
+
+                        case RealDataDataTypeEnum.Real_Data_type_Char:
+                            valuesStr += $"{item.CharValue}, ";
+                            testResult &= await JudgeResultBySignAsync<sbyte, string>(item.CharValue, c.ResultValue, c.ResultSign);
+                            break;
+
+                        case RealDataDataTypeEnum.Real_Data_type_Int:
+                            valuesStr += $"{item.IntValue}, ";
+                            testResult &= await JudgeResultBySignAsync<int, string>(item.IntValue, c.ResultValue, c.ResultSign);
+                            break;
+
+                        case RealDataDataTypeEnum.Real_Data_type_Invalid:
+                        default:
+                            break;
+                    }
+                }
+
+                valuesStr.TrimEnd().TrimEnd(',');
+                valuesStr += "\n";
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Logs, testResult, valuesStr, 0);
+                }
+
+                return testResult;
+            }
+            catch (Exception ex)
+            {
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"[{c.Description}]检测异常:{ex.Message}\n", c.Depth);
+                }
+
+                return false;
+            }
         }
     }
 }
