@@ -348,8 +348,12 @@ namespace E9361Debug.Logical
                 return true;
             }
 
-            callbackOutput(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
+            if (callbackOutput != null)
+            {
+                callbackOutput(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
+            }
 
+            string checkstr = "";
             if (c.Children != null)
             {
                 foreach (CheckItems item in c.Children)
@@ -359,14 +363,8 @@ namespace E9361Debug.Logical
 
                 if (callbackOutput != null)
                 {
-                    if (res)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测通过\n", c.Depth);
-                    }
-                    else
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测不通过\n", c.Depth);
-                    }
+                    checkstr = res ? "" : "不";
+                    callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
                 }
             }
             else
@@ -399,14 +397,8 @@ namespace E9361Debug.Logical
 
                 if (callbackOutput != null)
                 {
-                    if (res)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测通过\n", c.Depth);
-                    }
-                    else
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测不通过\n", c.Depth);
-                    }
+                    checkstr = res ? "" : "不";
+                    callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
                 }
             }
 
@@ -427,11 +419,9 @@ namespace E9361Debug.Logical
                     return false;
                 }
 
-                byte[] f = res.Frame;
-
                 if (callbackOutput != null)
                 {
-                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(f, 0, f.Length)}\n", c.Depth);
+                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
                 }
 
                 ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(f);
