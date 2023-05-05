@@ -341,6 +341,8 @@ namespace E9361Debug.Logical
         {
             bool res = true;
 
+            callbackOutput(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
+
             if (c.Children != null)
             {
                 foreach (CheckItems item in c.Children)

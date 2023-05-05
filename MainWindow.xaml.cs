@@ -108,7 +108,7 @@ namespace E9361DEBUG
             string tabs = "";
             while (depth-- > 0)
             {
-                tabs += "\t";
+                tabs += "\t|\t";
             }
 
             switch (resultType)
@@ -142,6 +142,8 @@ namespace E9361DEBUG
 
         private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)
         {
+            m_ParagraphResult.Inlines.Clear();
+            m_ParagraphException.Inlines.Clear();
             _ = await CheckProcess.CheckOneItemAsync(m_CommunicationPort, m_CheckItems, DisplayCheckInfo);
         }
 
