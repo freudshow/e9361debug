@@ -136,7 +136,7 @@ namespace E9361App.Common
         /// "(f)=>f>100", 这个lambda表达式只是
         /// 简单的计算一个变量是否大于100, f为lambda
         /// 表达式的参数. 则调用方法为
-        /// GetLambdaAsync<float>("(f)=>f>100");
+        /// Func<float, bool> comp = GetLambdaAsync<float>("(f)=>f>100");
         /// 本函数返回了1个委托Func<float, bool> comp,
         /// 使用comp(100.1), 就能判断其实参是否比100大.
         /// </summary>

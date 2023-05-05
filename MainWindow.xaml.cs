@@ -142,9 +142,11 @@ namespace E9361DEBUG
 
         private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)
         {
+            Button_StartDebug.IsEnabled = false;
             m_ParagraphResult.Inlines.Clear();
             m_ParagraphException.Inlines.Clear();
             _ = await CheckProcess.CheckOneItemAsync(m_CommunicationPort, m_CheckItems, DisplayCheckInfo);
+            Button_StartDebug.IsEnabled = true;
         }
 
         private void RichTextBox_Result_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

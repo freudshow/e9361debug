@@ -20,7 +20,7 @@ namespace E9361App.Communication
         PortType_Net_TCP_Server,
     }
 
-    public interface AbstractPort
+    public interface ICommunicationPort
     {
         bool IsOpen();
 
@@ -156,7 +156,7 @@ namespace E9361App.Communication
         }
     }
 
-    public class UartPort : AbstractPort
+    public class UartPort : ICommunicationPort
     {
         private SerialPort m_SerialPort = null;
         private object m_Lock = new object();
@@ -361,7 +361,7 @@ namespace E9361App.Communication
 
     public class CommunicationPort
     {
-        private AbstractPort m_AbstractPort;
+        private readonly ICommunicationPort m_AbstractPort;
 
         public CommunicationPort(PortTypeEnum portType)
         {

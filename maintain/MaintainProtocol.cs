@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Castle.DynamicProxy;
+using E9361Debug.logical;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
 
@@ -513,7 +516,7 @@ namespace E9361App.Maintain
         /// <param name="teleType">遥测/遥信类型, 0 - 遥信, 1 - 遥测, 2 - 遥控, 3 - 电度, 4 - 参数</param>
         /// <param name="dataType">数据类型, 0 - float, 1 - char</param>
         /// <param name="outframe">输出的读取报文</param>
-        public static byte[] GetContinueRealDataBaseValue(ushort startIdx, RealDataTeleTypeEnum teleType, RealDataDataTypeEnum dataType, byte count)
+        public static byte[] GetContinueRealDataBaseValue(RealDatabaseCmdParameters param)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_RealdataWatch;
             byte subFunc = 0x01;
@@ -521,13 +524,13 @@ namespace E9361App.Maintain
             byte[] data = new byte[datalen];
 
             int pos = 0;
-            byte[] start = BitConverter.GetBytes(startIdx);
+            byte[] start = BitConverter.GetBytes(param.RealDataBaseNo);
             Array.Copy(start, 0, data, pos, sizeof(ushort));
             pos += sizeof(ushort);
 
-            data[pos++] = (byte)teleType;//遥测/遥信类型
-            data[pos++] = (byte)dataType;//数据类型
-            data[pos++] = count;//数据项数量
+            data[pos++] = (byte)param.TeleType;//遥测/遥信类型
+            data[pos++] = (byte)param.DataType;//数据类型
+            data[pos++] = param.DataItemCount;//数据项数量
             data[pos++] = 0x00;//预留
 
             return ComposeFrame(mainFunc, subFunc, data);
@@ -667,13 +670,24 @@ namespace E9361App.Maintain
         public static byte[] GetYKOnOff(byte YKNo, YKOnOffEnum op)
         {
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_YKOpera;
-            byte subFunc = (byte)op;
+            byte subFunc = (byte)YKOperateTypeEnum.YK_Operate_Actual;
             int datalen = sizeof(byte) + sizeof(byte);
             byte[] data = new byte[datalen];
             data[0] = YKNo;
-            data[1] = (byte)YKOnOffEnum.YK_On;
+            data[1] = (byte)op;
 
             return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        public static byte ParseYKResult(byte[] frame)
+        {
+            byte result = 1;
+            if (frame == null || frame.Length < 10)
+            {
+                return result;
+            }
+
+            return frame[8];
         }
     }
 

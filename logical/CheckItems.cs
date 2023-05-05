@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using E9361App.Communication;
 using E9361App.Maintain;
+using Newtonsoft.Json;
+using E9361Debug.logical;
 
 namespace E9361Debug.Logical
 {
@@ -17,6 +19,7 @@ namespace E9361Debug.Logical
         Cmd_Type_Shell,
         Cmd_Type_Mqtt,
         Cmd_Type_MaintainReadRealDataBase,
+        Cmd_MaintainWriteRealDataBaseYK,
     }
 
     public enum ResultTypeEnum
@@ -340,6 +343,10 @@ namespace E9361Debug.Logical
         public static async Task<bool> CheckOneItemAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             bool res = true;
+            if (c == null || !c.IsEnable)
+            {
+                return true;
+            }
 
             callbackOutput(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
 
@@ -364,14 +371,12 @@ namespace E9361Debug.Logical
             }
             else
             {
-                if (c == null || !c.IsEnable)
-                {
-                    return true;
-                }
-
                 switch (c.CmdType)
                 {
                     case CommandType.Cmd_Type_Invalid:
+                        break;
+
+                    case CommandType.Cmd_Type_Shell:
                         break;
 
                     case CommandType.Cmd_Type_Mqtt:
@@ -380,11 +385,12 @@ namespace E9361Debug.Logical
                     case CommandType.Cmd_Type_MaintainFrame:
                         break;
 
-                    case CommandType.Cmd_Type_Shell:
-                        break;
-
                     case CommandType.Cmd_Type_MaintainReadRealDataBase:
                         res = await ReadRealDatabaseAsync(port, c, callbackOutput);
+                        break;
+
+                    case CommandType.Cmd_MaintainWriteRealDataBaseYK:
+                        res = await CheckYXYKAsync(port, c, callbackOutput);
                         break;
 
                     default:
@@ -412,15 +418,7 @@ namespace E9361Debug.Logical
             bool testResult = true;
             try
             {
-                //317,1,0,1: 317 - 实时库号,
-                string[] args = c.CmdParam.Split(',');
-
-                ushort startIdx = Convert.ToUInt16(args[0]);
-                RealDataTeleTypeEnum teleTypeEnum = (RealDataTeleTypeEnum)Convert.ToUInt32(args[1]);
-                RealDataDataTypeEnum dataType = (RealDataDataTypeEnum)Convert.ToUInt32(args[2]);
-                byte regCount = (byte)Convert.ToInt32(args[3]);
-
-                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(startIdx, teleTypeEnum, dataType, regCount);
+                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(JsonConvert.DeserializeObject<RealDatabaseCmdParameters>(c.CmdParam));
                 port.Write(b, 0, b.Length);
                 MaintainParseRes res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
 
@@ -492,6 +490,52 @@ namespace E9361Debug.Logical
 
                 return false;
             }
+        }
+
+        private static async Task<bool> CheckYXYKAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            YKOperateParameters param = JsonConvert.DeserializeObject<YKOperateParameters>(c.CmdParam);
+
+            byte[] b = null;
+            switch (param.YKOperateType)
+            {
+                case YKOperateTypeEnum.YK_Operate_Preset:
+                    b = MaintainProtocol.GetYKPresetOn(param.YKNo);
+                    break;
+
+                case YKOperateTypeEnum.YK_Operate_Actual:
+                    b = MaintainProtocol.GetYKOnOff(param.YKNo, param.YKOperation);
+                    break;
+
+                case YKOperateTypeEnum.YK_Operate_Cancel_Preset:
+                    b = MaintainProtocol.GetYKPresetOff(param.YKNo);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (b == null)
+            {
+                return false;
+            }
+
+            port.Write(b, 0, b.Length);
+            MaintainParseRes res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
+
+            if (res == null)
+            {
+                return false;
+            }
+
+            if (callbackOutput != null)
+            {
+                callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
+            }
+
+            await Task.Delay(param.DelayTime);
+
+            return MaintainProtocol.ParseYKResult(res.Frame) == Convert.ToByte(c.ResultValue);
         }
     }
 }

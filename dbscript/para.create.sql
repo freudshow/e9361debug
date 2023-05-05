@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周五 4月 28 14:26:48 2023
+-- SQLiteStudio v3.4.4 生成的文件，周五 5月 5 17:19:57 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -66,11 +66,36 @@ CREATE TABLE IF NOT EXISTS t_checkPorts (
     childTableName TEXT
 );
 
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '317,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'RS485-1测试', 1, 5000, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '318,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'RS485-2测试', 1, 5000, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '319,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'RS485-3测试', 1, 5000, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '320,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'CAN测试', 1, 5000, NULL);
-INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 3, '321,1,0,1', 1, '(f)=>f>=210.0&&f<=230.0', 5, 'CCO测试', 1, 5000, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
+    "RealDataBaseNo": 317,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=190.0&&f<=300.0', 5, 'RS485-1测试', 1, 5000, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
+    "RealDataBaseNo": 318,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=190.0&&f<=300.0', 5, 'RS485-2测试', 1, 5000, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '{
+    "RealDataBaseNo": 319,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=190.0&&f<=300.0', 5, 'RS485-3测试', 1, 5000, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '{
+    "RealDataBaseNo": 320,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=190.0&&f<=300.0', 5, 'CAN测试', 1, 5000, NULL);
+INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 3, '{
+    "RealDataBaseNo": 321,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=190.0&&f<=300.0', 5, 'CCO测试', 1, 5000, NULL);
 
 -- 表：t_checkYKYX
 DROP TABLE IF EXISTS t_checkYKYX;
@@ -93,20 +118,90 @@ CREATE TABLE IF NOT EXISTS t_checkYKYX (
     childTableName TEXT
 );
 
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 4, '1,0', 2, '0', 0, '使能预置', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 4, '2,1,81', 2, '0', 0, '遥控1合', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '9,0,1,1', 0, '1', 0, '读取遥信1的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '10,0,1,1', 0, '1', 0, '读取遥信2的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 4, '2,1,145', 2, '0', 0, '遥控1分', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '9,0,1,1', 0, '0', 0, '读取遥信1的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 3, '10,0,1,1', 0, '0', 0, '读取遥信2的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 4, '2,2,81', 2, '0', 0, '遥控2合', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 3, '11,0,1,1', 0, '1', 0, '读取遥信3的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 3, '12,0,1,1', 0, '1', 0, '读取遥信4的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (11, 4, '2,2,145', 2, '0', 0, '遥控2分', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (12, 3, '11,0,1,1', 0, '0', 0, '读取遥信3的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (13, 3, '12,0,1,1', 0, '0', 0, '读取遥信4的值', 1, 5, NULL);
-INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (14, 4, '3,0', 2, '0', 0, '撤销预置', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 4, '{
+    "YKOperateType": 1,
+    "YKNo": 0,
+    "YKOperation": 81,
+    "DelayTime": 2000
+}', 2, '0', 0, '使能预置', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 4, '{
+    "YKOperateType": 2,
+    "YKNo": 1,
+    "YKOperation": 81,
+    "DelayTime": 2000
+}', 2, '0', 0, '遥控1合', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '{
+    "RealDataBaseNo": 9,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '1', 0, '读取遥信1的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '{
+    "RealDataBaseNo": 10,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '1', 0, '读取遥信2的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 4, '{
+    "YKOperateType": 2,
+    "YKNo": 1,
+    "YKOperation": 145,
+    "DelayTime": 2000
+}', 2, '0', 0, '遥控1分', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '{
+    "RealDataBaseNo": 9,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '0', 0, '读取遥信1的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 3, '{
+    "RealDataBaseNo": 10,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '0', 0, '读取遥信2的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 4, '{
+    "YKOperateType": 2,
+    "YKNo": 2,
+    "YKOperation": 81,
+    "DelayTime": 2000
+}', 2, '0', 0, '遥控2合', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 3, '{
+    "RealDataBaseNo": 11,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '1', 0, '读取遥信3的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 3, '{
+    "RealDataBaseNo": 12,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '1', 0, '读取遥信4的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (11, 4, '{
+    "YKOperateType": 2,
+    "YKNo": 2,
+    "YKOperation": 145,
+    "DelayTime": 2000
+}', 2, '0', 0, '遥控2分', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (12, 3, '{
+    "RealDataBaseNo": 11,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '0', 0, '读取遥信3的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (13, 3, '{
+    "RealDataBaseNo": 12,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 0, '0', 0, '读取遥信4的值', 1, 5, NULL);
+INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (14, 4, '{
+    "YKOperateType": 3,
+    "YKNo": 0,
+    "YKOperation": 145,
+    "DelayTime": 2000
+}', 2, '0', 0, '撤销预置', 1, 5, NULL);
 
 -- 表：t_cmdTypeEnum
 DROP TABLE IF EXISTS t_cmdTypeEnum;
@@ -120,11 +215,12 @@ CREATE TABLE IF NOT EXISTS t_cmdTypeEnum (
     discription TEXT
 );
 
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (1, 0, 'Cmd_MaintainFrame', '使用维护规约发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (2, 1, 'Cmd_Shell', '使用shell命令发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (3, 2, 'Cmd_Mqtt', '使用mqtt发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (4, 3, 'Cmd_MaintainReadRealDataBase', '读取一个实时库数值');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (5, 4, 'Cmd_MaintainWriteRealDataBaseYK', '控制一个遥控的开/合');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (1, -1, 'Cmd_Type_Invalid', '不需要发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (2, 0, 'Cmd_MaintainFrame', '使用维护规约发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (3, 1, 'Cmd_Shell', '使用shell命令发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (4, 2, 'Cmd_Mqtt', '使用mqtt发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (5, 3, 'Cmd_MaintainReadRealDataBase', '读取一个实时库数值');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (6, 4, 'Cmd_MaintainWriteRealDataBaseYK', '控制一个遥控的开/合');
 
 -- 表：t_isEnable
 DROP TABLE IF EXISTS t_isEnable;
@@ -153,6 +249,40 @@ INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (2, 1, 'PortType_Net_UDP
 INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (3, 2, 'PortType_Net_TCP_Client');
 INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (4, 3, 'PortType_Net_TCP_Server');
 INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (5, -1, 'PortType_Error');
+
+-- 表：t_realDataTypeEnum
+DROP TABLE IF EXISTS t_realDataTypeEnum;
+
+CREATE TABLE IF NOT EXISTS t_realDataTypeEnum (
+    seq         INTEGER PRIMARY KEY AUTOINCREMENT,
+    enum        INTEGER NOT NULL
+                        UNIQUE,
+    enumName    TEXT    UNIQUE,
+    description TEXT
+);
+
+INSERT INTO t_realDataTypeEnum (seq, enum, enumName, description) VALUES (1, -1, 'Real_Data_type_Invalid', '无效');
+INSERT INTO t_realDataTypeEnum (seq, enum, enumName, description) VALUES (2, 0, 'Real_Data_type_Float', '浮点');
+INSERT INTO t_realDataTypeEnum (seq, enum, enumName, description) VALUES (3, 1, 'Real_Data_type_Char', '字节');
+INSERT INTO t_realDataTypeEnum (seq, enum, enumName, description) VALUES (4, 2, 'Real_Data_type_Int', '整数');
+
+-- 表：t_realTeleTypeEnum
+DROP TABLE IF EXISTS t_realTeleTypeEnum;
+
+CREATE TABLE IF NOT EXISTS t_realTeleTypeEnum (
+    seq         INTEGER PRIMARY KEY AUTOINCREMENT,
+    enum        INTEGER NOT NULL
+                        UNIQUE,
+    enumName    TEXT    UNIQUE,
+    description TEXT
+);
+
+INSERT INTO t_realTeleTypeEnum (seq, enum, enumName, description) VALUES (1, -1, 'Real_Data_TeleType_Invalid', '无效');
+INSERT INTO t_realTeleTypeEnum (seq, enum, enumName, description) VALUES (2, 0, 'Real_Data_TeleType_YX', '遥信');
+INSERT INTO t_realTeleTypeEnum (seq, enum, enumName, description) VALUES (3, 1, 'Real_Data_TeleType_YC', '遥测');
+INSERT INTO t_realTeleTypeEnum (seq, enum, enumName, description) VALUES (4, 2, 'Real_Data_TeleType_YK', '遥控');
+INSERT INTO t_realTeleTypeEnum (seq, enum, enumName, description) VALUES (5, 3, 'Real_Data_TeleType_DD', '电度');
+INSERT INTO t_realTeleTypeEnum (seq, enum, enumName, description) VALUES (6, 4, 'Real_Data_TeleType_Parameter', '参数');
 
 -- 表：t_resultDataTypeEnum
 DROP TABLE IF EXISTS t_resultDataTypeEnum;
@@ -210,11 +340,27 @@ CREATE TABLE IF NOT EXISTS t_YKOnOffEnum (
     seq         INTEGER PRIMARY KEY AUTOINCREMENT,
     enum        INTEGER NOT NULL
                         UNIQUE,
+    enumName    TEXT    UNIQUE,
     description TEXT
 );
 
-INSERT INTO t_YKOnOffEnum (seq, enum, description) VALUES (1, 81, '遥控合');
-INSERT INTO t_YKOnOffEnum (seq, enum, description) VALUES (2, 145, '遥控分');
+INSERT INTO t_YKOnOffEnum (seq, enum, enumName, description) VALUES (1, 81, 'YK_On', '遥控合');
+INSERT INTO t_YKOnOffEnum (seq, enum, enumName, description) VALUES (2, 145, 'YK_Off', '遥控分');
+
+-- 表：t_YKOperateTypeEnum
+DROP TABLE IF EXISTS t_YKOperateTypeEnum;
+
+CREATE TABLE IF NOT EXISTS t_YKOperateTypeEnum (
+    seq         INTEGER PRIMARY KEY AUTOINCREMENT,
+    enum        INTEGER NOT NULL
+                        UNIQUE,
+    enumName    TEXT    UNIQUE,
+    description TEXT
+);
+
+INSERT INTO t_YKOperateTypeEnum (seq, enum, enumName, description) VALUES (1, 1, 'YK_Operate_Preset', '遥控预置合');
+INSERT INTO t_YKOperateTypeEnum (seq, enum, enumName, description) VALUES (2, 2, 'YK_Operate_Actual', '遥控操作');
+INSERT INTO t_YKOperateTypeEnum (seq, enum, enumName, description) VALUES (3, 3, 'YK_Operate_Cancel_Preset', '遥控预置撤销');
 
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;

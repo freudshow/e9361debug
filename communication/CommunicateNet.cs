@@ -34,7 +34,7 @@ namespace E9361App.Communication
         }
     }
 
-    public class TcpClientNetPort : AbstractPort
+    public class TcpClientNetPort : ICommunicationPort
     {
         private List<byte> m_ReceiveBuffer = new List<byte>();
         private byte[] m_TempBuffer = new byte[1024];
@@ -192,7 +192,7 @@ namespace E9361App.Communication
         }
     }
 
-    public class UdpClientNetPort : AbstractPort
+    public class UdpClientNetPort : ICommunicationPort
     {
         private string remoteIp = "";
 

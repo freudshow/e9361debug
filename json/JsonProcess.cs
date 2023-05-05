@@ -7,7 +7,7 @@ namespace E9361App.Json
 {
     public class JsonProcess
     {
-        public static bool ReadJson<T>(string fileName, ref T t, TypeNameHandling typeHandle = TypeNameHandling.Auto)
+        public static bool ReadJsonFile<T>(string fileName, ref T t, TypeNameHandling typeHandle = TypeNameHandling.Auto)
         {
             try
             {
@@ -27,12 +27,12 @@ namespace E9361App.Json
             }
         }
 
-        public static bool ReadJson<T>(string fileName, ref T t)
+        public static bool ReadJsonFile<T>(string fileName, ref T t)
         {
-            return ReadJson(fileName, ref t, TypeNameHandling.None);
+            return ReadJsonFile(fileName, ref t, TypeNameHandling.None);
         }
 
-        public static void SaveJson<T>(string fileName, T t, TypeNameHandling typeHandle = TypeNameHandling.Auto)
+        public static void SaveToJsonFile<T>(string fileName, T t, TypeNameHandling typeHandle = TypeNameHandling.Auto)
         {
             string fullFileName = System.IO.Path.GetFullPath(fileName);
             string path = System.IO.Path.GetDirectoryName(fullFileName);
@@ -51,12 +51,12 @@ namespace E9361App.Json
             sw.Dispose();
         }
 
-        public static void saveToJson<T>(string fileName, T t)
+        public static void SaveToJsonFile<T>(string fileName, T t)
         {
-            SaveJson(fileName, t, TypeNameHandling.None);
+            SaveToJsonFile(fileName, t, TypeNameHandling.None);
         }
 
-        public static void SaveJson<T>(string fileName, T t, IsoDateTimeConverter f)
+        public static void SaveToJsonFile<T>(string fileName, T t, IsoDateTimeConverter f)
         {
             string fullFileName = System.IO.Path.GetFullPath(fileName);
             string path = System.IO.Path.GetDirectoryName(fullFileName);
@@ -72,6 +72,12 @@ namespace E9361App.Json
             sw.Flush();
             sw.Close();
             sw.Dispose();
+        }
+
+        public static T DeserializeJsonString<T>(string jsonstr, TypeNameHandling typeHandle = TypeNameHandling.None)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = typeHandle };
+            return JsonConvert.DeserializeObject<T>(jsonstr, settings);
         }
     }
 }
