@@ -48,11 +48,9 @@
                     Click="Button_StartDebug_Click"
                     Content="{materialDesign:PackIcon Kind=Play}"
                     ToolTip="开始测试" />
-                <Button Content="{materialDesign:PackIcon Kind=ContentSave}" ToolTip="Save" />
                 <Separator />
-
+                <Controls:ConsoleComSet x:Name="ConsoleComSet_ComSet" Margin="3" />
                 <Separator />
-
                 <ToggleButton />
             </ToolBar>
         </ToolBarTray>

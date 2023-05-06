@@ -63,7 +63,7 @@ namespace E9361Debug.Communication
         {
             try
             {
-                if (m_RemoveWatchingObect == null)
+                if (m_InsertWatchingObect == null)
                 {
                     m_InsertWatchingObect = new ManagementEventWatcher(m_Scope, new WqlEventQuery { EventClassName = "__InstanceCreationEvent", WithinInterval = new TimeSpan(0, 0, 1), Condition = @"TargetInstance ISA 'Win32_USBControllerdevice'" });
                 }

@@ -136,13 +136,67 @@ namespace E9361Debug.Logical
 
         public static string GetConsoleComName()
         {
-            DataSet ds = SQLiteHelper.Query("select * from t_runtimeVariable", "t_runtimeVariable");
+            DataSet ds = SQLiteHelper.Query("select value from t_runtimeVariable where name='Console_Port_name'", "t_runtimeVariable");
             if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
             {
                 return "";
             }
 
             return ds.Tables[0].Rows[0]["value"].ToString();
+        }
+
+        public static int GetConsoleComBaudRate()
+        {
+            DataSet ds = SQLiteHelper.Query("select value from t_runtimeVariable where name='Console_Port_Baud'", "t_runtimeVariable");
+            if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
+            {
+                return -1;
+            }
+
+            return Convert.ToInt32(ds.Tables[0].Rows[0]["value"]);
+        }
+
+        public static DataTable GetBaudrateList()
+        {
+            DataSet ds = SQLiteHelper.Query("select enum, enumName from t_portBaudrateEnum", "t_portBaudrateEnum");
+            if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
+            {
+                return null;
+            }
+
+            return ds.Tables[0];
+        }
+
+        public static bool SaveComName(string comname)
+        {
+            string selectsql = "select * from t_runtimeVariable where name='Console_Port_name';";
+            DataSet ds = SQLiteHelper.Query(selectsql, "t_runtimeVariable");
+            if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
+            {
+                string insertsql = $"insert into t_runtimeVariable (name, value) values ('Console_Port_name','{comname}')";
+                return SQLiteHelper.ExecuteSql(insertsql) > 0;
+            }
+            else
+            {
+                string updatesql = $"update t_runtimeVariable set value='{comname}' where name='Console_Port_name';";
+                return SQLiteHelper.ExecuteSql(updatesql) > 0;
+            }
+        }
+
+        public static bool SaveBaudRate(int baudrate)
+        {
+            string selectsql = "select * from t_runtimeVariable where name='Console_Port_Baud';";
+            DataSet ds = SQLiteHelper.Query(selectsql, "t_runtimeVariable");
+            if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
+            {
+                string insertsql = $"insert into t_runtimeVariable (name, value) values ('Console_Port_Baud',{baudrate})";
+                return SQLiteHelper.ExecuteSql(insertsql) > 0;
+            }
+            else
+            {
+                string updatesql = $"update t_runtimeVariable set value={baudrate} where name='Console_Port_Baud';";
+                return SQLiteHelper.ExecuteSql(updatesql) > 0;
+            }
         }
     }
 }

@@ -184,10 +184,6 @@ namespace E9361Debug.Common
                     }
                 }
 
-                dr = dt.NewRow();
-                dr["Name"] = "Net";
-                dr["Description"] = "Net";
-                dt.Rows.Add(dr);
                 return dt;
             }
             catch (Exception ex)

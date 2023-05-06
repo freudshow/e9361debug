@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周五 5月 5 17:19:57 2023
+-- SQLiteStudio v3.4.4 生成的文件，周六 5月 6 11:38:40 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -235,6 +235,24 @@ CREATE TABLE IF NOT EXISTS t_isEnable (
 INSERT INTO t_isEnable (seq, isEnable, description) VALUES (1, 1, '使能');
 INSERT INTO t_isEnable (seq, isEnable, description) VALUES (2, 0, '不使能');
 
+-- 表：t_portBaudrateEnum
+DROP TABLE IF EXISTS t_portBaudrateEnum;
+
+CREATE TABLE IF NOT EXISTS t_portBaudrateEnum (
+    seq      INTEGER PRIMARY KEY AUTOINCREMENT,
+    enum     INTEGER,
+    enumName TEXT
+);
+
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (1, 1200, 'Baudrate_1200');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (2, 2400, 'Baudrate_2400');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (3, 4800, 'Baudrate_4800');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (4, 9600, 'Baudrate_9600');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (6, 19200, 'Baudrate_19200');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (7, 38400, 'Baudrate_38400');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (8, 57600, 'Baudrate_57600');
+INSERT INTO t_portBaudrateEnum (seq, enum, enumName) VALUES (9, 115200, 'Baudrate_115200');
+
 -- 表：t_PortTypeEnum
 DROP TABLE IF EXISTS t_PortTypeEnum;
 
@@ -332,6 +350,7 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
 );
 
 INSERT INTO t_runtimeVariable (seq, name, value) VALUES (1, 'Console_Port_name', 'COM3');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '9600');
 
 -- 表：t_YKOnOffEnum
 DROP TABLE IF EXISTS t_YKOnOffEnum;
