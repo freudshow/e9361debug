@@ -1,9 +1,11 @@
 ﻿using Renci.SshNet;
 using Renci.SshNet.Common;
+using Renci.SshNet.Async;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace E9361Debug.SshInterface
 {
@@ -43,26 +45,6 @@ namespace E9361Debug.SshInterface
             m_Passwd = pwd;
             m_HostIp = ip;
             m_SshPort = port;
-        }
-
-        public bool Isconnected()
-        {
-            try
-            {
-                if (!m_SshClient.IsConnected)
-                {
-                    Console.WriteLine("服务器不可达");
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         public void ConnectToSshServer()
@@ -247,27 +229,26 @@ namespace E9361Debug.SshInterface
             }
         }
 
-        public bool SftpConnected => m_SftpClient != null && m_SftpClient.IsConnected;
+        public bool IsSftpConnected => m_SftpClient != null && m_SftpClient.IsConnected;
 
         /// <summary>
-        /// 上传文件
+        /// 上传文件至终端
         /// </summary>
-        /// <param name="srcfile">要上传到终端的文件名</param>
-        /// <param name="destfile">上传到终端后的文件名</param>
-        public void UploadFile(string srcfile, string destfile)
+        /// <param name="computerfile">要上传到终端的文件名</param>
+        /// <param name="terminalfile">上传到终端后的文件名</param>
+        public async Task UploadFileToTerminalAsync(string computerfile, string terminalfile)
         {
+            if (m_SftpClient == null || !m_SftpClient.IsConnected)
+            {
+                return;
+            }
+
             try
             {
-                if (m_SftpClient == null || !m_SftpClient.IsConnected)
+                using (FileStream fs = File.OpenRead(computerfile))
                 {
-                    return;
+                    await m_SftpClient.UploadAsync(fs, terminalfile);
                 }
-
-                FileStream fs = File.Open(srcfile, FileMode.Open);
-
-                m_SftpClient.UploadFile(fs, destfile);
-                fs.Close();
-                fs.Dispose();
             }
             catch (Exception ex)
             {
@@ -276,11 +257,11 @@ namespace E9361Debug.SshInterface
         }
 
         /// <summary>
-        /// 将终端的文件上传 至 电脑端
+        /// 将终端的文件下载至电脑
         /// </summary>
-        /// <param name="srcfile">终端中的文件，包含文件名</param>
-        /// <param name="destfile"> 电脑端的 文件路径，包含文件名</param>
-        public void DownLoadFile(string srcfile, string destfile)
+        /// <param name="terminalfile">终端中的文件，包含文件名</param>
+        /// <param name="computerfile"> 电脑端的 文件路径，包含文件名</param>
+        public async Task DownLoadFileFromTerminalAsync(string terminalfile, string computerfile)
         {
             try
             {
@@ -289,11 +270,10 @@ namespace E9361Debug.SshInterface
                     return;
                 }
 
-                FileStream fs = File.Open(destfile, FileMode.OpenOrCreate);
-
-                m_SftpClient.DownloadFile(srcfile, fs);
-                fs.Close();
-                fs.Dispose();
+                using (FileStream fs = File.OpenWrite(computerfile))
+                {
+                    await m_SftpClient.DownloadAsync(terminalfile, fs);
+                }
             }
             catch (Exception ex)
             {

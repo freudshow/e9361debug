@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using E9361Debug.SshInterface;
 
 namespace E9361Debug.Logical
 {
@@ -20,6 +21,8 @@ namespace E9361Debug.Logical
         Cmd_Type_Mqtt,
         Cmd_Type_MaintainReadRealDataBase,
         Cmd_MaintainWriteRealDataBaseYK,
+        Cmd_SftpFileTransfer,
+        Cmd_DelaySomeTime
     }
 
     public enum ResultTypeEnum
@@ -244,6 +247,8 @@ namespace E9361Debug.Logical
 
     public class CheckProcess
     {
+        private static SshClientClass m_SshClass;
+
         /// <summary>
         /// 读取终端时间
         /// </summary>
@@ -375,6 +380,7 @@ namespace E9361Debug.Logical
                         break;
 
                     case CommandType.Cmd_Type_Shell:
+                        res = await CheckShellCmdAsync(port, c, callbackOutput);
                         break;
 
                     case CommandType.Cmd_Type_Mqtt:
@@ -389,6 +395,15 @@ namespace E9361Debug.Logical
 
                     case CommandType.Cmd_MaintainWriteRealDataBaseYK:
                         res = await CheckYXYKAsync(port, c, callbackOutput);
+                        break;
+
+                    case CommandType.Cmd_SftpFileTransfer:
+                        res = await CheckSftpFileTransferAsync(port, c, callbackOutput);
+                        break;
+
+                    case CommandType.Cmd_DelaySomeTime:
+                        res = true;
+                        await Task.Delay(c.TimeOut);
                         break;
 
                     default:
@@ -443,17 +458,17 @@ namespace E9361Debug.Logical
                     {
                         case RealDataDataTypeEnum.Real_Data_type_Float:
                             valuesStr += $"{item.FloatValue}, ";
-                            testResult &= await JudgeResultBySignAsync<float, string>(item.FloatValue, c.ResultValue, c.ResultSign);
+                            testResult &= await JudgeResultBySignAsync(item.FloatValue, c.ResultValue, c.ResultSign);
                             break;
 
                         case RealDataDataTypeEnum.Real_Data_type_Char:
                             valuesStr += $"{item.CharValue}, ";
-                            testResult &= await JudgeResultBySignAsync<sbyte, string>(item.CharValue, c.ResultValue, c.ResultSign);
+                            testResult &= await JudgeResultBySignAsync(item.CharValue, c.ResultValue, c.ResultSign);
                             break;
 
                         case RealDataDataTypeEnum.Real_Data_type_Int:
                             valuesStr += $"{item.IntValue}, ";
-                            testResult &= await JudgeResultBySignAsync<int, string>(item.IntValue, c.ResultValue, c.ResultSign);
+                            testResult &= await JudgeResultBySignAsync(item.IntValue, c.ResultValue, c.ResultSign);
                             break;
 
                         case RealDataDataTypeEnum.Real_Data_type_Invalid:
@@ -526,6 +541,50 @@ namespace E9361Debug.Logical
             await Task.Delay(param.DelayTime);
 
             return MaintainProtocol.ParseYKResult(res.Frame) == Convert.ToByte(c.ResultValue);
+        }
+
+        public static async Task<bool> CheckShellCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            if (m_SshClass == null)
+            {
+                m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
+            }
+
+            if (!m_SshClass.SSHConnected)
+            {
+                m_SshClass.ConnectToSshServer();
+            }
+
+            string res = m_SshClass.ExecCmd(c.CmdParam);
+            bool testres = await JudgeResultBySignAsync(res, c.ResultValue, c.ResultSign);
+
+            return testres;
+        }
+
+        public static async Task<bool> CheckSftpFileTransferAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            if (m_SshClass == null)
+            {
+                m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
+            }
+
+            if (!m_SshClass.IsSftpConnected)
+            {
+                m_SshClass.ConnectToSftpServer();
+            }
+
+            SftpFileTransferParameters param = JsonConvert.DeserializeObject<SftpFileTransferParameters>(c.CmdParam);
+
+            if (param.IsUploadFileToTerminal)
+            {
+                await m_SshClass.UploadFileToTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+            }
+            else
+            {
+                await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+            }
+
+            return true;
         }
     }
 }

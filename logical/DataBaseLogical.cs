@@ -101,6 +101,39 @@ namespace E9361Debug.Logical
             return dt.Rows[0]["value"].ToString();
         }
 
+        public static int GetTerminalSSHPort()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_SSH_Port.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return -1;
+            }
+
+            return Convert.ToInt32(dt.Rows[0]["value"]);
+        }
+
+        public static string GetTerminalSSHUserName()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_User.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return null;
+            }
+
+            return dt.Rows[0]["value"].ToString();
+        }
+
+        public static string GetTerminalSSHPasswd()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Passwd.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return null;
+            }
+
+            return dt.Rows[0]["value"].ToString();
+        }
+
         public static int GetTerminalUDPPort()
         {
             DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Maintain_Default_UDP_Port.ToInt());

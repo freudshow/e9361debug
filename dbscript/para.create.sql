@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周六 5月 6 11:38:40 2023
+-- SQLiteStudio v3.4.4 生成的文件，周六 5月 6 19:01:37 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -221,6 +221,8 @@ INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (3, 1, 'Cmd_
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (4, 2, 'Cmd_Mqtt', '使用mqtt发送命令');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (5, 3, 'Cmd_MaintainReadRealDataBase', '读取一个实时库数值');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (6, 4, 'Cmd_MaintainWriteRealDataBaseYK', '控制一个遥控的开/合');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (7, 5, 'Cmd_SftpFileTransfer', '用Sftp协议传输文件');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (8, 6, 'Cmd_DelaySomeTime', '单纯的延时操作');
 
 -- 表：t_isEnable
 DROP TABLE IF EXISTS t_isEnable;
@@ -267,6 +269,50 @@ INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (2, 1, 'PortType_Net_UDP
 INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (3, 2, 'PortType_Net_TCP_Client');
 INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (4, 3, 'PortType_Net_TCP_Server');
 INSERT INTO t_PortTypeEnum (seq, enum, enumName) VALUES (5, -1, 'PortType_Error');
+
+-- 表：t_preCheckSteps
+DROP TABLE IF EXISTS t_preCheckSteps;
+
+CREATE TABLE IF NOT EXISTS t_preCheckSteps (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 1, 'echo "allow_anonymous true">/etc/mosquitto.conf&&
+echo "listener 1883">>/etc/mosquitto.conf&&
+echo "persistence true">>/etc/mosquitto.conf&&
+echo "persistence_location /mosquitto/data/">>/etc/mosquitto.conf&&
+echo "log_dest file /mosquitto/log/mosquitto.log">>/etc/mosquitto.conf
+', 6, '', 0, '修改mosquito配置文件', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'sed -i.bak -r ''s#/bin/mosquitto&#/bin/mosquitto -v -c /etc/mosquitto.conf&#g'' /etc/rc.local', 6, '', 0, '修改启动脚本rc.local', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, 'reboot', 6, '', 0, '重启终端', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 6, '', 6, '', 0, '等待终端重启... ...', 1, 20, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 2, '{
+	"Topic": "e9361app/set/request/e9361esdkapp/version",
+	"Message": "{\"token\": \"200513\",\"timestamp\": \"2019-05-29T19:05:51.641+0800\",\"iHardVer\": \"V1.00.01\",\"iSoftdVer\": \"V1.00.07\",\"eHardVer\": \"SV01.01\",\"eSoftdVer\": \"SV01.007\",\"runtime_min\": 4,\"upprogram\": 0,\"watchdog\": 1}"
+}', 6, '{
+	"Topic": "e9361esdkapp/set/response/e9361appversion",
+	"Message": "{ \"token\": \"200513\", \"timestamp\": \"2019-05-30T05:00:52.832+0800\" }"
+}', 0, '停止看门狗', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 5, '{
+	"IsUploadFileToTerminal": true,
+	"FullFileNameComputer": "upload\\e9361app",
+	"FullFileNameTerminal": "/home/sysadm/src/e9361app"
+}', 6, '', 0, '下载最新的e9361app程序', 1, 20, NULL);
 
 -- 表：t_realDataTypeEnum
 DROP TABLE IF EXISTS t_realDataTypeEnum;
@@ -349,8 +395,8 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
     value TEXT    NOT NULL
 );
 
-INSERT INTO t_runtimeVariable (seq, name, value) VALUES (1, 'Console_Port_name', 'COM3');
 INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '9600');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM3');
 
 -- 表：t_YKOnOffEnum
 DROP TABLE IF EXISTS t_YKOnOffEnum;

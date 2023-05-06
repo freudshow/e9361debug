@@ -17,4 +17,11 @@ namespace E9361Debug.logical
         public YKOnOffEnum YKOperation { get; set; }
         public int DelayTime { get; set; }
     }
+
+    public class SftpFileTransferParameters
+    {
+        public bool IsUploadFileToTerminal = true;
+        public string FullFileNameTerminal;
+        public string FullFileNameComputer;
+    }
 }
