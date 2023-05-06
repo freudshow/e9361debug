@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Windows;
 
-namespace E9361App.SshInterface
+namespace E9361Debug.SshInterface
 {
     internal class SshClientClass
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace E9361App.Log
+namespace E9361Debug.Log
 {
     public enum SRMsgType
     {

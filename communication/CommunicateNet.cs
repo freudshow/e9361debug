@@ -1,5 +1,5 @@
-﻿using E9361App.Log;
-using E9361App.Maintain;
+﻿using E9361Debug.Log;
+using E9361Debug.Maintain;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace E9361App.Communication
+namespace E9361Debug.Communication
 {
     public class NetPara
     {

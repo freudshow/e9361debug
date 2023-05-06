@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 
-namespace E9361App.DBHelper
+namespace E9361Debug.DBHelper
 {
     public class SQLiteHelper
     {

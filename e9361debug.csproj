@@ -173,6 +173,9 @@
     <Compile Include="Controls\CheckTree.xaml.cs">
       <DependentUpon>CheckTree.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ConsoleComSet.xaml.cs">
+      <DependentUpon>ConsoleComSet.xaml</DependentUpon>
+    </Compile>
     <Compile Include="json\JsonProcess.cs" />
     <Compile Include="logical\CheckCmdParameters.cs" />
     <Compile Include="logical\CheckItems.cs" />
@@ -184,6 +187,10 @@
     <Compile Include="sqlite\SqliteHelper.cs" />
     <Compile Include="ssh\SshClientClass.cs" />
     <Page Include="Controls\CheckTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ConsoleComSet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

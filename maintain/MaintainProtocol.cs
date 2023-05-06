@@ -1,15 +1,8 @@
-﻿using Castle.DynamicProxy;
-using E9361Debug.logical;
+﻿using E9361Debug.logical;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 using System.Runtime.InteropServices;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Markup;
 
-namespace E9361App.Maintain
+namespace E9361Debug.Maintain
 {
     public enum MaintainMainFuction
     {

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using E9361Debug.Common;
+using E9361Debug.Communication;
+using E9361Debug.DBHelper;
+using System;
 using System.Data;
-using System.Linq;
-using System.Text;
-using E9361App.Common;
-using E9361App.Communication;
-using E9361App.DBHelper;
 
 namespace E9361Debug.Logical
 {
@@ -33,7 +30,7 @@ namespace E9361Debug.Logical
         }
     }
 
-    internal static class DataBaseLogical
+    public static class DataBaseLogical
     {
         public static DataTable GetBaseParams()
         {
@@ -134,7 +131,18 @@ namespace E9361Debug.Logical
                 return PortTypeEnum.PortType_Error;
             }
 
-            return Common.GetEnumByString<PortTypeEnum>(dt.Rows[0]["value"].ToString());
+            return CommonClass.GetEnumByString<PortTypeEnum>(dt.Rows[0]["value"].ToString());
+        }
+
+        public static string GetConsoleComName()
+        {
+            DataSet ds = SQLiteHelper.Query("select * from t_runtimeVariable", "t_runtimeVariable");
+            if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
+            {
+                return "";
+            }
+
+            return ds.Tables[0].Rows[0]["value"].ToString();
         }
     }
 }

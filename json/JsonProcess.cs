@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
 
-namespace E9361App.Json
+namespace E9361Debug.Json
 {
     public class JsonProcess
     {

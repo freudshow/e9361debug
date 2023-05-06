@@ -1,15 +1,13 @@
-﻿using E9361App.Log;
-using E9361App.Maintain;
+﻿using E9361Debug.Log;
+using E9361Debug.Maintain;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Management;
-using System.Text.RegularExpressions;
-using System.Data;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
-namespace E9361App.Communication
+namespace E9361Debug.Communication
 {
     public enum PortTypeEnum
     {
@@ -313,49 +311,6 @@ namespace E9361App.Communication
             }
 
             return res;
-        }
-
-        public DataTable GetPortNames()
-        {
-            try
-            {
-                System.Data.DataTable dt = new System.Data.DataTable();
-                dt.Columns.Add("Name");
-                dt.Columns.Add("Description");
-                System.Data.DataRow dr;
-                //{4d36e978-e325-11ce-bfc1-08002be10318}为设备类别port（端口（COM&LPT））的GUID
-                string sql = "SELECT * FROM Win32_PnPEntity WHERE ClassGuid=\"{4d36e978-e325-11ce-bfc1-08002be10318}\"";
-
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", sql);
-                ManagementObjectCollection mc = searcher.Get();
-                foreach (ManagementObject queryObj in searcher.Get())
-                {
-                    if (queryObj != null)
-                    {
-                        string name = queryObj.GetPropertyValue("Name").ToString();
-                        Regex re = new Regex("COM\\d+");
-                        Match m = re.Match(name);
-                        if (name != null && m != null && m.Success)
-                        {
-                            dr = dt.NewRow();
-                            dr["Name"] = m.Value;
-                            dr["Description"] = name;
-                            dt.Rows.Add(dr);
-                        }
-                    }
-                }
-
-                dr = dt.NewRow();
-                dr["Name"] = "Net";
-                dr["Description"] = "Net";
-                dt.Rows.Add(dr);
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
-            }
         }
     }
 

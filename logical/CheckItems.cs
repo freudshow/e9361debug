@@ -1,14 +1,14 @@
-﻿using System;
-using System.ComponentModel;
+﻿using E9361Debug.Common;
+using E9361Debug.Communication;
+using E9361Debug.logical;
+using E9361Debug.Maintain;
+using Newtonsoft.Json;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
-using E9361App.Common;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using E9361App.Communication;
-using E9361App.Maintain;
-using Newtonsoft.Json;
-using E9361Debug.logical;
 
 namespace E9361Debug.Logical
 {
@@ -294,23 +294,23 @@ namespace E9361Debug.Logical
             switch (sign)
             {
                 case ResultSignEnum.Result_Sign_Equal://相等
-                    Func<S, bool> equalEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x=={target}");
+                    Func<S, bool> equalEvaluate = await CommonClass.GetLambdaAsync<S>($"(x)=>x=={target}");
                     testResult = equalEvaluate(result);
                     break;
 
                 case ResultSignEnum.Result_Sign_Greater_Than://大于等于
-                    Func<S, bool> greaterEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x>={target}");
+                    Func<S, bool> greaterEvaluate = await CommonClass.GetLambdaAsync<S>($"(x)=>x>={target}");
                     testResult = greaterEvaluate(result);
                     break;
 
                 case ResultSignEnum.Result_Sign_Less_Than://小于等于
-                    Func<S, bool> lessEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x<={target}");
+                    Func<S, bool> lessEvaluate = await CommonClass.GetLambdaAsync<S>($"(x)=>x<={target}");
                     testResult = lessEvaluate(result);
                     break;
 
                 case ResultSignEnum.Result_Sign_Interval://区间
                     string[] bounds = target.ToString().Split(',');
-                    Func<S, bool> intervalEvaluate = await Common.GetLambdaAsync<S>($"(x)=>x>={bounds[0]}&&x<={bounds[1]}");
+                    Func<S, bool> intervalEvaluate = await CommonClass.GetLambdaAsync<S>($"(x)=>x>={bounds[0]}&&x<={bounds[1]}");
                     testResult = intervalEvaluate(result);
                     break;
 
@@ -324,7 +324,7 @@ namespace E9361Debug.Logical
                     break;
 
                 case ResultSignEnum.Result_Sign_Lambda://lambda表达式
-                    Func<S, bool> lambdaEvaluate = await Common.GetLambdaAsync<S>(target.ToString());
+                    Func<S, bool> lambdaEvaluate = await CommonClass.GetLambdaAsync<S>(target.ToString());
                     testResult = lambdaEvaluate(result);
                     break;
 
@@ -424,7 +424,7 @@ namespace E9361Debug.Logical
                     callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
                 }
 
-                ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(f);
+                ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
 
                 if (!data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
                 {

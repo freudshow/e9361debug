@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
+﻿using E9361Debug.Log;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Server;
-using E9361App.Log;
-using System.Net.NetworkInformation;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace E9361App.Mqtt
+namespace E9361Debug.Mqtt
 {
     public class MqttHelper
     {

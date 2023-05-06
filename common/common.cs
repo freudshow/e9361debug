@@ -1,13 +1,19 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using E9361Debug.Log;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Newtonsoft.Json;
 using System;
+using System.Data;
 using System.IO;
+using System.Management;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace E9361App.Common
+namespace E9361Debug.Common
 {
-    public static class Common
+    public static class CommonClass
     {
+        private static log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
+
         /// <summary>
         /// 主版本号
         /// </summary>
@@ -146,6 +152,49 @@ namespace E9361App.Common
         public static async Task<Func<T, bool>> GetLambdaAsync<T>(string s)
         {
             return await CSharpScript.EvaluateAsync<Func<T, bool>>(s);
+        }
+
+        public static DataTable GetPortNames()
+        {
+            try
+            {
+                System.Data.DataTable dt = new System.Data.DataTable();
+                dt.Columns.Add("Name");
+                dt.Columns.Add("Description");
+                System.Data.DataRow dr;
+                //{4d36e978-e325-11ce-bfc1-08002be10318}为设备类别port（端口（COM&LPT））的GUID
+                string sql = "SELECT * FROM Win32_PnPEntity WHERE ClassGuid=\"{4d36e978-e325-11ce-bfc1-08002be10318}\"";
+
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", sql);
+                ManagementObjectCollection mc = searcher.Get();
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    if (queryObj != null)
+                    {
+                        string name = queryObj.GetPropertyValue("Name").ToString();
+                        Regex re = new Regex("COM\\d+");
+                        Match m = re.Match(name);
+                        if (name != null && m != null && m.Success)
+                        {
+                            dr = dt.NewRow();
+                            dr["Name"] = m.Value;
+                            dr["Description"] = name;
+                            dt.Rows.Add(dr);
+                        }
+                    }
+                }
+
+                dr = dt.NewRow();
+                dr["Name"] = "Net";
+                dr["Description"] = "Net";
+                dt.Rows.Add(dr);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                throw ex;
+            }
         }
     }
 }

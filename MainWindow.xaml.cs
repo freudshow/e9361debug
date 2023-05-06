@@ -1,18 +1,11 @@
-﻿using E9361App.Communication;
-using E9361App.Maintain;
-using System.Windows;
-using System.Threading.Tasks;
-using System;
-using E9361App.MsgBox;
-using E9361App.Common;
+﻿using E9361Debug.Common;
+using E9361Debug.Communication;
 using E9361Debug.Logical;
-using System.Web.Hosting;
-using System.Windows.Media;
-using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 
-namespace E9361DEBUG
+namespace E9361Debug
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -137,7 +130,7 @@ namespace E9361DEBUG
 
         private void Menu_About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"E9361-C检测软件\n软件版本:{Common.Version}");
+            MessageBox.Show($"E9361-C检测软件\n软件版本:{CommonClass.Version}");
         }
 
         private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)
