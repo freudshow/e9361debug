@@ -10,6 +10,9 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using E9361Debug.SshInterface;
+using MQTTnet.Client;
+using E9361Debug.Mqtt;
+using System.Collections.Generic;
 
 namespace E9361Debug.Logical
 {
@@ -248,6 +251,7 @@ namespace E9361Debug.Logical
     public class CheckProcess
     {
         private static SshClientClass m_SshClass;
+        private static MqttHelper m_MqttHelper;
 
         /// <summary>
         /// 读取终端时间
@@ -384,6 +388,7 @@ namespace E9361Debug.Logical
                         break;
 
                     case CommandType.Cmd_Type_Mqtt:
+                        res = await CheckMqttCmdAsync(port, c, callbackOutput);
                         break;
 
                     case CommandType.Cmd_Type_MaintainFrame:
@@ -583,6 +588,30 @@ namespace E9361Debug.Logical
             {
                 await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
             }
+
+            return true;
+        }
+
+        public static async Task MqttMessageArrivedAsync(MqttApplicationMessageReceivedEventArgs e)
+        {
+        }
+
+        public static async Task<bool> CheckMqttCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            if (m_MqttHelper == null)
+            {
+                m_MqttHelper = new MqttHelper(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetMqttPort());
+            }
+
+            if (!m_MqttHelper.IsConnected)
+            {
+                await m_MqttHelper.ConnectAndSubscribeAsync(DataBaseLogical.GetMqttTopicList(), MqttMessageArrivedAsync);
+            }
+
+            MqttPublishParameters para = JsonConvert.DeserializeObject<MqttPublishParameters>(c.CmdParam);
+            m_MqttHelper.PublishMessage(para.Topic, para.Message);
+
+            await Task.Delay(c.TimeOut * 1000);
 
             return true;
         }

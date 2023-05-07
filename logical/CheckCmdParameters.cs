@@ -24,4 +24,10 @@ namespace E9361Debug.logical
         public string FullFileNameTerminal;
         public string FullFileNameComputer;
     }
+
+    public class MqttPublishParameters
+    {
+        public string Topic { get; set; }
+        public string Message { get; set; }
+    }
 }

@@ -14,6 +14,7 @@ namespace E9361Debug.Mqtt
         private readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
         private string m_Server;
         private int m_Port;
+        public bool IsConnected => m_MqttClient.IsConnected;
 
         public MqttHelper(string server, int port)
         {

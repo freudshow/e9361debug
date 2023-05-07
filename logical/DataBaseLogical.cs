@@ -3,6 +3,7 @@ using E9361Debug.Communication;
 using E9361Debug.DBHelper;
 using System;
 using System.Data;
+using System.Collections.Generic;
 
 namespace E9361Debug.Logical
 {
@@ -167,6 +168,17 @@ namespace E9361Debug.Logical
             return CommonClass.GetEnumByString<PortTypeEnum>(dt.Rows[0]["value"].ToString());
         }
 
+        public static int GetMqttPort()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Mqtt_Port.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return -1;
+            }
+
+            return Convert.ToInt32(dt.Rows[0]["value"].ToString());
+        }
+
         public static string GetConsoleComName()
         {
             DataSet ds = SQLiteHelper.Query("select value from t_runtimeVariable where name='Console_Port_name'", "t_runtimeVariable");
@@ -198,6 +210,24 @@ namespace E9361Debug.Logical
             }
 
             return ds.Tables[0];
+        }
+
+        public static List<string> GetMqttTopicList()
+        {
+            DataSet ds = SQLiteHelper.Query("select topics from t_mqttTopics", "t_mqttTopics");
+            if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)
+            {
+                return null;
+            }
+
+            List<string> topics = new List<string>();
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                topics.Add(dr["topics"].ToString());
+            }
+
+            return topics;
         }
 
         public static bool SaveComName(string comname)

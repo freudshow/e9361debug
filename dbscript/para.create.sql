@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周六 5月 6 19:01:37 2023
+-- SQLiteStudio v3.4.3 生成的文件，周日 5月 7 20:00:09 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -237,6 +237,16 @@ CREATE TABLE IF NOT EXISTS t_isEnable (
 INSERT INTO t_isEnable (seq, isEnable, description) VALUES (1, 1, '使能');
 INSERT INTO t_isEnable (seq, isEnable, description) VALUES (2, 0, '不使能');
 
+-- 表：t_mqttTopics
+DROP TABLE IF EXISTS t_mqttTopics;
+
+CREATE TABLE IF NOT EXISTS t_mqttTopics (
+    seq    INTEGER PRIMARY KEY AUTOINCREMENT,
+    topics TEXT    UNIQUE
+);
+
+INSERT INTO t_mqttTopics (seq, topics) VALUES (1, 'e9361app/set/request/e9361esdkapp/version');
+
 -- 表：t_portBaudrateEnum
 DROP TABLE IF EXISTS t_portBaudrateEnum;
 
@@ -395,8 +405,8 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
     value TEXT    NOT NULL
 );
 
-INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '9600');
-INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM3');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '1200');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM1');
 
 -- 表：t_YKOnOffEnum
 DROP TABLE IF EXISTS t_YKOnOffEnum;
