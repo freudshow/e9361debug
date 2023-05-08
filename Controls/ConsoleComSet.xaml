@@ -28,6 +28,7 @@
             Margin="5"
             Click="Button_Save_Click"
             Content="{materialDesign:PackIcon Kind=ContentSave}"
+            Style="{StaticResource MaterialDesignOutlinedSecondaryDarkButton}"
             ToolTip="保存参数" />
     </Grid>
 </UserControl>

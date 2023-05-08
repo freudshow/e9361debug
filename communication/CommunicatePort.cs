@@ -55,7 +55,9 @@ namespace E9361Debug.Communication
             {
                 Console.WriteLine(e.Message);
                 if (m_RemoveWatchingObect != null)
+                {
                     m_RemoveWatchingObect.Stop();
+                }
             }
         }
 
@@ -75,7 +77,9 @@ namespace E9361Debug.Communication
             {
                 Console.WriteLine(e.Message);
                 if (m_InsertWatchingObect != null)
+                {
                     m_InsertWatchingObect.Stop();
+                }
             }
         }
     }

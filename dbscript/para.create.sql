@@ -42,8 +42,9 @@ CREATE TABLE IF NOT EXISTS t_checkItemsBase (
     childTableName TEXT
 );
 
-INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '端口检测', 1, 't_checkPorts');
-INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (2, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 't_checkYKYX');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '检测前的预备工作', 1, 't_preCheckSteps');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (2, NULL, NULL, NULL, NULL, NULL, '端口检测', 1, 't_checkPorts');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (3, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 't_checkYKYX');
 
 -- 表：t_checkPorts
 DROP TABLE IF EXISTS t_checkPorts;

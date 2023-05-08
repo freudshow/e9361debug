@@ -43,15 +43,15 @@
         </materialDesign:Card>
         <ToolBarTray Grid.Row="1">
             <ToolBar ClipToBounds="False" Style="{StaticResource MaterialDesignToolBar}">
+                <Controls:ConsoleComSet x:Name="ConsoleComSet_ComSet" Margin="3" />
+                <Separator />
                 <Button
                     x:Name="Button_StartDebug"
                     Click="Button_StartDebug_Click"
                     Content="{materialDesign:PackIcon Kind=Play}"
+                    Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
                     ToolTip="开始测试" />
                 <Separator />
-                <Controls:ConsoleComSet x:Name="ConsoleComSet_ComSet" Margin="3" />
-                <Separator />
-                <ToggleButton />
             </ToolBar>
         </ToolBarTray>
         <Grid
@@ -64,7 +64,6 @@
                 <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-
             <Controls:CheckTree
                 x:Name="Controls_CheckTree"
                 Grid.Column="0"

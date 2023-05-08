@@ -1,5 +1,6 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
+using E9361Debug.Log;
 using E9361Debug.Logical;
 using E9361Debug.MsgBox;
 using System;
@@ -18,17 +19,25 @@ namespace E9361Debug.Controls
     {
         private string m_CurrentCom;
         private int m_CurrentBaudrate;
+        private bool m_FirstLoadComName;
 
         public ConsoleComSet()
         {
             InitializeComponent();
+            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this)) return;
+            InitControls();
+        }
 
-            m_CurrentCom = DataBaseLogical.GetConsoleComName();
-            m_CurrentBaudrate = DataBaseLogical.GetConsoleComBaudRate();
+        private void InitControls()
+        {
+            m_FirstLoadComName = true;
             RefreshPortNames();
             RefreshPortBaudrate();
             UsbDection.AddRemoveUSBHandler(USBChanged);
             UsbDection.AddInsetUSBHandler(USBChanged);
+
+            m_FirstLoadComName = false;
+            m_FirstLoadComName = false;
         }
 
         public void USBChanged(object sender, EventArrivedEventArgs e)
@@ -54,13 +63,35 @@ namespace E9361Debug.Controls
 
             if (ComboBox_ComList.Items != null && ComboBox_ComList.Items.Count > 0)
             {
-                ComboBox_ComList.SelectedIndex = 0;
-
-                DataRow[] dr = dtcom.Select($"Name = '{m_CurrentCom}'");
-
-                if (dr != null && dr.Length > 0)
+                //如果是首次加载页面, 加载上次保存的选择项
+                //否则, 加载当前的选择项
+                if (m_FirstLoadComName)
                 {
-                    ComboBox_ComList.SelectedValue = m_CurrentCom;
+                    string comname = DataBaseLogical.GetConsoleComName();
+                    if (string.IsNullOrEmpty(comname))
+                    {
+                        return;
+                    }
+
+                    DataRow[] dr = dtcom.Select($"Name = '{comname}'");
+
+                    if (dr != null && dr.Length > 0)
+                    {
+                        ComboBox_ComList.SelectedValue = comname;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(m_CurrentCom))
+                {
+                    DataRow[] dr = dtcom.Select($"Name = '{m_CurrentCom}'");
+
+                    if (dr != null && dr.Length > 0)
+                    {
+                        ComboBox_ComList.SelectedValue = m_CurrentCom;
+                    }
+                }
+                else
+                {
+                    ComboBox_ComList.SelectedIndex = 0;
                 }
             }
         }
@@ -76,22 +107,35 @@ namespace E9361Debug.Controls
             if (ComboBox_BaudList.Items != null && ComboBox_BaudList.Items.Count > 0)
             {
                 ComboBox_BaudList.SelectedIndex = 0;
-                DataRow[] dr = dt.Select($"enum = '{m_CurrentBaudrate}'");
+
+                int baudrate = DataBaseLogical.GetConsoleComBaudRate();
+                if (baudrate < 0)
+                {
+                    return;
+                }
+
+                DataRow[] dr = dt.Select($"enum = '{baudrate}'");
                 if (dr != null && dr.Length > 0)
                 {
-                    ComboBox_BaudList.SelectedValue = m_CurrentBaudrate;
+                    ComboBox_BaudList.SelectedValue = baudrate;
                 }
             }
         }
 
         private void ComboBox_ComList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            m_CurrentCom = ComboBox_ComList.SelectedValue.ToString();
+            if (ComboBox_ComList.SelectedValue != null && !m_FirstLoadComName)
+            {
+                m_CurrentCom = ComboBox_ComList.SelectedValue.ToString();
+            }
         }
 
         private void ComboBox_BaudList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            m_CurrentBaudrate = Convert.ToInt32(ComboBox_BaudList.SelectedValue);
+            if (ComboBox_BaudList.SelectedValue != null)
+            {
+                m_CurrentBaudrate = Convert.ToInt32(ComboBox_BaudList.SelectedValue);
+            }
         }
 
         private void Button_Save_Click(object sender, RoutedEventArgs e)
