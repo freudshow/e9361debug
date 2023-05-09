@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.Management;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls.WebParts;
 
 namespace E9361Debug.Communication
 {
@@ -22,7 +23,7 @@ namespace E9361Debug.Communication
     {
         bool IsOpen();
 
-        bool Open(object para);
+        bool Open();
 
         bool Close();
 
@@ -167,6 +168,18 @@ namespace E9361Debug.Communication
         private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
         private static readonly Stopwatch m_StopWatch = new Stopwatch();
 
+        private UartPortPara m_Para;
+
+        public UartPort(UartPortPara para)
+        {
+            if (para == null)
+            {
+                throw new ArgumentException("NULL Parameter");
+            }
+
+            m_Para = para;
+        }
+
         public bool IsOpen()
         {
             return m_SerialPort != null && m_SerialPort.IsOpen;
@@ -177,16 +190,10 @@ namespace E9361Debug.Communication
             return PortTypeEnum.PortType_Serial;
         }
 
-        public bool Open(object para)
+        public bool Open()
         {
             try
             {
-                UartPortPara upara = para as UartPortPara;
-                if (upara == null)
-                {
-                    return false;
-                }
-
                 if (m_SerialPort == null)
                 {
                     m_SerialPort = new SerialPort();
@@ -197,13 +204,13 @@ namespace E9361Debug.Communication
                     m_SerialPort.Close();
                 }
 
-                m_SerialPort.PortName = upara.PortName;
-                m_SerialPort.BaudRate = upara.BaudRate;
-                m_SerialPort.StopBits = upara.StopBits;
-                m_SerialPort.DataBits = upara.DataBits;
-                m_SerialPort.Parity = upara.Parity;
-                m_SerialPort.ReadTimeout = upara.ReadTimeout;
-                m_SerialPort.RtsEnable = upara.RtsEnable;
+                m_SerialPort.PortName = m_Para.PortName;
+                m_SerialPort.BaudRate = m_Para.BaudRate;
+                m_SerialPort.StopBits = m_Para.StopBits;
+                m_SerialPort.DataBits = m_Para.DataBits;
+                m_SerialPort.Parity = m_Para.Parity;
+                m_SerialPort.ReadTimeout = m_Para.ReadTimeout;
+                m_SerialPort.RtsEnable = m_Para.RtsEnable;
                 m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
                 m_SerialPort.Open();
 
@@ -311,7 +318,7 @@ namespace E9361Debug.Communication
             catch (Exception ex)
             {
                 m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                Open();
             }
 
             return res;
@@ -321,21 +328,29 @@ namespace E9361Debug.Communication
     public class CommunicationPort
     {
         private readonly ICommunicationPort m_AbstractPort;
+        private Object m_PortPara;
 
-        public CommunicationPort(PortTypeEnum portType)
+        public CommunicationPort(PortTypeEnum portType, Object para)
         {
+            if (para == null)
+            {
+                throw new ArgumentException("NULL Parameter");
+            }
+
+            m_PortPara = para;
+
             switch (portType)
             {
                 case PortTypeEnum.PortType_Serial:
-                    m_AbstractPort = new UartPort();
+                    m_AbstractPort = new UartPort((UartPortPara)para);
                     break;
 
                 case PortTypeEnum.PortType_Net_UDP_Client:
-                    m_AbstractPort = new UdpClientNetPort();
+                    m_AbstractPort = new UdpClientNetPort((NetPara)para);
                     break;
 
                 case PortTypeEnum.PortType_Net_TCP_Client:
-                    m_AbstractPort = new TcpClientNetPort();
+                    m_AbstractPort = new TcpClientNetPort((NetPara)para);
                     break;
 
                 case PortTypeEnum.PortType_Net_TCP_Server:
@@ -356,9 +371,9 @@ namespace E9361Debug.Communication
             return m_AbstractPort == null ? PortTypeEnum.PortType_Error : m_AbstractPort.GetPortType();
         }
 
-        public bool Open(object para)
+        public bool Open()
         {
-            return para != null && m_AbstractPort != null && m_AbstractPort.Open(para);
+            return m_PortPara != null && m_AbstractPort != null && m_AbstractPort.Open();
         }
 
         public bool Close()

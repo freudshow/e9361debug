@@ -66,12 +66,19 @@ namespace E9361Debug.Mqtt
 
         public void PublishMessage(string publishTopic, string msg)
         {
-            var applicationMessage = new MqttApplicationMessageBuilder()
+            try
+            {
+                var applicationMessage = new MqttApplicationMessageBuilder()
                                 .WithTopic(publishTopic)
                                 .WithPayload(msg)
                                 .Build();
 
-            m_MqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+                m_MqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

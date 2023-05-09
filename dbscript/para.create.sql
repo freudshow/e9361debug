@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周一 5月 8 18:51:38 2023
+-- SQLiteStudio v3.4.4 生成的文件，周二 5月 9 16:54:39 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -27,6 +27,7 @@ INSERT INTO t_basePara (seq, name, value) VALUES (9, 'Base_Para_Main_Check_Table
 INSERT INTO t_basePara (seq, name, value) VALUES (10, 'Base_Para_Maintain_Port_Type', 'PortType_Net_UDP_Client');
 INSERT INTO t_basePara (seq, name, value) VALUES (11, 'Base_Para_Maintain_Default_TCP_Client_Port', '5001');
 INSERT INTO t_basePara (seq, name, value) VALUES (12, 'Base_Para_Upload_Directory', 'upload');
+INSERT INTO t_basePara (seq, name, value) VALUES (13, 'Base_Para_Download_Directory', 'download');
 
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
@@ -126,85 +127,85 @@ INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, result
     "YKNo": 0,
     "YKOperation": 81,
     "DelayTime": 2000
-}', 2, '0', 0, '使能预置', 1, 5, NULL);
+}', 2, '0', 0, '使能预置', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 4, '{
     "YKOperateType": 2,
     "YKNo": 1,
     "YKOperation": 81,
     "DelayTime": 2000
-}', 2, '0', 0, '遥控1合', 1, 5, NULL);
+}', 2, '0', 0, '遥控1合', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '{
     "RealDataBaseNo": 9,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '1', 0, '读取遥信1的值', 1, 5, NULL);
+}', 0, '1', 0, '读取遥信1的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '{
     "RealDataBaseNo": 10,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '1', 0, '读取遥信2的值', 1, 5, NULL);
+}', 0, '1', 0, '读取遥信2的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 4, '{
     "YKOperateType": 2,
     "YKNo": 1,
     "YKOperation": 145,
     "DelayTime": 2000
-}', 2, '0', 0, '遥控1分', 1, 5, NULL);
+}', 2, '0', 0, '遥控1分', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '{
     "RealDataBaseNo": 9,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '0', 0, '读取遥信1的值', 1, 5, NULL);
+}', 0, '0', 0, '读取遥信1的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 3, '{
     "RealDataBaseNo": 10,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '0', 0, '读取遥信2的值', 1, 5, NULL);
+}', 0, '0', 0, '读取遥信2的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 4, '{
     "YKOperateType": 2,
     "YKNo": 2,
     "YKOperation": 81,
     "DelayTime": 2000
-}', 2, '0', 0, '遥控2合', 1, 5, NULL);
+}', 2, '0', 0, '遥控2合', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 3, '{
     "RealDataBaseNo": 11,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '1', 0, '读取遥信3的值', 1, 5, NULL);
+}', 0, '1', 0, '读取遥信3的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 3, '{
     "RealDataBaseNo": 12,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '1', 0, '读取遥信4的值', 1, 5, NULL);
+}', 0, '1', 0, '读取遥信4的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (11, 4, '{
     "YKOperateType": 2,
     "YKNo": 2,
     "YKOperation": 145,
     "DelayTime": 2000
-}', 2, '0', 0, '遥控2分', 1, 5, NULL);
+}', 2, '0', 0, '遥控2分', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (12, 3, '{
     "RealDataBaseNo": 11,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '0', 0, '读取遥信3的值', 1, 5, NULL);
+}', 0, '0', 0, '读取遥信3的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (13, 3, '{
     "RealDataBaseNo": 12,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
-}', 0, '0', 0, '读取遥信4的值', 1, 5, NULL);
+}', 0, '0', 0, '读取遥信4的值', 1, 5000, NULL);
 INSERT INTO t_checkYKYX (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (14, 4, '{
     "YKOperateType": 3,
     "YKNo": 0,
     "YKOperation": 145,
     "DelayTime": 2000
-}', 2, '0', 0, '撤销预置', 1, 5, NULL);
+}', 2, '0', 0, '撤销预置', 1, 5000, NULL);
 
 -- 表：t_cmdTypeEnum
 DROP TABLE IF EXISTS t_cmdTypeEnum;
@@ -331,7 +332,7 @@ INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, re
 }', 6, '', 0, '下载最新的e9361app程序', 1, 20, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 1, 'chmod +x /home/sysadm/src/e9361app', 6, '', 0, '给e9361app赋予可执行权限', 1, 3, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 1, '/sbin/reboot', 6, '', 0, '再次重启终端', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 6, '', 6, '', 0, '等待终端重启... ...', 1, 30, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 6, '', 6, '', 0, '等待终端重启... ...', 1, 60, NULL);
 
 -- 表：t_realDataTypeEnum
 DROP TABLE IF EXISTS t_realDataTypeEnum;

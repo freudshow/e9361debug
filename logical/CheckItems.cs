@@ -26,9 +26,10 @@ namespace E9361Debug.Logical
         Cmd_Type_Shell,
         Cmd_Type_Mqtt,
         Cmd_Type_MaintainReadRealDataBase,
-        Cmd_MaintainWriteRealDataBaseYK,
-        Cmd_SftpFileTransfer,
-        Cmd_DelaySomeTime
+        Cmd_Type_MaintainWriteRealDataBaseYK,
+        Cmd_Type_SftpFileTransfer,
+        Cmd_Type_DelaySomeTime,
+        Cmd_Type_WindowsCommand,
     }
 
     public enum ResultTypeEnum
@@ -414,17 +415,21 @@ namespace E9361Debug.Logical
                         res = await ReadRealDatabaseAsync(port, c, callbackOutput);
                         break;
 
-                    case CommandType.Cmd_MaintainWriteRealDataBaseYK:
+                    case CommandType.Cmd_Type_MaintainWriteRealDataBaseYK:
                         res = await CheckYXYKAsync(port, c, callbackOutput);
                         break;
 
-                    case CommandType.Cmd_SftpFileTransfer:
+                    case CommandType.Cmd_Type_SftpFileTransfer:
                         res = await CheckSftpFileTransferAsync(port, c, callbackOutput);
                         break;
 
-                    case CommandType.Cmd_DelaySomeTime:
+                    case CommandType.Cmd_Type_DelaySomeTime:
                         res = true;
                         await Task.Delay(c.TimeOut * 1000);
+                        break;
+
+                    case CommandType.Cmd_Type_WindowsCommand:
+                        res = await CheckWindowsCommandAsync(port, c, callbackOutput);
                         break;
 
                     default:
@@ -447,8 +452,13 @@ namespace E9361Debug.Logical
             try
             {
                 byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(JsonConvert.DeserializeObject<RealDatabaseCmdParameters>(c.CmdParam));
-                port.Write(b, 0, b.Length);
-                MaintainParseRes res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
+                MaintainParseRes res = null;
+
+                for (int i = 0; i < 3 && res == null; i++)
+                {
+                    port.Write(b, 0, b.Length);
+                    res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
+                }
 
                 if (res == null)
                 {
@@ -520,48 +530,64 @@ namespace E9361Debug.Logical
 
         private static async Task<bool> CheckYXYKAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
-            YKOperateParameters param = JsonConvert.DeserializeObject<YKOperateParameters>(c.CmdParam);
-
-            byte[] b = null;
-            switch (param.YKOperateType)
+            try
             {
-                case YKOperateTypeEnum.YK_Operate_Preset:
-                    b = MaintainProtocol.GetYKPresetOn(param.YKNo);
-                    break;
+                YKOperateParameters param = JsonConvert.DeserializeObject<YKOperateParameters>(c.CmdParam);
 
-                case YKOperateTypeEnum.YK_Operate_Actual:
-                    b = MaintainProtocol.GetYKOnOff(param.YKNo, param.YKOperation);
-                    break;
+                byte[] b = null;
+                switch (param.YKOperateType)
+                {
+                    case YKOperateTypeEnum.YK_Operate_Preset:
+                        b = MaintainProtocol.GetYKPresetOn(param.YKNo);
+                        break;
 
-                case YKOperateTypeEnum.YK_Operate_Cancel_Preset:
-                    b = MaintainProtocol.GetYKPresetOff(param.YKNo);
-                    break;
+                    case YKOperateTypeEnum.YK_Operate_Actual:
+                        b = MaintainProtocol.GetYKOnOff(param.YKNo, param.YKOperation);
+                        break;
 
-                default:
-                    break;
+                    case YKOperateTypeEnum.YK_Operate_Cancel_Preset:
+                        b = MaintainProtocol.GetYKPresetOff(param.YKNo);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (b == null)
+                {
+                    return false;
+                }
+
+                MaintainParseRes res = null;
+                for (int i = 0; i < 3 && res == null; i++)
+                {
+                    port.Write(b, 0, b.Length);
+                    res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
+                }
+
+                if (res == null)
+                {
+                    return false;
+                }
+
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
+                }
+
+                await Task.Delay(param.DelayTime);
+
+                return MaintainProtocol.ParseYKResult(res.Frame) == Convert.ToByte(c.ResultValue);
             }
-
-            if (b == null)
+            catch (Exception ex)
             {
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"异常: {ex.Message}\n", c.Depth);
+                }
+
                 return false;
             }
-
-            port.Write(b, 0, b.Length);
-            MaintainParseRes res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
-
-            if (res == null)
-            {
-                return false;
-            }
-
-            if (callbackOutput != null)
-            {
-                callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
-            }
-
-            await Task.Delay(param.DelayTime);
-
-            return MaintainProtocol.ParseYKResult(res.Frame) == Convert.ToByte(c.ResultValue);
         }
 
         public static async Task<bool> CheckShellCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
@@ -608,45 +634,78 @@ namespace E9361Debug.Logical
                     m_SshClass.ConnectToSftpServer();
                 }
 
-                if (string.IsNullOrEmpty(DataBaseLogical.GetUploadDirectory()))
-                {
-                    return false;
-                }
-
-                string dir = DataBaseLogical.GetUploadDirectory();
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                    if (callbackOutput != null)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
-                    }
-
-                    return false;
-                }
-
                 SftpFileTransferParameters param = JsonConvert.DeserializeObject<SftpFileTransferParameters>(c.CmdParam);
-
-                if (!File.Exists(param.FullFileNameComputer))
-                {
-                    if (callbackOutput != null)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"文件: {param.FullFileNameComputer} 不存在!", c.Depth);
-                    }
-
-                    return false;
-                }
 
                 if (param.IsUploadFileToTerminal)
                 {
+                    if (string.IsNullOrEmpty(DataBaseLogical.GetUploadDirectory()))
+                    {
+                        return false;
+                    }
+
+                    string dir = DataBaseLogical.GetUploadDirectory();
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                        if (callbackOutput != null)
+                        {
+                            callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
+                        }
+
+                        return false;
+                    }
+
+                    if (!File.Exists(param.FullFileNameComputer))
+                    {
+                        if (callbackOutput != null)
+                        {
+                            callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"文件: {param.FullFileNameComputer} 不存在!", c.Depth);
+                        }
+
+                        return false;
+                    }
+
                     await m_SshClass.UploadFileToTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+                    string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
+                    string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
+
+                    if (callbackOutput != null)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}\n", c.Depth);
+                    }
+
+                    return cMd5 == tMd5;
                 }
                 else
                 {
-                    await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
-                }
+                    if (string.IsNullOrEmpty(DataBaseLogical.GetDownloadDirectory()))
+                    {
+                        return false;
+                    }
 
-                return true;
+                    string dir = DataBaseLogical.GetDownloadDirectory();
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                        if (callbackOutput != null)
+                        {
+                            callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
+                        }
+
+                        return false;
+                    }
+
+                    await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+                    string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
+                    string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
+
+                    if (callbackOutput != null)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}", c.Depth);
+                    }
+
+                    return cMd5 == tMd5;
+                }
             }
             catch (Exception ex)
             {
@@ -665,6 +724,7 @@ namespace E9361Debug.Logical
             string msg = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, $"topic: {topic}, message: {msg}");
+            await Task.Delay(50);
         }
 
         public static async Task<bool> CheckMqttCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
@@ -686,6 +746,23 @@ namespace E9361Debug.Logical
 
                 await Task.Delay(c.TimeOut * 1000);
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                }
+
+                return false;
+            }
+        }
+
+        public static async Task<bool> CheckWindowsCommandAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            try
+            {
                 return true;
             }
             catch (Exception ex)

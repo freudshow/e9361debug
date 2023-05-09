@@ -43,25 +43,10 @@ namespace E9361Debug.Communication
         private SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
         private log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
         private Stopwatch m_StopWatch = new Stopwatch();
+        private NetPara m_Para;
 
-        public bool IsOpen()
+        public TcpClientNetPort(NetPara netPara)
         {
-            if (m_TcpClient != null && m_TcpClient.Connected)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public PortTypeEnum GetPortType()
-        {
-            return PortTypeEnum.PortType_Net_UDP_Client;
-        }
-
-        public bool Open(object o)
-        {
-            NetPara netPara = (NetPara)o;
             if (netPara == null)
             {
                 throw new ArgumentException("NULL Parameter");
@@ -72,6 +57,21 @@ namespace E9361Debug.Communication
                 throw new ArgumentException("Mode is not TcpClientMode");
             }
 
+            m_Para = netPara;
+        }
+
+        public bool IsOpen()
+        {
+            return m_TcpClient != null && m_TcpClient.Connected;
+        }
+
+        public PortTypeEnum GetPortType()
+        {
+            return PortTypeEnum.PortType_Net_UDP_Client;
+        }
+
+        public bool Open()
+        {
             try
             {
                 if (IsOpen())
@@ -79,7 +79,7 @@ namespace E9361Debug.Communication
                     Close();
                 }
 
-                m_TcpClient = new TcpClient(netPara.ServerIP, netPara.ServerPort);
+                m_TcpClient = new TcpClient(m_Para.ServerIP, m_Para.ServerPort);
 
                 if (m_TcpClient.Connected)
                 {
@@ -185,7 +185,9 @@ namespace E9361Debug.Communication
             catch (Exception ex)
             {
                 m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                Open();
+                await Task.Delay(500);
+                res = await ReadOneFrameAsync(timeout);
             }
 
             return res;
@@ -205,6 +207,23 @@ namespace E9361Debug.Communication
         private List<byte> m_ReceiveBuffer = new List<byte>();
         private static readonly Stopwatch m_StopWatch = new Stopwatch();
 
+        private static NetPara m_Para;
+
+        public UdpClientNetPort(NetPara netPara)
+        {
+            if (netPara == null)
+            {
+                throw new ArgumentException("NULL Parameter");
+            }
+
+            if (netPara.Mode != PortTypeEnum.PortType_Net_UDP_Client)
+            {
+                throw new ArgumentException("Mode is not UdpClientMode");
+            }
+
+            m_Para = netPara;
+        }
+
         public bool IsOpen()
         {
             return m_UdpClient != null;
@@ -215,21 +234,10 @@ namespace E9361Debug.Communication
             return PortTypeEnum.PortType_Net_UDP_Client;
         }
 
-        public bool Open(object o)
+        public bool Open()
         {
             try
             {
-                NetPara netPara = (NetPara)o;
-                if (netPara == null)
-                {
-                    throw new ArgumentException("NULL Parameter");
-                }
-
-                if (netPara.Mode != PortTypeEnum.PortType_Net_UDP_Client)
-                {
-                    throw new ArgumentException("Mode is not UdpClientMode");
-                }
-
                 if (IsOpen())
                 {
                     Close();
@@ -240,7 +248,11 @@ namespace E9361Debug.Communication
                     m_UdpClient = new UdpClient();
                 }
 
-                m_UdpClient.Connect(IPAddress.Parse(netPara.ServerIP), netPara.ServerPort);
+                //uint IOC_IN = 0x80000000;
+                //uint IOC_VENDOR = 0x18000000;
+                //uint SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
+                //m_UdpClient.Client.IOControl((int)SIO_UDP_CONNRESET, new byte[] { Convert.ToByte(false) }, null);
+                m_UdpClient.Connect(IPAddress.Parse(m_Para.ServerIP), m_Para.ServerPort);
 
                 return true;
             }
@@ -336,7 +348,9 @@ namespace E9361Debug.Communication
             catch (Exception ex)
             {
                 m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                Open();
+                await Task.Delay(500);
+                res = await ReadOneFrameAsync(timeout);
             }
 
             return res;

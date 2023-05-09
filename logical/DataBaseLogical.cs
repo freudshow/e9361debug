@@ -22,6 +22,7 @@ namespace E9361Debug.Logical
         Base_Para_Maintain_Port_Type,
         Base_Para_Maintain_Default_TCP_Client_Port,
         Base_Para_Upload_Directory,
+        Base_Para_Download_Directory,
     }
 
     public static class ExtendEnum
@@ -234,6 +235,17 @@ namespace E9361Debug.Logical
         public static string GetUploadDirectory()
         {
             DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Upload_Directory.ToInt());
+            if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
+            {
+                return null;
+            }
+
+            return dt.Rows[0]["value"].ToString();
+        }
+
+        public static string GetDownloadDirectory()
+        {
+            DataTable dt = GetBaseParamBySeq(BaseParaEnum.Base_Para_Download_Directory.ToInt());
             if (dt == null || dt.Rows == null || dt.Rows.Count <= 0)
             {
                 return null;

@@ -57,16 +57,13 @@ namespace E9361Debug
                     break;
 
                 case PortTypeEnum.PortType_Net_UDP_Client:
-                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_UDP_Client);
-
                     NetPara udpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalUDPPort(), Mode = PortTypeEnum.PortType_Net_UDP_Client };
-                    m_CommunicationPort.Open(udpclientpara);
+                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_UDP_Client, udpclientpara);
                     break;
 
                 case PortTypeEnum.PortType_Net_TCP_Client:
-                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_TCP_Client);
                     NetPara tcpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalTCPClientPort(), Mode = PortTypeEnum.PortType_Net_TCP_Client };
-                    m_CommunicationPort.Open(tcpclientpara);
+                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_TCP_Client, tcpclientpara);
                     break;
 
                 case PortTypeEnum.PortType_Net_TCP_Server:
@@ -74,6 +71,11 @@ namespace E9361Debug
 
                 default:
                     break;
+            }
+
+            if (m_CommunicationPort != null)
+            {
+                m_CommunicationPort.Open();
             }
         }
 
@@ -104,7 +106,7 @@ namespace E9361Debug
                 string tabs = "";
                 while (depth-- > 0)
                 {
-                    tabs += "\t|\t";
+                    tabs += "|____";
                 }
 
                 switch (resultType)
@@ -118,12 +120,12 @@ namespace E9361Debug
 
                         if (!isResultTrue)
                         {
-                            m_ParagraphException.Inlines.Add(new Run { Text = tabs + info, Foreground = Brushes.Red });
+                            m_ParagraphException.Inlines.Add(new Run { Text = info, Foreground = Brushes.Red });
                         }
                         break;
 
                     case ResultInfoType.ResultInfo_Exception:
-                        m_ParagraphException.Inlines.Add(new Run { Text = tabs + info, Foreground = Brushes.Red });
+                        m_ParagraphException.Inlines.Add(new Run { Text = info, Foreground = Brushes.Red });
                         break;
 
                     default:

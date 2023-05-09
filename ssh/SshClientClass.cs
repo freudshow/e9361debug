@@ -134,6 +134,27 @@ namespace E9361Debug.SshInterface
             }
         }
 
+        public string GetSshMd5(string fileFullName)
+        {
+            try
+            {
+                if (m_SshClient == null || !m_SshClient.IsConnected)
+                {
+                    ConnectToSshServer();
+                }
+
+                string cmd = $"md5sum {fileFullName} | awk '{{print  $1}}'";
+                using (SshCommand x = m_SshClient.RunCommand(cmd))
+                {
+                    return x.Result.Trim('\r').Trim('\n');
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public string ReadShellStreamResult()
         {
             try
