@@ -22,7 +22,7 @@ namespace E9361Debug.Mqtt
             m_Port = port;
         }
 
-        public async Task ConnectAndSubscribeAsync(List<string> topics, Func<MqttApplicationMessageReceivedEventArgs, Task> arrived)
+        public void ConnectAndSubscribe(List<string> topics, Func<MqttApplicationMessageReceivedEventArgs, Task> arrived)
         {
             if (topics == null || topics.Count <= 0)
             {
@@ -31,37 +31,37 @@ namespace E9361Debug.Mqtt
 
             var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(m_Server, m_Port).Build();
 
-            await Task.Run(
-                async () =>
-                {
-                    while (true)
-                    {
-                        try
-                        {
-                            if (!await m_MqttClient.TryPingAsync())
-                            {
-                                await m_MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-                                m_MqttClient.ApplicationMessageReceivedAsync += arrived;
-                                MqttClientSubscribeOptionsBuilder subscribeOptionsBuilder = new MqttFactory().CreateSubscribeOptionsBuilder();
+            Task.Run(
+               async () =>
+               {
+                   while (true)
+                   {
+                       try
+                       {
+                           if (!await m_MqttClient.TryPingAsync())
+                           {
+                               await m_MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+                               m_MqttClient.ApplicationMessageReceivedAsync += arrived;
+                               MqttClientSubscribeOptionsBuilder subscribeOptionsBuilder = new MqttFactory().CreateSubscribeOptionsBuilder();
 
-                                for (int i = 0; i < topics.Count; i++)
-                                {
-                                    _ = subscribeOptionsBuilder.WithTopicFilter(topics[i]);
-                                }
+                               for (int i = 0; i < topics.Count; i++)
+                               {
+                                   _ = subscribeOptionsBuilder.WithTopicFilter(topics[i]);
+                               }
 
-                                await m_MqttClient.SubscribeAsync(subscribeOptionsBuilder.Build(), CancellationToken.None);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                        }
-                        finally
-                        {
-                            await Task.Delay(TimeSpan.FromSeconds(2));
-                        }
-                    }
-                });
+                               await m_MqttClient.SubscribeAsync(subscribeOptionsBuilder.Build(), CancellationToken.None);
+                           }
+                       }
+                       catch (Exception ex)
+                       {
+                           m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                       }
+                       finally
+                       {
+                           await Task.Delay(TimeSpan.FromSeconds(2));
+                       }
+                   }
+               });
         }
 
         public void PublishMessage(string publishTopic, string msg)

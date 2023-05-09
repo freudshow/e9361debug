@@ -60,7 +60,7 @@ namespace E9361Debug.SshInterface
             }
         }
 
-        public bool SSHConnected => m_SshClient != null && m_SshClient.IsConnected;
+        public bool IsSshConnected => m_SshClient != null && m_SshClient.IsConnected;
 
         private void CreateShell()
         {
@@ -198,6 +198,8 @@ namespace E9361Debug.SshInterface
             if (m_SshClient != null && m_SshClient.IsConnected)
             {
                 m_SshClient.Disconnect();
+                m_SshClient.Dispose();
+                m_SshClient = null;
             }
         }
 

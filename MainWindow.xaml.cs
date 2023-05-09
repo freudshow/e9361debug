@@ -1,6 +1,7 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
 using E9361Debug.Logical;
+using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -98,34 +99,37 @@ namespace E9361Debug
 
         private void DisplayCheckInfo(ResultInfoType resultType, bool isResultTrue, string info, int depth)
         {
-            string tabs = "";
-            while (depth-- > 0)
+            this.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
             {
-                tabs += "\t|\t";
-            }
+                string tabs = "";
+                while (depth-- > 0)
+                {
+                    tabs += "\t|\t";
+                }
 
-            switch (resultType)
-            {
-                case ResultInfoType.ResultInfo_Logs:
-                    m_ParagraphResult.Inlines.Add(new Run(tabs + info));
-                    break;
+                switch (resultType)
+                {
+                    case ResultInfoType.ResultInfo_Logs:
+                        m_ParagraphResult.Inlines.Add(new Run(tabs + info));
+                        break;
 
-                case ResultInfoType.ResultInfo_Result:
-                    m_ParagraphResult.Inlines.Add(new Run { Text = tabs + info, Foreground = isResultTrue ? Brushes.Green : Brushes.Red });
+                    case ResultInfoType.ResultInfo_Result:
+                        m_ParagraphResult.Inlines.Add(new Run { Text = tabs + info, Foreground = isResultTrue ? Brushes.Green : Brushes.Red });
 
-                    if (!isResultTrue)
-                    {
+                        if (!isResultTrue)
+                        {
+                            m_ParagraphException.Inlines.Add(new Run { Text = tabs + info, Foreground = Brushes.Red });
+                        }
+                        break;
+
+                    case ResultInfoType.ResultInfo_Exception:
                         m_ParagraphException.Inlines.Add(new Run { Text = tabs + info, Foreground = Brushes.Red });
-                    }
-                    break;
+                        break;
 
-                case ResultInfoType.ResultInfo_Exception:
-                    m_ParagraphException.Inlines.Add(new Run { Text = tabs + info, Foreground = Brushes.Red });
-                    break;
-
-                default:
-                    break;
-            }
+                    default:
+                        break;
+                }
+            }));
         }
 
         private void Menu_About_Click(object sender, RoutedEventArgs e)

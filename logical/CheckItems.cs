@@ -13,6 +13,9 @@ using E9361Debug.SshInterface;
 using MQTTnet.Client;
 using E9361Debug.Mqtt;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using E9361Debug.Log;
 
 namespace E9361Debug.Logical
 {
@@ -223,6 +226,7 @@ namespace E9361Debug.Logical
                                 ResultSign = dr["resultSign"] == DBNull.Value ? ResultSignEnum.Result_Sign_Invalid : (ResultSignEnum)Convert.ToInt32(dr["resultSign"]),
                                 Description = dr["description"] == DBNull.Value ? "" : dr["description"].ToString(),
                                 IsEnable = dr["isEnable"] == DBNull.Value ? false : Convert.ToInt32(dr["isEnable"]) == 1 ? true : false,
+                                TimeOut = dr["timeout"] == DBNull.Value ? 3 : Convert.ToInt32(dr["timeout"]),
                                 Father = this,
                                 ChildTableName = dr["childTableName"].ToString()
                             };
@@ -252,6 +256,8 @@ namespace E9361Debug.Logical
     {
         private static SshClientClass m_SshClass;
         private static MqttHelper m_MqttHelper;
+        private static SRMessageSingleton m_MsgHandle = SRMessageSingleton.getInstance();
+        private static readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
 
         /// <summary>
         /// 读取终端时间
@@ -303,8 +309,18 @@ namespace E9361Debug.Logical
             switch (sign)
             {
                 case ResultSignEnum.Result_Sign_Equal://相等
-                    Func<S, bool> equalEvaluate = await CommonClass.GetLambdaAsync<S>($"(x)=>x=={target}");
-                    testResult = equalEvaluate(result);
+                    Type t = typeof(T);
+                    Type s = typeof(S);
+                    if (s.FullName == "System.String" && t.FullName == "System.String")
+                    {
+                        testResult = result.ToString() == target.ToString();
+                    }
+                    else
+                    {
+                        Func<S, bool> equalEvaluate = await CommonClass.GetLambdaAsync<S>($"(x)=>x=={target}");
+                        testResult = equalEvaluate(result);
+                    }
+
                     break;
 
                 case ResultSignEnum.Result_Sign_Greater_Than://大于等于
@@ -408,7 +424,7 @@ namespace E9361Debug.Logical
 
                     case CommandType.Cmd_DelaySomeTime:
                         res = true;
-                        await Task.Delay(c.TimeOut);
+                        await Task.Delay(c.TimeOut * 1000);
                         break;
 
                     default:
@@ -550,70 +566,137 @@ namespace E9361Debug.Logical
 
         public static async Task<bool> CheckShellCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
-            if (m_SshClass == null)
+            try
             {
-                m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
-            }
+                if (m_SshClass == null)
+                {
+                    m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
+                }
 
-            if (!m_SshClass.SSHConnected)
+                if (!m_SshClass.IsSshConnected)
+                {
+                    m_SshClass.ConnectToSshServer();
+                }
+
+                string res = m_SshClass.ExecCmd(c.CmdParam);
+                bool testres = await JudgeResultBySignAsync(res, c.ResultValue, c.ResultSign);
+                m_SshClass.DisConnectSSH();
+                return testres;
+            }
+            catch (Exception ex)
             {
-                m_SshClass.ConnectToSshServer();
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                }
+
+                return false;
             }
-
-            string res = m_SshClass.ExecCmd(c.CmdParam);
-            bool testres = await JudgeResultBySignAsync(res, c.ResultValue, c.ResultSign);
-
-            return testres;
         }
 
         public static async Task<bool> CheckSftpFileTransferAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
-            if (m_SshClass == null)
+            try
             {
-                m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
-            }
+                if (m_SshClass == null)
+                {
+                    m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
+                }
 
-            if (!m_SshClass.IsSftpConnected)
+                if (!m_SshClass.IsSftpConnected)
+                {
+                    m_SshClass.ConnectToSftpServer();
+                }
+
+                if (string.IsNullOrEmpty(DataBaseLogical.GetUploadDirectory()))
+                {
+                    return false;
+                }
+
+                string dir = DataBaseLogical.GetUploadDirectory();
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                    if (callbackOutput != null)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
+                    }
+
+                    return false;
+                }
+
+                SftpFileTransferParameters param = JsonConvert.DeserializeObject<SftpFileTransferParameters>(c.CmdParam);
+
+                if (!File.Exists(param.FullFileNameComputer))
+                {
+                    if (callbackOutput != null)
+                    {
+                        callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"文件: {param.FullFileNameComputer} 不存在!", c.Depth);
+                    }
+
+                    return false;
+                }
+
+                if (param.IsUploadFileToTerminal)
+                {
+                    await m_SshClass.UploadFileToTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+                }
+                else
+                {
+                    await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
             {
-                m_SshClass.ConnectToSftpServer();
-            }
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                }
 
-            SftpFileTransferParameters param = JsonConvert.DeserializeObject<SftpFileTransferParameters>(c.CmdParam);
-
-            if (param.IsUploadFileToTerminal)
-            {
-                await m_SshClass.UploadFileToTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
+                return false;
             }
-            else
-            {
-                await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
-            }
-
-            return true;
         }
 
         public static async Task MqttMessageArrivedAsync(MqttApplicationMessageReceivedEventArgs e)
         {
+            string topic = e.ApplicationMessage.Topic;
+            string msg = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+
+            m_MsgHandle.AddSRMsg(SRMsgType.报文说明, $"topic: {topic}, message: {msg}");
         }
 
         public static async Task<bool> CheckMqttCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
-            if (m_MqttHelper == null)
+            try
             {
-                m_MqttHelper = new MqttHelper(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetMqttPort());
-            }
+                if (m_MqttHelper == null)
+                {
+                    m_MqttHelper = new MqttHelper(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetMqttPort());
+                }
 
-            if (!m_MqttHelper.IsConnected)
+                if (!m_MqttHelper.IsConnected)
+                {
+                    m_MqttHelper.ConnectAndSubscribe(DataBaseLogical.GetMqttTopicList(), MqttMessageArrivedAsync);
+                }
+
+                MqttPublishParameters para = JsonConvert.DeserializeObject<MqttPublishParameters>(c.CmdParam);
+                m_MqttHelper.PublishMessage(para.Topic, para.Message);
+
+                await Task.Delay(c.TimeOut * 1000);
+
+                return true;
+            }
+            catch (Exception ex)
             {
-                await m_MqttHelper.ConnectAndSubscribeAsync(DataBaseLogical.GetMqttTopicList(), MqttMessageArrivedAsync);
+                if (callbackOutput != null)
+                {
+                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                }
+
+                return false;
             }
-
-            MqttPublishParameters para = JsonConvert.DeserializeObject<MqttPublishParameters>(c.CmdParam);
-            m_MqttHelper.PublishMessage(para.Topic, para.Message);
-
-            await Task.Delay(c.TimeOut * 1000);
-
-            return true;
         }
     }
 }

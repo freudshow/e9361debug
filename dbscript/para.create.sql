@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.3 生成的文件，周日 5月 7 20:00:09 2023
+-- SQLiteStudio v3.4.4 生成的文件，周一 5月 8 18:51:38 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -26,6 +26,7 @@ INSERT INTO t_basePara (seq, name, value) VALUES (8, 'Base_Para_Maintain_Default
 INSERT INTO t_basePara (seq, name, value) VALUES (9, 'Base_Para_Main_Check_Table', 't_checkItemsBase');
 INSERT INTO t_basePara (seq, name, value) VALUES (10, 'Base_Para_Maintain_Port_Type', 'PortType_Net_UDP_Client');
 INSERT INTO t_basePara (seq, name, value) VALUES (11, 'Base_Para_Maintain_Default_TCP_Client_Port', '5001');
+INSERT INTO t_basePara (seq, name, value) VALUES (12, 'Base_Para_Upload_Directory', 'upload');
 
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
@@ -39,12 +40,13 @@ CREATE TABLE IF NOT EXISTS t_checkItemsBase (
     resultSign     INTEGER REFERENCES t_resultSignEnum (enum),
     description    TEXT    DEFAULT 测试项,
     isEnable       INTEGER REFERENCES t_isEnable (isEnable),
+    timeout        INTEGER DEFAULT (1),
     childTableName TEXT
 );
 
-INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '检测前的预备工作', 1, 't_preCheckSteps');
-INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (2, NULL, NULL, NULL, NULL, NULL, '端口检测', 1, 't_checkPorts');
-INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, childTableName) VALUES (3, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 't_checkYKYX');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '检测前的预备工作', 1, 1, 't_preCheckSteps');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, NULL, NULL, NULL, NULL, NULL, '端口检测', 1, 1, 't_checkPorts');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 1, 't_checkYKYX');
 
 -- 表：t_checkPorts
 DROP TABLE IF EXISTS t_checkPorts;
@@ -247,6 +249,8 @@ CREATE TABLE IF NOT EXISTS t_mqttTopics (
 );
 
 INSERT INTO t_mqttTopics (seq, topics) VALUES (1, 'e9361app/set/request/e9361esdkapp/version');
+INSERT INTO t_mqttTopics (seq, topics) VALUES (2, 'e9361esdkapp/set/response/e9361appversion');
+INSERT INTO t_mqttTopics (seq, topics) VALUES (3, 'e9361esdkapp/set/response/e9361app/version');
 
 -- 表：t_portBaudrateEnum
 DROP TABLE IF EXISTS t_portBaudrateEnum;
@@ -308,9 +312,10 @@ echo "persistence true">>/etc/mosquitto.conf&&
 echo "persistence_location /mosquitto/data/">>/etc/mosquitto.conf&&
 echo "log_dest file /mosquitto/log/mosquitto.log">>/etc/mosquitto.conf
 ', 6, '', 0, '修改mosquito配置文件', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'sed -i.bak -r ''s#/bin/mosquitto&#/bin/mosquitto -v -c /etc/mosquitto.conf&#g'' /etc/rc.local', 6, '', 0, '修改启动脚本rc.local', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, 'reboot', 6, '', 0, '重启终端', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 6, '', 6, '', 0, '等待终端重启... ...', 1, 20, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'sed -i.bak -r ''s#/bin/mosquitto&#/bin/mosquitto -v -c /etc/mosquitto.conf&#g'' /etc/rc.local
+', 6, '', 0, '修改启动脚本rc.local', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 6, '', 6, '', 0, '等待终端重启... ...', 1, 30, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 2, '{
 	"Topic": "e9361app/set/request/e9361esdkapp/version",
@@ -324,6 +329,9 @@ INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, re
 	"FullFileNameComputer": "upload\\e9361app",
 	"FullFileNameTerminal": "/home/sysadm/src/e9361app"
 }', 6, '', 0, '下载最新的e9361app程序', 1, 20, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 1, 'chmod +x /home/sysadm/src/e9361app', 6, '', 0, '给e9361app赋予可执行权限', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 1, '/sbin/reboot', 6, '', 0, '再次重启终端', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 6, '', 6, '', 0, '等待终端重启... ...', 1, 30, NULL);
 
 -- 表：t_realDataTypeEnum
 DROP TABLE IF EXISTS t_realDataTypeEnum;
