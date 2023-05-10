@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周二 5月 9 16:54:39 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 5月 10 11:20:07 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -48,6 +48,33 @@ CREATE TABLE IF NOT EXISTS t_checkItemsBase (
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '检测前的预备工作', 1, 1, 't_preCheckSteps');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, NULL, NULL, NULL, NULL, NULL, '端口检测', 1, 1, 't_checkPorts');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 1, 't_checkYKYX');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, NULL, NULL, NULL, NULL, NULL, '检测网口状态', 1, 1, 't_checkNetPort');
+
+-- 表：t_checkNetPort
+DROP TABLE IF EXISTS t_checkNetPort;
+
+CREATE TABLE IF NOT EXISTS t_checkNetPort (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 7, 'ping 192.168.0.237', 6, '时间<\dms TTL=\d', 4, '网口1测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 7, 'ping 192.168.1.232', 6, '时间<\dms TTL=\d', 4, '网口2测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 7, 'ping 192.168.2.232', 6, '时间<\dms TTL=\d', 4, '网口3测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 7, 'ping 192.168.3.232', 6, '时间<\dms TTL=\d', 4, '网口4测试', 1, 5000, NULL);
 
 -- 表：t_checkPorts
 DROP TABLE IF EXISTS t_checkPorts;
@@ -220,13 +247,14 @@ CREATE TABLE IF NOT EXISTS t_cmdTypeEnum (
 );
 
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (1, -1, 'Cmd_Type_Invalid', '不需要发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (2, 0, 'Cmd_MaintainFrame', '使用维护规约发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (3, 1, 'Cmd_Shell', '使用shell命令发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (4, 2, 'Cmd_Mqtt', '使用mqtt发送命令');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (5, 3, 'Cmd_MaintainReadRealDataBase', '读取一个实时库数值');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (6, 4, 'Cmd_MaintainWriteRealDataBaseYK', '控制一个遥控的开/合');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (7, 5, 'Cmd_SftpFileTransfer', '用Sftp协议传输文件');
-INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (8, 6, 'Cmd_DelaySomeTime', '单纯的延时操作');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (2, 0, 'Cmd_Type_MaintainFrame', '使用维护规约发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (3, 1, 'Cmd_Type_Shell', '使用shell命令发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (4, 2, 'Cmd_Type_Mqtt', '使用mqtt发送命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (5, 3, 'Cmd_Type_MaintainReadRealDataBase', '读取一个实时库数值');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (6, 4, 'Cmd_Type_MaintainWriteRealDataBaseYK', '控制一个遥控的开/合');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (7, 5, 'Cmd_Type_SftpFileTransfer', '用Sftp协议传输文件');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (8, 6, 'Cmd_Type_DelaySomeTime', '单纯的延时操作');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (9, 7, 'Cmd_Type_WindowsCommand', '执行Windows命令');
 
 -- 表：t_isEnable
 DROP TABLE IF EXISTS t_isEnable;

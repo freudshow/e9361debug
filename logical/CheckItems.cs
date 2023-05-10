@@ -16,6 +16,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using E9361Debug.Log;
+using MQTTnet.Server;
+using MQTTnet;
+using System.Threading;
 
 namespace E9361Debug.Logical
 {
@@ -273,24 +276,19 @@ namespace E9361Debug.Logical
                 byte[] b = MaintainProtocol.GetTerminalTime();
                 port.Write(b, 0, b.Length);
                 MaintainParseRes res = await port.ReadOneFrameAsync(5000);
-                if (callbackOutput != null)
+
+                if (res != null)
                 {
-                    if (res != null)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}, {MaintainProtocol.ParseTerminalTime(res.Frame).ToString("yyyy-MM-dd HH:mm:ss")}\n");
-                    }
-                    else
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Result, false, "连接超时\n");
-                    }
+                    callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}, {MaintainProtocol.ParseTerminalTime(res.Frame).ToString("yyyy-MM-dd HH:mm:ss")}\n");
+                }
+                else
+                {
+                    callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, false, "连接超时\n");
                 }
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常:{ex.Message}\n");
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常:{ex.Message}\n");
             }
         }
 
@@ -374,10 +372,7 @@ namespace E9361Debug.Logical
                 return true;
             }
 
-            if (callbackOutput != null)
-            {
-                callbackOutput(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
-            }
+            callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
 
             string checkstr = "";
             if (c.Children != null)
@@ -387,11 +382,8 @@ namespace E9361Debug.Logical
                     res &= await CheckOneItemAsync(port, item, callbackOutput);
                 }
 
-                if (callbackOutput != null)
-                {
-                    checkstr = res ? "" : "不";
-                    callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
-                }
+                checkstr = res ? "" : "不";
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
             }
             else
             {
@@ -436,11 +428,8 @@ namespace E9361Debug.Logical
                         break;
                 }
 
-                if (callbackOutput != null)
-                {
-                    checkstr = res ? "" : "不";
-                    callbackOutput(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
-                }
+                checkstr = res ? "" : "不";
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
             }
 
             return res;
@@ -465,10 +454,7 @@ namespace E9361Debug.Logical
                     return false;
                 }
 
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
 
                 ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
 
@@ -477,10 +463,7 @@ namespace E9361Debug.Logical
                     return false;
                 }
 
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"Values[{data.RealDataArray.Length}]: ", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"Values[{data.RealDataArray.Length}]: ", c.Depth);
 
                 string valuesStr = "";
                 foreach (var item in data.RealDataArray)
@@ -510,19 +493,13 @@ namespace E9361Debug.Logical
 
                 valuesStr.TrimEnd().TrimEnd(',');
                 valuesStr += "\n";
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Logs, testResult, valuesStr, 0);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, testResult, valuesStr, 0);
 
                 return testResult;
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"[{c.Description}]检测异常:{ex.Message}\n", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"[{c.Description}]检测异常:{ex.Message}\n", c.Depth);
 
                 return false;
             }
@@ -570,10 +547,7 @@ namespace E9361Debug.Logical
                     return false;
                 }
 
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}: {MaintainProtocol.ByteArryToString(res.Frame, 0, res.Frame.Length)}\n", c.Depth);
 
                 await Task.Delay(param.DelayTime);
 
@@ -581,10 +555,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"异常: {ex.Message}\n", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"异常: {ex.Message}\n", c.Depth);
 
                 return false;
             }
@@ -611,10 +582,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
 
                 return false;
             }
@@ -647,20 +615,14 @@ namespace E9361Debug.Logical
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
-                        if (callbackOutput != null)
-                        {
-                            callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
-                        }
+                        callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
 
                         return false;
                     }
 
                     if (!File.Exists(param.FullFileNameComputer))
                     {
-                        if (callbackOutput != null)
-                        {
-                            callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"文件: {param.FullFileNameComputer} 不存在!", c.Depth);
-                        }
+                        callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"文件: {param.FullFileNameComputer} 不存在!", c.Depth);
 
                         return false;
                     }
@@ -669,10 +631,7 @@ namespace E9361Debug.Logical
                     string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
 
-                    if (callbackOutput != null)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}\n", c.Depth);
-                    }
+                    callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}\n", c.Depth);
 
                     return cMd5 == tMd5;
                 }
@@ -687,10 +646,7 @@ namespace E9361Debug.Logical
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
-                        if (callbackOutput != null)
-                        {
-                            callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
-                        }
+                        callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"目录: {dir} 不存在!", c.Depth);
 
                         return false;
                     }
@@ -699,20 +655,14 @@ namespace E9361Debug.Logical
                     string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
 
-                    if (callbackOutput != null)
-                    {
-                        callbackOutput(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}", c.Depth);
-                    }
+                    callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}", c.Depth);
 
                     return cMd5 == tMd5;
                 }
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
 
                 return false;
             }
@@ -750,10 +700,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
 
                 return false;
             }
@@ -763,14 +710,21 @@ namespace E9361Debug.Logical
         {
             try
             {
-                return true;
+                string res = await Task<string>.Run(
+                async () =>
+                {
+                    string cmdres = CommonClass.ExecDosCmd(c.CmdParam);
+                    await Task.Delay(c.TimeOut);
+                    return cmdres;
+                });
+
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"command: {c.CmdParam}, result: {res}\n", c.Depth);
+
+                return await JudgeResultBySignAsync(res, c.ResultValue, c.ResultSign);
             }
             catch (Exception ex)
             {
-                if (callbackOutput != null)
-                {
-                    callbackOutput(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
-                }
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
 
                 return false;
             }
