@@ -13,7 +13,7 @@ namespace E9361Debug.Common
 {
     public static class CommonClass
     {
-        private static log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
+        private static readonly log4net.ILog m_LogError = log4net.LogManager.GetLogger("logerror");
 
         /// <summary>
         /// 主版本号
@@ -35,7 +35,10 @@ namespace E9361Debug.Common
         /// </summary>
         public static string Version
         {
-            get { return $"{MainVersion}.{SubVersion}.{PatchVersion}"; }
+            get
+            {
+                return $"{MainVersion}.{SubVersion}.{PatchVersion}";
+            }
         }
 
         /// <summary>

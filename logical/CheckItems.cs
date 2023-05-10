@@ -2,37 +2,35 @@
 using E9361Debug.Communication;
 using E9361Debug.logical;
 using E9361Debug.Maintain;
+using E9361Debug.Mqtt;
+using E9361Debug.SshInterface;
+using E9361Debug.Log;
 using Newtonsoft.Json;
+using MQTTnet.Client;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using E9361Debug.SshInterface;
-using MQTTnet.Client;
-using E9361Debug.Mqtt;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using E9361Debug.Log;
-using MQTTnet.Server;
-using MQTTnet;
-using System.Threading;
 
 namespace E9361Debug.Logical
 {
     public enum CommandType
     {
-        Cmd_Type_Invalid = -1,
-        Cmd_Type_MaintainFrame = 0,
-        Cmd_Type_Shell,
-        Cmd_Type_Mqtt,
-        Cmd_Type_MaintainReadRealDataBase,
-        Cmd_Type_MaintainWriteRealDataBaseYK,
-        Cmd_Type_SftpFileTransfer,
-        Cmd_Type_DelaySomeTime,
-        Cmd_Type_WindowsCommand,
+        Cmd_Type_Invalid = -1,                      //无效
+        Cmd_Type_MaintainFrame = 0,                 //维护规约的二进制命令
+        Cmd_Type_Shell,                             //通过ssh或者串口, 发送bash命令
+        Cmd_Type_Mqtt,                              //通过mqtt发送报文
+        Cmd_Type_MaintainReadRealDataBase,          //通过维护规约, 读取实时库的值
+        Cmd_Type_MaintainWriteRealDataBaseYK,       //通过维护规约, 遥控操作
+        Cmd_Type_SftpFileTransfer,                  //通过sftp规约传输文件
+        Cmd_Type_DelaySomeTime,                     //单纯的等待
+        Cmd_Type_WindowsCommand,                    //执行Windows的命令
+        Cmd_Type_Manual_Operate,                    //手动让用户操作
+        Cmd_Type_ADC_Adjust,                        //交采整定
     }
 
     public enum ResultTypeEnum
@@ -422,6 +420,12 @@ namespace E9361Debug.Logical
 
                     case CommandType.Cmd_Type_WindowsCommand:
                         res = await CheckWindowsCommandAsync(port, c, callbackOutput);
+                        break;
+
+                    case CommandType.Cmd_Type_Manual_Operate:
+                        break;
+
+                    case CommandType.Cmd_Type_ADC_Adjust:
                         break;
 
                     default:

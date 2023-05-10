@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 5月 10 11:20:07 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 5月 10 11:50:17 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -255,6 +255,8 @@ INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (6, 4, 'Cmd_
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (7, 5, 'Cmd_Type_SftpFileTransfer', '用Sftp协议传输文件');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (8, 6, 'Cmd_Type_DelaySomeTime', '单纯的延时操作');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (9, 7, 'Cmd_Type_WindowsCommand', '执行Windows命令');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (10, 8, 'Cmd_Type_Manual_Operate', '手动让用户操作');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (11, 9, 'Cmd_Type_ADC_Adjust', '交采整定');
 
 -- 表：t_isEnable
 DROP TABLE IF EXISTS t_isEnable;
