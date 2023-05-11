@@ -256,6 +256,11 @@ namespace E9361Debug.Logical
 
         public static bool SaveComName(string comname)
         {
+            if (string.IsNullOrEmpty(comname))
+            {
+                throw new ArgumentNullException("串口名不能为空");
+            }
+
             string selectsql = "select * from t_runtimeVariable where name='Console_Port_name';";
             DataSet ds = SQLiteHelper.Query(selectsql, "t_runtimeVariable");
             if (ds == null || ds.Tables == null || ds.Tables[0].Rows == null || ds.Tables[0].Rows.Count <= 0)

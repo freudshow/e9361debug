@@ -143,13 +143,20 @@ namespace E9361Debug.Controls
 
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (DataBaseLogical.SaveComName(m_CurrentCom) && DataBaseLogical.SaveBaudRate(m_CurrentBaudrate))
+            try
             {
-                ShowMsg.ShowMessageBoxTimeout("保存成功", "温馨提示", MessageBoxButton.OK, 1000);
+                if (DataBaseLogical.SaveComName(m_CurrentCom) && DataBaseLogical.SaveBaudRate(m_CurrentBaudrate))
+                {
+                    ShowMsg.ShowMessageBoxTimeout("保存成功", "温馨提示", MessageBoxButton.OK, 1000);
+                }
+                else
+                {
+                    ShowMsg.ShowMessageBoxTimeout("保存失败!", "警告", MessageBoxButton.OK, 3000);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ShowMsg.ShowMessageBoxTimeout("保存失败!", "警告", MessageBoxButton.OK, 3000);
+                MessageBox.Show(ex.Message);
             }
         }
     }
