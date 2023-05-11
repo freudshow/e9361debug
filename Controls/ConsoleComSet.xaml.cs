@@ -21,6 +21,9 @@ namespace E9361Debug.Controls
         private int m_CurrentBaudrate;
         private bool m_FirstLoadComName;
 
+        public string CurrentCom => m_CurrentCom;
+        public int CurrentBaudrate => m_CurrentBaudrate;
+
         public ConsoleComSet()
         {
             InitializeComponent();

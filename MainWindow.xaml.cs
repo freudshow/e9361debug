@@ -1,7 +1,9 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
 using E9361Debug.Logical;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -13,6 +15,7 @@ namespace E9361Debug
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Dictionary<PortTypeEnum, CommunicationPort> m_PortDict = new Dictionary<PortTypeEnum, CommunicationPort>();
         private CommunicationPort m_CommunicationPort;
         private CheckItems m_CheckItems;
         private Paragraph m_ParagraphResult = new Paragraph();
@@ -48,6 +51,7 @@ namespace E9361Debug
         private void OpenTerminalMaintain()
         {
             PortTypeEnum e = DataBaseLogical.GetMaintainPortType();
+
             switch (e)
             {
                 case PortTypeEnum.PortType_Error:
@@ -76,6 +80,7 @@ namespace E9361Debug
             if (m_CommunicationPort != null)
             {
                 m_CommunicationPort.Open();
+                m_PortDict.Add(e, m_CommunicationPort);
             }
         }
 
@@ -144,7 +149,11 @@ namespace E9361Debug
             Button_StartDebug.IsEnabled = false;
             m_ParagraphResult.Inlines.Clear();
             m_ParagraphException.Inlines.Clear();
-            _ = await CheckProcess.CheckOneItemAsync(m_CommunicationPort, m_CheckItems, DisplayCheckInfo);
+            await Task.Run(
+                async () =>
+                {
+                    _ = await CheckProcess.CheckOneItemAsync(m_CommunicationPort, m_CheckItems, DisplayCheckInfo);
+                });
             Button_StartDebug.IsEnabled = true;
         }
 
