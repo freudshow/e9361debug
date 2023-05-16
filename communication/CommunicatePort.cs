@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Management;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls.WebParts;
 
@@ -28,6 +29,8 @@ namespace E9361Debug.Communication
         bool Close();
 
         bool Write(byte[] frame, int index, int len);
+
+        byte[] Read();
 
         Task<MaintainParseRes> ReadOneFrameAsync(long timeout);
 
@@ -293,6 +296,11 @@ namespace E9361Debug.Communication
             }
         }
 
+        public byte[] Read()
+        {
+            return m_ReceiveBuffer.ToArray();
+        }
+
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             m_ReceiveBuffer.Clear();
@@ -384,6 +392,23 @@ namespace E9361Debug.Communication
         public bool Write(byte[] frame, int start, int len)
         {
             return m_AbstractPort != null && m_AbstractPort.Write(frame, start, len);
+        }
+
+        public bool Write(string data)
+        {
+            byte[] frame = Encoding.UTF8.GetBytes(data);
+
+            return m_AbstractPort != null && m_AbstractPort.Write(frame, 0, frame.Length);
+        }
+
+        public byte[] Read()
+        {
+            if (m_AbstractPort == null)
+            {
+                return null;
+            }
+
+            return m_AbstractPort.Read();
         }
 
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)

@@ -10,13 +10,20 @@ using System.Windows.Media;
 
 namespace E9361Debug
 {
+    public enum PortUseTypeEnum
+    {
+        Maintaince = 0,
+        Console
+    }
+
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Dictionary<PortTypeEnum, CommunicationPort> m_PortDict = new Dictionary<PortTypeEnum, CommunicationPort>();
+        private Dictionary<PortUseTypeEnum, CommunicationPort> m_PortDict = new Dictionary<PortUseTypeEnum, CommunicationPort>();
         private CommunicationPort m_CommunicationPort;
+        private CommunicationPort m_ConsolePort;
         private CheckItems m_CheckItems;
         private Paragraph m_ParagraphResult = new Paragraph();
         private Paragraph m_ParagraphException = new Paragraph();
@@ -31,7 +38,6 @@ namespace E9361Debug
         {
             InitCheckTree();
             InitTextBox();
-            OpenTerminalMaintain();
         }
 
         private void InitTextBox()
@@ -80,7 +86,7 @@ namespace E9361Debug
             if (m_CommunicationPort != null)
             {
                 m_CommunicationPort.Open();
-                m_PortDict.Add(e, m_CommunicationPort);
+                m_PortDict[PortUseTypeEnum.Maintaince] = m_CommunicationPort;
             }
         }
 
@@ -89,7 +95,11 @@ namespace E9361Debug
         /// </summary>
         private void OpenConsole()
         {
-            UartPortPara uartPortPara = new UartPortPara { PortName = "COM3" };
+            UartPortPara uartPortPara = new UartPortPara { PortName = ConsoleComSet_ComSet.CurrentCom, BaudRate = ConsoleComSet_ComSet.CurrentBaudrate };
+            m_ConsolePort = new CommunicationPort(PortTypeEnum.PortType_Serial, uartPortPara);
+            m_ConsolePort.Open();
+
+            m_PortDict[PortUseTypeEnum.Console] = m_ConsolePort;
         }
 
         private void InitCheckTree()
@@ -146,13 +156,15 @@ namespace E9361Debug
 
         private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)
         {
+            OpenTerminalMaintain();
+            OpenConsole();
             Button_StartDebug.IsEnabled = false;
             m_ParagraphResult.Inlines.Clear();
             m_ParagraphException.Inlines.Clear();
             await Task.Run(
                 async () =>
                 {
-                    _ = await CheckProcess.CheckOneItemAsync(m_CommunicationPort, m_CheckItems, DisplayCheckInfo);
+                    _ = await CheckProcess.CheckOneItemAsync(m_PortDict, m_CheckItems, DisplayCheckInfo);
                 });
             Button_StartDebug.IsEnabled = true;
         }

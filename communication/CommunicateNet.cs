@@ -144,6 +144,11 @@ namespace E9361Debug.Communication
             }
         }
 
+        public byte[] Read()
+        {
+            return m_ReceiveBuffer.ToArray();
+        }
+
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             if (m_TcpClient == null || m_Stream == null)
@@ -311,6 +316,11 @@ namespace E9361Debug.Communication
                 m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
                 throw ex;
             }
+        }
+
+        public byte[] Read()
+        {
+            return m_ReceiveBuffer.ToArray();
         }
 
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)

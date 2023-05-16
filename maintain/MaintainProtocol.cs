@@ -104,18 +104,6 @@ namespace E9361Debug.Maintain
         }
     }
 
-    public class MaintainResEventArgs : EventArgs
-    {
-        public readonly MaintainParseRes m_Res;
-
-        public MaintainResEventArgs(MaintainParseRes res)
-        {
-            m_Res = res;
-        }
-    }
-
-    public delegate void MaintainResEventHander(object sender, MaintainResEventArgs e);
-
     public static class MaintainProtocol
     {
         private const byte m_startCode = 0xAA;

@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace E9361Debug.Logical
 {
@@ -31,6 +32,7 @@ namespace E9361Debug.Logical
         Cmd_Type_WindowsCommand,                    //执行Windows的命令
         Cmd_Type_Manual_Operate,                    //手动让用户操作
         Cmd_Type_ADC_Adjust,                        //交采整定
+        Cmd_Type_Console,                           //维护口检测
     }
 
     public enum ResultTypeEnum
@@ -362,7 +364,7 @@ namespace E9361Debug.Logical
             return testResult;
         }
 
-        public static async Task<bool> CheckOneItemAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        public static async Task<bool> CheckOneItemAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             bool res = true;
             if (c == null || !c.IsEnable)
@@ -428,6 +430,10 @@ namespace E9361Debug.Logical
                     case CommandType.Cmd_Type_ADC_Adjust:
                         break;
 
+                    case CommandType.Cmd_Type_Console:
+                        res = await CheckConsoleAsync(port, c, callbackOutput);
+                        break;
+
                     default:
                         break;
                 }
@@ -439,13 +445,15 @@ namespace E9361Debug.Logical
             return res;
         }
 
-        private static async Task<bool> ReadRealDatabaseAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        private static async Task<bool> ReadRealDatabaseAsync(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             bool testResult = true;
             try
             {
                 byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(JsonConvert.DeserializeObject<RealDatabaseCmdParameters>(c.CmdParam));
                 MaintainParseRes res = null;
+
+                CommunicationPort port = portDict[PortUseTypeEnum.Maintaince];
 
                 for (int i = 0; i < 3 && res == null; i++)
                 {
@@ -509,7 +517,7 @@ namespace E9361Debug.Logical
             }
         }
 
-        private static async Task<bool> CheckYXYKAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        private static async Task<bool> CheckYXYKAsync(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             try
             {
@@ -539,6 +547,7 @@ namespace E9361Debug.Logical
                     return false;
                 }
 
+                CommunicationPort port = portDict[PortUseTypeEnum.Maintaince];
                 MaintainParseRes res = null;
                 for (int i = 0; i < 3 && res == null; i++)
                 {
@@ -565,7 +574,7 @@ namespace E9361Debug.Logical
             }
         }
 
-        public static async Task<bool> CheckShellCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        public static async Task<bool> CheckShellCmdAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             try
             {
@@ -592,7 +601,7 @@ namespace E9361Debug.Logical
             }
         }
 
-        public static async Task<bool> CheckSftpFileTransferAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        public static async Task<bool> CheckSftpFileTransferAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             try
             {
@@ -681,7 +690,7 @@ namespace E9361Debug.Logical
             await Task.Delay(50);
         }
 
-        public static async Task<bool> CheckMqttCmdAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        public static async Task<bool> CheckMqttCmdAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             try
             {
@@ -710,11 +719,11 @@ namespace E9361Debug.Logical
             }
         }
 
-        public static async Task<bool> CheckWindowsCommandAsync(CommunicationPort port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        public static async Task<bool> CheckWindowsCommandAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
             try
             {
-                string res = await Task<string>.Run(
+                string res = await Task.Run(
                 async () =>
                 {
                     string cmdres = CommonClass.ExecDosCmd(c.CmdParam);
@@ -732,6 +741,29 @@ namespace E9361Debug.Logical
 
                 return false;
             }
+        }
+
+        public static async Task<bool> CheckConsoleAsync(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            CommunicationPort port = portDict[PortUseTypeEnum.Console];
+
+            callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, c.CmdParam, c.Depth);
+            if (!port.Write(c.CmdParam))
+            {
+                return false;
+            }
+
+            await Task.Delay(c.TimeOut);
+
+            byte[] b = port.Read();
+            if (b == null)
+            {
+                return false;
+            }
+
+            callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, Encoding.UTF8.GetString(b), c.Depth);
+
+            return await JudgeResultBySignAsync(Encoding.UTF8.GetString(b), c.ResultValue, c.ResultSign);
         }
     }
 }
