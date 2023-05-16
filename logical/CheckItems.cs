@@ -745,25 +745,34 @@ namespace E9361Debug.Logical
 
         public static async Task<bool> CheckConsoleAsync(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
-            CommunicationPort port = portDict[PortUseTypeEnum.Console];
-
-            callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, c.CmdParam, c.Depth);
-            if (!port.Write(c.CmdParam))
+            try
             {
+                CommunicationPort port = portDict[PortUseTypeEnum.Console];
+
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, c.CmdParam, c.Depth);
+                if (!port.Write(c.CmdParam))
+                {
+                    return false;
+                }
+
+                await Task.Delay(c.TimeOut);
+
+                byte[] b = port.Read();
+                if (b == null)
+                {
+                    return false;
+                }
+
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, Encoding.UTF8.GetString(b), c.Depth);
+
+                return await JudgeResultBySignAsync(Encoding.UTF8.GetString(b), c.ResultValue, c.ResultSign);
+            }
+            catch (Exception ex)
+            {
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+
                 return false;
             }
-
-            await Task.Delay(c.TimeOut);
-
-            byte[] b = port.Read();
-            if (b == null)
-            {
-                return false;
-            }
-
-            callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, Encoding.UTF8.GetString(b), c.Depth);
-
-            return await JudgeResultBySignAsync(Encoding.UTF8.GetString(b), c.ResultValue, c.ResultSign);
         }
     }
 }
