@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace E9361Debug.Logical
 {
@@ -65,6 +66,13 @@ namespace E9361Debug.Logical
         ResultInfo_Exception
     }
 
+    public enum CheckIsPassed
+    {
+        Check_Init = 0,
+        Check_Is_Passed,
+        Check_Not_passed,
+    }
+
     public class PropertyChangedClass : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -93,6 +101,8 @@ namespace E9361Debug.Logical
         private ObservableCollection<CheckItems> m_Children;
         private int m_Depth;
         private CheckItems m_Father;
+        private Brush m_BackgroundColor;
+        private CheckIsPassed m_CheckIsPassed = CheckIsPassed.Check_Init;
 
         public int Seq
         {
@@ -202,6 +212,42 @@ namespace E9361Debug.Logical
             {
                 m_Father = value;
                 Depth = value.Depth + 1;
+            }
+        }
+
+        public Brush BackgroundColor
+        {
+            get => m_BackgroundColor;
+            set
+            {
+                m_BackgroundColor = value;
+                OnPropertyChanged(nameof(BackgroundColor));
+            }
+        }
+
+        public CheckIsPassed CheckIsPassed
+        {
+            get => m_CheckIsPassed;
+            set
+            {
+                m_CheckIsPassed = value;
+                switch (value)
+                {
+                    case CheckIsPassed.Check_Init:
+                        BackgroundColor = Brushes.Coral;
+                        break;
+
+                    case CheckIsPassed.Check_Is_Passed:
+                        BackgroundColor = Brushes.Green;
+                        break;
+
+                    case CheckIsPassed.Check_Not_passed:
+                        BackgroundColor = Brushes.Red;
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
 
@@ -366,6 +412,7 @@ namespace E9361Debug.Logical
 
         public static async Task<bool> CheckOneItemAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
+            c.CheckIsPassed = CheckIsPassed.Check_Init;
             bool res = true;
             if (c == null || !c.IsEnable)
             {
@@ -442,6 +489,7 @@ namespace E9361Debug.Logical
                 callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
             }
 
+            c.CheckIsPassed = res ? CheckIsPassed.Check_Is_Passed : CheckIsPassed.Check_Not_passed;
             return res;
         }
 

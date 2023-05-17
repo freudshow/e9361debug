@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 5月 17 08:18:19 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 5月 17 14:19:56 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -59,6 +59,40 @@ INSERT INTO t_checkConsolePort (seq, cmdType, cmdParam, resultType, resultValue,
 INSERT INTO t_checkConsolePort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 10, 'ls /home/sysadm/src/
 ', 6, '\w*e9361\w*', 4, '读取e9361程序', 1, 1000, NULL);
 
+-- 表：t_checkEncChip
+DROP TABLE IF EXISTS t_checkEncChip;
+
+CREATE TABLE IF NOT EXISTS t_checkEncChip (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkEncChip (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
+    "RealDataBaseNo": 29,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '加密芯片检测', 1, 3000, NULL);
+INSERT INTO t_checkEncChip (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
+    "RealDataBaseNo": 28,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '4G/5G模块检测', 1, 3000, NULL);
+
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
 
@@ -80,6 +114,7 @@ INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, r
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, NULL, NULL, NULL, NULL, NULL, '遥控遥信检测', 1, 1, 't_checkYKYX');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, NULL, NULL, NULL, NULL, NULL, '检测网口状态', 1, 1, 't_checkNetPort');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, NULL, NULL, NULL, NULL, NULL, '检测Console口', 1, 1, 't_checkConsolePort');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, NULL, NULL, NULL, NULL, NULL, '加密芯片及4G/5G检测', 1, 1, 't_checkEncChip');
 
 -- 表：t_checkNetPort
 DROP TABLE IF EXISTS t_checkNetPort;
