@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周二 5月 16 18:54:46 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 5月 17 08:18:19 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -477,8 +477,8 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
     value TEXT    NOT NULL
 );
 
-INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '1200');
-INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM1');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '115200');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM6');
 
 -- 表：t_YKOnOffEnum
 DROP TABLE IF EXISTS t_YKOnOffEnum;

@@ -32,6 +32,8 @@ namespace E9361Debug.Communication
 
         byte[] Read();
 
+        void Clear();
+
         Task<MaintainParseRes> ReadOneFrameAsync(long timeout);
 
         PortTypeEnum GetPortType();
@@ -301,6 +303,11 @@ namespace E9361Debug.Communication
             return m_ReceiveBuffer.ToArray();
         }
 
+        public void Clear()
+        {
+            m_ReceiveBuffer.Clear();
+        }
+
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             m_ReceiveBuffer.Clear();
@@ -409,6 +416,11 @@ namespace E9361Debug.Communication
             }
 
             return m_AbstractPort.Read();
+        }
+
+        public void Clear()
+        {
+            m_AbstractPort.Clear();
         }
 
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)

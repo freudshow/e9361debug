@@ -149,6 +149,11 @@ namespace E9361Debug.Communication
             return m_ReceiveBuffer.ToArray();
         }
 
+        public void Clear()
+        {
+            m_ReceiveBuffer.Clear();
+        }
+
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)
         {
             if (m_TcpClient == null || m_Stream == null)
@@ -321,6 +326,11 @@ namespace E9361Debug.Communication
         public byte[] Read()
         {
             return m_ReceiveBuffer.ToArray();
+        }
+
+        public void Clear()
+        {
+            m_ReceiveBuffer.Clear();
         }
 
         public async Task<MaintainParseRes> ReadOneFrameAsync(long timeout)

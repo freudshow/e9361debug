@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System;
+using System.Linq;
 
 namespace E9361Debug
 {
@@ -56,37 +58,44 @@ namespace E9361Debug
         /// </summary>
         private void OpenTerminalMaintain()
         {
-            PortTypeEnum e = DataBaseLogical.GetMaintainPortType();
-
-            switch (e)
+            try
             {
-                case PortTypeEnum.PortType_Error:
-                    break;
+                PortTypeEnum e = DataBaseLogical.GetMaintainPortType();
 
-                case PortTypeEnum.PortType_Serial:
-                    break;
+                switch (e)
+                {
+                    case PortTypeEnum.PortType_Error:
+                        break;
 
-                case PortTypeEnum.PortType_Net_UDP_Client:
-                    NetPara udpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalUDPPort(), Mode = PortTypeEnum.PortType_Net_UDP_Client };
-                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_UDP_Client, udpclientpara);
-                    break;
+                    case PortTypeEnum.PortType_Serial:
+                        break;
 
-                case PortTypeEnum.PortType_Net_TCP_Client:
-                    NetPara tcpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalTCPClientPort(), Mode = PortTypeEnum.PortType_Net_TCP_Client };
-                    m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_TCP_Client, tcpclientpara);
-                    break;
+                    case PortTypeEnum.PortType_Net_UDP_Client:
+                        NetPara udpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalUDPPort(), Mode = PortTypeEnum.PortType_Net_UDP_Client };
+                        m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_UDP_Client, udpclientpara);
+                        break;
 
-                case PortTypeEnum.PortType_Net_TCP_Server:
-                    break;
+                    case PortTypeEnum.PortType_Net_TCP_Client:
+                        NetPara tcpclientpara = new NetPara { ServerIP = DataBaseLogical.GetTerminalIP(), ServerPort = DataBaseLogical.GetTerminalTCPClientPort(), Mode = PortTypeEnum.PortType_Net_TCP_Client };
+                        m_CommunicationPort = new CommunicationPort(PortTypeEnum.PortType_Net_TCP_Client, tcpclientpara);
+                        break;
 
-                default:
-                    break;
+                    case PortTypeEnum.PortType_Net_TCP_Server:
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (m_CommunicationPort != null && !m_PortDict.Keys.Contains(PortUseTypeEnum.Maintaince))
+                {
+                    m_CommunicationPort.Open();
+                    m_PortDict[PortUseTypeEnum.Maintaince] = m_CommunicationPort;
+                }
             }
-
-            if (m_CommunicationPort != null)
+            catch (Exception ex)
             {
-                m_CommunicationPort.Open();
-                m_PortDict[PortUseTypeEnum.Maintaince] = m_CommunicationPort;
+                m_ParagraphException.Inlines.Add(new Run { Text = ex.Message, Foreground = Brushes.Red });
             }
         }
 
@@ -95,11 +104,26 @@ namespace E9361Debug
         /// </summary>
         private void OpenConsole()
         {
-            UartPortPara uartPortPara = new UartPortPara { PortName = ConsoleComSet_ComSet.CurrentCom, BaudRate = ConsoleComSet_ComSet.CurrentBaudrate };
-            m_ConsolePort = new CommunicationPort(PortTypeEnum.PortType_Serial, uartPortPara);
-            m_ConsolePort.Open();
+            if (m_ConsolePort != null && m_ConsolePort.IsOpen())
+            {
+                return;
+            }
 
-            m_PortDict[PortUseTypeEnum.Console] = m_ConsolePort;
+            try
+            {
+                UartPortPara uartPortPara = new UartPortPara { PortName = ConsoleComSet_ComSet.CurrentCom, BaudRate = ConsoleComSet_ComSet.CurrentBaudrate };
+                m_ConsolePort = new CommunicationPort(PortTypeEnum.PortType_Serial, uartPortPara);
+                m_ConsolePort.Open();
+
+                if (m_ConsolePort != null && !m_PortDict.Keys.Contains(PortUseTypeEnum.Console))
+                {
+                    m_PortDict[PortUseTypeEnum.Console] = m_ConsolePort;
+                }
+            }
+            catch (Exception ex)
+            {
+                m_ParagraphException.Inlines.Add(new Run { Text = ex.Message, Foreground = Brushes.Red });
+            }
         }
 
         private void InitCheckTree()

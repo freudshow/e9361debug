@@ -763,6 +763,8 @@ namespace E9361Debug.Logical
                     return false;
                 }
 
+                port.Clear();
+
                 callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, Encoding.UTF8.GetString(b), c.Depth);
 
                 return await JudgeResultBySignAsync(Encoding.UTF8.GetString(b), c.ResultValue, c.ResultSign);

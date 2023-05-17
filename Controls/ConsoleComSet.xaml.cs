@@ -81,6 +81,7 @@ namespace E9361Debug.Controls
                     if (dr != null && dr.Length > 0)
                     {
                         ComboBox_ComList.SelectedValue = comname;
+                        m_CurrentCom = comname;
                     }
                 }
                 else if (!string.IsNullOrEmpty(m_CurrentCom))
@@ -121,6 +122,7 @@ namespace E9361Debug.Controls
                 if (dr != null && dr.Length > 0)
                 {
                     ComboBox_BaudList.SelectedValue = baudrate;
+                    m_CurrentBaudrate = baudrate;
                 }
             }
         }
