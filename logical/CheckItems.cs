@@ -732,7 +732,7 @@ namespace E9361Debug.Logical
         public static async Task MqttMessageArrivedAsync(MqttApplicationMessageReceivedEventArgs e)
         {
             string topic = e.ApplicationMessage.Topic;
-            string msg = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            string msg = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.Array);
 
             m_MsgHandle.AddSRMsg(SRMsgType.报文说明, $"topic: {topic}, message: {msg}");
             await Task.Delay(50);
