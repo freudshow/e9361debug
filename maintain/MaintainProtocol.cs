@@ -670,6 +670,62 @@ namespace E9361Debug.Maintain
 
             return frame[8];
         }
+
+        /// <summary>
+        /// 220V 5A 0°整定报文
+        /// </summary>
+        /// <param name="route">第几路</param>
+        /// <returns>报文</returns>
+        public static byte[] Get220V5A0AngleSet(byte route)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_Ade9078Mult;
+            byte subFunc = 0x07;
+            byte[] data = new byte[] { route };
+
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        /// <summary>
+        /// 220V 5A 60°整定报文
+        /// </summary>
+        /// <param name="route">第几路</param>
+        /// <returns>报文</returns>
+        public static byte[] Get220V5A60AngleSet(byte route)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_Ade9078Mult;
+            byte subFunc = 0x13;
+            byte[] data = new byte[] { route };
+
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        /// <summary>
+        /// 恢复ADE9078的默认值
+        /// </summary>
+        /// <param name="route">第几路</param>
+        /// <returns>报文</returns>
+        public static byte[] GetSetADE9078Default(byte route)
+        {
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_Ade9078Mult;
+            byte subFunc = 0x04;
+            byte[] data = new byte[] { route };
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        /// <summary>
+        /// 解析ADE9078整定或者恢复默认后的应答
+        /// </summary>
+        /// <param name="frame">完整的应答报文</param>
+        /// <returns>整定成功 - true; 整定失败 - false</returns>
+        public static bool ParseAdeSetAck(byte[] frame)
+        {
+            if (frame == null || frame.Length < 10)
+            {
+                return false;
+            }
+
+            return frame[8] == 0x11;
+        }
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 16, CharSet = CharSet.Ansi)]
