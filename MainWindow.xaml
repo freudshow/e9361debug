@@ -25,20 +25,15 @@
         </Grid.RowDefinitions>
         <materialDesign:Card Grid.Row="0">
             <Menu materialDesign:MenuAssist.TopLevelMenuItemHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type materialDesign:Card}}, Path=ActualHeight}">
-                <MenuItem Header="File">
-                    <MenuItem x:Name="Menu_Browse" Header="_Browse" />
-                    <MenuItem Header="Item 2" />
-                    <MenuItem Header="Item 3" />
-                </MenuItem>
-                <MenuItem Header="Edit">
-                    <MenuItem Header="Item 1" />
+                <MenuItem Header="文件">
+                    <MenuItem x:Name="Menu_Browse" Header="_配置检测项目" />
                     <MenuItem Header="Item 2" />
                     <MenuItem Header="Item 3" />
                 </MenuItem>
                 <MenuItem
                     x:Name="Menu_About"
                     Click="Menu_About_Click"
-                    Header="About" />
+                    Header="关于" />
             </Menu>
         </materialDesign:Card>
         <ToolBarTray Grid.Row="1">
@@ -60,16 +55,14 @@
             VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="12" />
                 <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Controls:CheckTree
                 x:Name="Controls_CheckTree"
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch" />
-            <Grid Grid.Column="2" VerticalAlignment="Stretch">
+            <Grid Grid.Column="1" VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="4*" />
                     <RowDefinition Height="1*" />

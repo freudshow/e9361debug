@@ -17,6 +17,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Windows.Media;
+using System.Windows;
 
 namespace E9361Debug.Logical
 {
@@ -472,6 +473,7 @@ namespace E9361Debug.Logical
                         break;
 
                     case CommandType.Cmd_Type_Manual_Operate:
+                        res = await CheckManualAsync(port, c, callbackOutput);
                         break;
 
                     case CommandType.Cmd_Type_ADC_Adjust:
@@ -816,6 +818,23 @@ namespace E9361Debug.Logical
                 callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, Encoding.UTF8.GetString(b), c.Depth);
 
                 return await JudgeResultBySignAsync(Encoding.UTF8.GetString(b), c.ResultValue, c.ResultSign);
+            }
+            catch (Exception ex)
+            {
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+
+                return false;
+            }
+        }
+
+        public static async Task<bool> CheckManualAsync(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            try
+            {
+                return await Task.Run(async () =>
+                {
+                    return MessageBox.Show(c.CmdParam, "检测确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+                });
             }
             catch (Exception ex)
             {

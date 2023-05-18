@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 5月 17 14:19:56 2023
+-- SQLiteStudio v3.4.4 生成的文件，周四 5月 18 15:34:21 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -115,6 +115,30 @@ INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, r
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, NULL, NULL, NULL, NULL, NULL, '检测网口状态', 1, 1, 't_checkNetPort');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, NULL, NULL, NULL, NULL, NULL, '检测Console口', 1, 1, 't_checkConsolePort');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, NULL, NULL, NULL, NULL, NULL, '加密芯片及4G/5G检测', 1, 1, 't_checkEncChip');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, NULL, NULL, NULL, NULL, NULL, 'Oled液晶检测', 1, 1, 't_checkManual');
+
+-- 表：t_checkManual
+DROP TABLE IF EXISTS t_checkManual;
+
+CREATE TABLE IF NOT EXISTS t_checkManual (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkManual (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 8, 'Oled液晶是否正常显示?', 2, 'True', 0, 'Oled液晶检测', 1, 3000, NULL);
 
 -- 表：t_checkNetPort
 DROP TABLE IF EXISTS t_checkNetPort;
