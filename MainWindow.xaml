@@ -57,11 +57,13 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
-            <Controls:CheckTree
-                x:Name="Controls_CheckTree"
-                Grid.Column="0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch" />
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
+                <Controls:CheckTree
+                    x:Name="Controls_CheckTree"
+                    Grid.Column="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" />
+            </ScrollViewer>
             <Grid Grid.Column="1" VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="4*" />

@@ -24,8 +24,8 @@
                 <ComboBox
                     Margin="5"
                     VerticalAlignment="Center"
-                    SelectedIndex="0"
                     IsEnabled="False"
+                    SelectedIndex="0"
                     Text="第几路芯片">
                     <ComboBoxItem Content="1" />
                     <ComboBoxItem Content="2" />
@@ -35,19 +35,25 @@
                     <ComboBoxItem Content="6" />
                 </ComboBox>
                 <Button
+                    x:Name="Button_SetDefault"
                     Margin="5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    Click="Button_SetDefault_Click"
                     Content="恢复芯片默认参数" />
                 <Button
+                    x:Name="Button_Set220V5A0Angle"
                     Margin="5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    Click="Button_Set220V5A0Angle_Click"
                     Content="220V 5A 0° 整定" />
                 <Button
+                    x:Name="Button_Set220V5A60Angle"
                     Margin="5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    Click="Button_Set220V5A60Angle_Click"
                     Content="220V 5A 60° 整定" />
             </StackPanel>
         </materialDesign:Card>
