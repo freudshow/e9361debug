@@ -25,7 +25,7 @@
                     Text="检测项目"
                     TextWrapping="Wrap" />
             </materialDesign:Card>
-            <materialDesign:Card Margin="3">
+            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
                 <TreeView
                     x:Name="TreeView_CheckTree"
                     Canvas.Top="1"
@@ -33,7 +33,9 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     MouseDoubleClick="TreeView_CheckTree_MouseDoubleClick"
-                    PreviewMouseRightButtonDown="TreeView_CheckTree_PreviewMouseRightButtonDown">
+                    PreviewMouseRightButtonDown="TreeView_CheckTree_PreviewMouseRightButtonDown"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True" />
@@ -53,7 +55,7 @@
                         </ContextMenu>
                     </TreeView.ContextMenu>
                 </TreeView>
-            </materialDesign:Card>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </UserControl>

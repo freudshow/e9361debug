@@ -189,6 +189,9 @@
     <Compile Include="maintain\MaintainProtocol.cs" />
     <Compile Include="sqlite\SqliteHelper.cs" />
     <Compile Include="ssh\SshClientClass.cs" />
+    <Compile Include="Windows\ADE9078Set.xaml.cs">
+      <DependentUpon>ADE9078Set.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\CheckTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -209,6 +212,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\ADE9078Set.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

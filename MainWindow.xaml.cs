@@ -185,12 +185,29 @@ namespace E9361Debug
             Button_StartDebug.IsEnabled = false;
             m_ParagraphResult.Inlines.Clear();
             m_ParagraphException.Inlines.Clear();
+
             await Task.Run(
                 async () =>
                 {
+                    SetCheckInit(m_CheckItems);
                     _ = await CheckProcess.CheckOneItemAsync(m_PortDict, m_CheckItems, DisplayCheckInfo);
                 });
             Button_StartDebug.IsEnabled = true;
+        }
+
+        private void SetCheckInit(CheckItems checkItems)
+        {
+            if (checkItems != null)
+            {
+                checkItems.CheckIsPassed = CheckIsPassed.Check_Init;
+                if (checkItems.Children != null)
+                {
+                    foreach (var c in checkItems.Children)
+                    {
+                        SetCheckInit(c);
+                    }
+                }
+            }
         }
 
         private void RichTextBox_Result_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

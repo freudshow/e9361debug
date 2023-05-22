@@ -70,6 +70,7 @@ namespace E9361Debug.Logical
     public enum CheckIsPassed
     {
         Check_Init = 0,
+        Check_Start,
         Check_Is_Passed,
         Check_Not_passed,
     }
@@ -175,6 +176,12 @@ namespace E9361Debug.Logical
             set
             {
                 m_IsEnable = value;
+
+                if (!value)
+                {
+                    CheckIsPassed = CheckIsPassed.Check_Init;
+                }
+
                 if (Children != null && Children.Count > 0)
                 {
                     foreach (CheckItems item in Children)
@@ -235,7 +242,11 @@ namespace E9361Debug.Logical
                 switch (value)
                 {
                     case CheckIsPassed.Check_Init:
-                        BackgroundColor = Brushes.Coral;
+                        BackgroundColor = Brushes.White;
+                        break;
+
+                    case CheckIsPassed.Check_Start:
+                        BackgroundColor = Brushes.Yellow;
                         break;
 
                     case CheckIsPassed.Check_Is_Passed:
@@ -420,6 +431,7 @@ namespace E9361Debug.Logical
                 return true;
             }
 
+            c.CheckIsPassed = CheckIsPassed.Check_Start;
             callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
 
             string checkstr = "";
