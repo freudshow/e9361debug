@@ -10,6 +10,7 @@
     Title="计量芯片整定"
     Width="800"
     Height="450"
+    Closed="Window_Closed"
     mc:Ignorable="d">
     <Grid>
         <materialDesign:Card
@@ -22,6 +23,7 @@
                     VerticalAlignment="Center"
                     Text="第几路芯片" />
                 <ComboBox
+                    x:Name="ComboBox_RouteIdx"
                     Margin="5"
                     VerticalAlignment="Center"
                     IsEnabled="False"

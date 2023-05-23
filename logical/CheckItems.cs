@@ -18,6 +18,9 @@ using System.Text;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows;
+using E9361Debug.Windows;
+using System.Web.UI.WebControls.WebParts;
+using E9361DEBUG;
 
 namespace E9361Debug.Logical
 {
@@ -489,6 +492,7 @@ namespace E9361Debug.Logical
                         break;
 
                     case CommandType.Cmd_Type_ADC_Adjust:
+                        res = await CheckADESet(port, c, callbackOutput);
                         break;
 
                     case CommandType.Cmd_Type_Console:
@@ -847,6 +851,29 @@ namespace E9361Debug.Logical
                 {
                     return MessageBox.Show(c.CmdParam, "检测确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
                 });
+            }
+            catch (Exception ex)
+            {
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+
+                return false;
+            }
+        }
+
+        public static async Task<bool> CheckADESet(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            try
+            {
+                bool res = false;
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    ADE9078Set a = new ADE9078Set(portDict[PortUseTypeEnum.Maintaince].IPort, c.TimeOut);
+                    a.CheckResultEvent += e => { res = e; };
+                    a.ShowDialog();
+                });
+
+                return res;
             }
             catch (Exception ex)
             {

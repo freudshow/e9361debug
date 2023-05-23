@@ -345,6 +345,8 @@ namespace E9361Debug.Communication
         private readonly ICommunicationPort m_AbstractPort;
         private Object m_PortPara;
 
+        public ICommunicationPort IPort => m_AbstractPort;
+
         public CommunicationPort(PortTypeEnum portType, Object para)
         {
             if (para == null)

@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周四 5月 18 15:34:21 2023
+-- SQLiteStudio v3.4.4 生成的文件，周二 5月 23 10:35:19 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -28,6 +28,29 @@ INSERT INTO t_basePara (seq, name, value) VALUES (10, 'Base_Para_Maintain_Port_T
 INSERT INTO t_basePara (seq, name, value) VALUES (11, 'Base_Para_Maintain_Default_TCP_Client_Port', '5001');
 INSERT INTO t_basePara (seq, name, value) VALUES (12, 'Base_Para_Upload_Directory', 'upload');
 INSERT INTO t_basePara (seq, name, value) VALUES (13, 'Base_Para_Download_Directory', 'download');
+
+-- 表：t_checkADE9078
+DROP TABLE IF EXISTS t_checkADE9078;
+
+CREATE TABLE IF NOT EXISTS t_checkADE9078 (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 9, '', 2, 'True', 0, 'ADE9078整定', 1, 3000, NULL);
 
 -- 表：t_checkConsolePort
 DROP TABLE IF EXISTS t_checkConsolePort;
@@ -116,6 +139,7 @@ INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, r
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, NULL, NULL, NULL, NULL, NULL, '检测Console口', 1, 1, 't_checkConsolePort');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, NULL, NULL, NULL, NULL, NULL, '加密芯片及4G/5G检测', 1, 1, 't_checkEncChip');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, NULL, NULL, NULL, NULL, NULL, 'Oled液晶检测', 1, 1, 't_checkManual');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, NULL, NULL, NULL, NULL, NULL, 'ADE9078检测', 1, 1, 't_checkADE9078');
 
 -- 表：t_checkManual
 DROP TABLE IF EXISTS t_checkManual;
