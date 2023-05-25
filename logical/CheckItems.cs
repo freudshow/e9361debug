@@ -536,7 +536,7 @@ namespace E9361Debug.Logical
 
                 ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
 
-                if (!data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
+                if (data == null || !data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
                 {
                     return false;
                 }
