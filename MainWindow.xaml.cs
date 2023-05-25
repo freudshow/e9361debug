@@ -180,19 +180,26 @@ namespace E9361Debug
 
         private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)
         {
-            OpenTerminalMaintain();
-            OpenConsole();
-            Button_StartDebug.IsEnabled = false;
-            m_ParagraphResult.Inlines.Clear();
-            m_ParagraphException.Inlines.Clear();
+            try
+            {
+                OpenTerminalMaintain();
+                OpenConsole();
+                Button_StartDebug.IsEnabled = false;
+                m_ParagraphResult.Inlines.Clear();
+                m_ParagraphException.Inlines.Clear();
 
-            await Task.Run(
-                async () =>
-                {
-                    SetCheckInit(m_CheckItems);
-                    _ = await CheckProcess.CheckOneItemAsync(m_PortDict, m_CheckItems, DisplayCheckInfo);
-                });
-            Button_StartDebug.IsEnabled = true;
+                await Task.Run(
+                    async () =>
+                    {
+                        SetCheckInit(m_CheckItems);
+                        _ = await CheckProcess.CheckOneItemAsync(m_PortDict, m_CheckItems, DisplayCheckInfo);
+                    });
+                Button_StartDebug.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                m_ParagraphException.Inlines.Add(new Run { Text = ex.Message, Foreground = Brushes.Red });
+            }
         }
 
         private void SetCheckInit(CheckItems checkItems)
