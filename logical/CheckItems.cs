@@ -38,6 +38,7 @@ namespace E9361Debug.Logical
         Cmd_Type_Manual_Operate,                    //手动让用户操作
         Cmd_Type_ADC_Adjust,                        //交采整定
         Cmd_Type_Console,                           //维护口检测
+        Cmd_Type_SetSerial,                         //设置终端序列号或者ESN号等
     }
 
     public enum ResultTypeEnum
@@ -687,6 +688,7 @@ namespace E9361Debug.Logical
                 {
                     if (string.IsNullOrEmpty(DataBaseLogical.GetUploadDirectory()))
                     {
+                        callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"上传目录未配置, 请联系开发人员!", c.Depth);
                         return false;
                     }
 
@@ -709,6 +711,8 @@ namespace E9361Debug.Logical
                     await m_SshClass.UploadFileToTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
                     string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
+
+                    m_SshClass.DisConnectSftp();
 
                     callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}\n", c.Depth);
 

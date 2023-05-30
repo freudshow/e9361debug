@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周二 5月 23 10:35:19 2023
+-- SQLiteStudio v3.4.4 生成的文件，周二 5月 30 17:27:37 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -458,18 +458,14 @@ echo "persistence true">>/etc/mosquitto.conf&&
 echo "persistence_location /mosquitto/data/">>/etc/mosquitto.conf&&
 echo "log_dest file /mosquitto/log/mosquitto.log">>/etc/mosquitto.conf
 ', 6, '', 0, '修改mosquito配置文件', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'sed -i.bak -r ''s#/bin/mosquitto&#/bin/mosquitto -v -c /etc/mosquitto.conf&#g'' /etc/rc.local
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'sed -i.bak -r ''/\/bin\/mosquitto/d'' /etc/rc.local &&
+sed -i.bak -r ''14i/bin/mosquitto -v -c /etc/mosquitto.conf&'' /etc/rc.local
 ', 6, '', 0, '修改启动脚本rc.local', 1, 3, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 6, '', 6, '', 0, '等待终端重启... ...', 1, 30, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 2, '{
-	"Topic": "e9361app/set/request/e9361esdkapp/version",
-	"Message": "{\"token\": \"200513\",\"timestamp\": \"2019-05-29T19:05:51.641+0800\",\"iHardVer\": \"V1.00.01\",\"iSoftdVer\": \"V1.00.07\",\"eHardVer\": \"SV01.01\",\"eSoftdVer\": \"SV01.007\",\"runtime_min\": 4,\"upprogram\": 0,\"watchdog\": 1}"
-}', 6, '{
-	"Topic": "e9361esdkapp/set/response/e9361appversion",
-	"Message": "{ \"token\": \"200513\", \"timestamp\": \"2019-05-30T05:00:52.832+0800\" }"
-}', 0, '停止看门狗', 1, 3, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 1, ' /bin/mosquitto_pub   -t "e9361app/set/request/e9361esdkapp/version"  -m  "{\"token\": \"200513\", \"timestamp\": \"2023-02-11T09:41:09.845+0800\", \"iHardVer\": \"V1.01.03\", \"iSoftdVer\": \"V1.00.04\", \"eHardVer\": \"SV01.03\", \"eSoftdVer\": \"SV01.004\", \"runtime_min\": 6, \"upprogram\": 0, \"watchdog\": 1 }" -h localhost
+', 6, '', 0, '停止看门狗', 1, 3, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 5, '{
 	"IsUploadFileToTerminal": true,
 	"FullFileNameComputer": "upload\\e9361app",
