@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace E9361Debug
 {
@@ -131,8 +132,15 @@ namespace E9361Debug
             m_CheckItems = new CheckItems
             {
                 IsEnable = true,
-                Description = "总体检测",
-                ChildTableName = DataBaseLogical.GetBaseCheckTableName()
+                Children = new ObservableCollection<CheckItems>
+                {
+                    new CheckItems
+                    {
+                        IsEnable = true,
+                        Description = "总体检测",
+                        ChildTableName = DataBaseLogical.GetBaseCheckTableName()
+                    }
+                }
             };
 
             Controls_CheckTree.SetDataSource(m_CheckItems);

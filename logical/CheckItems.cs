@@ -684,6 +684,12 @@ namespace E9361Debug.Logical
 
                 SftpFileTransferParameters param = JsonConvert.DeserializeObject<SftpFileTransferParameters>(c.CmdParam);
 
+                if (param == null)
+                {
+                    callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"文件传输的配置错误, 请联系开发人员!", c.Depth);
+                    return false;
+                }
+
                 if (param.IsUploadFileToTerminal)
                 {
                     if (string.IsNullOrEmpty(DataBaseLogical.GetUploadDirectory()))
@@ -739,6 +745,8 @@ namespace E9361Debug.Logical
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
 
                     callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}", c.Depth);
+
+                    m_SshClass.DisConnectSftp();
 
                     return cMd5 == tMd5;
                 }
