@@ -246,7 +246,7 @@ namespace E9361Debug.Logical
                 switch (value)
                 {
                     case CheckIsPassed.Check_Init:
-                        BackgroundColor = Brushes.White;
+                        BackgroundColor = Brushes.LightGray;
                         break;
 
                     case CheckIsPassed.Check_Start:
@@ -428,29 +428,39 @@ namespace E9361Debug.Logical
 
         public static async Task<bool> CheckOneItemAsync(Dictionary<PortUseTypeEnum, CommunicationPort> port, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
         {
-            c.CheckIsPassed = CheckIsPassed.Check_Init;
             bool res = true;
-            if (c == null || !c.IsEnable)
+            if (c == null)
             {
                 return true;
             }
 
-            c.CheckIsPassed = CheckIsPassed.Check_Start;
             callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, res, $"[{c.Description}], 检测开始\n", c.Depth);
 
             string checkstr = "";
             if (c.Children != null)
             {
+                bool isEnable = false;
                 foreach (CheckItems item in c.Children)
                 {
-                    res &= await CheckOneItemAsync(port, item, callbackOutput);
+                    if (item.IsEnable)
+                    {
+                        isEnable = true;
+                        c.CheckIsPassed = CheckIsPassed.Check_Start;
+                        res &= await CheckOneItemAsync(port, item, callbackOutput);
+                    }
                 }
 
                 checkstr = res ? "" : "不";
                 callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
+                if (isEnable)
+                {
+                    c.CheckIsPassed = res ? CheckIsPassed.Check_Is_Passed : CheckIsPassed.Check_Not_passed;
+                }
             }
             else
             {
+                c.CheckIsPassed = CheckIsPassed.Check_Init;
+
                 switch (c.CmdType)
                 {
                     case CommandType.Cmd_Type_Invalid:
@@ -481,7 +491,7 @@ namespace E9361Debug.Logical
 
                     case CommandType.Cmd_Type_DelaySomeTime:
                         res = true;
-                        await Task.Delay(c.TimeOut * 1000);
+                        await Task.Delay(c.TimeOut);
                         break;
 
                     case CommandType.Cmd_Type_WindowsCommand:
@@ -506,9 +516,9 @@ namespace E9361Debug.Logical
 
                 checkstr = res ? "" : "不";
                 callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
+                c.CheckIsPassed = res ? CheckIsPassed.Check_Is_Passed : CheckIsPassed.Check_Not_passed;
             }
 
-            c.CheckIsPassed = res ? CheckIsPassed.Check_Is_Passed : CheckIsPassed.Check_Not_passed;
             return res;
         }
 
@@ -656,6 +666,8 @@ namespace E9361Debug.Logical
                 }
 
                 string res = m_SshClass.ExecCmd(c.CmdParam);
+                await Task.Delay(c.TimeOut);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"执行结果: {res}", c.Depth);
                 bool testres = await JudgeResultBySignAsync(res, c.ResultValue, c.ResultSign);
                 m_SshClass.DisConnectSSH();
                 return testres;
@@ -718,8 +730,6 @@ namespace E9361Debug.Logical
                     string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
 
-                    m_SshClass.DisConnectSftp();
-
                     callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}\n", c.Depth);
 
                     return cMd5 == tMd5;
@@ -745,8 +755,6 @@ namespace E9361Debug.Logical
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
 
                     callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}", c.Depth);
-
-                    m_SshClass.DisConnectSftp();
 
                     return cMd5 == tMd5;
                 }
@@ -785,7 +793,7 @@ namespace E9361Debug.Logical
                 MqttPublishParameters para = JsonConvert.DeserializeObject<MqttPublishParameters>(c.CmdParam);
                 m_MqttHelper.PublishMessage(para.Topic, para.Message);
 
-                await Task.Delay(c.TimeOut * 1000);
+                await Task.Delay(c.TimeOut);
 
                 return true;
             }
@@ -861,6 +869,7 @@ namespace E9361Debug.Logical
             {
                 return await Task.Run(async () =>
                 {
+                    await Task.Delay(10);//消除编译警告
                     return MessageBox.Show(c.CmdParam, "检测确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
                 });
             }
@@ -877,8 +886,8 @@ namespace E9361Debug.Logical
             try
             {
                 bool res = false;
-
-                App.Current.Dispatcher.Invoke(() =>
+                await Task.Delay(10);//消除编译警告
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     ADE9078Set a = new ADE9078Set(portDict[PortUseTypeEnum.Maintaince].IPort, c.TimeOut);
                     a.CheckResultEvent += e => { res = e; };

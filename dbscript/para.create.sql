@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 5月 31 15:51:55 2023
+-- SQLiteStudio v3.4.4 生成的文件，周四 6月 1 09:02:02 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -453,23 +453,23 @@ CREATE TABLE IF NOT EXISTS t_preCheckSteps (
 );
 
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 1, ' /bin/mosquitto_pub   -t "e9361app/set/request/e9361esdkapp/version"  -m  "{\"token\": \"200513\", \"timestamp\": \"2023-02-11T09:41:09.845+0800\", \"iHardVer\": \"V1.01.03\", \"iSoftdVer\": \"V1.00.04\", \"eHardVer\": \"SV01.03\", \"eSoftdVer\": \"SV01.004\", \"runtime_min\": 6, \"upprogram\": 0, \"watchdog\": 1 }" -h localhost
-', 6, '', 0, '停止看门狗', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3, NULL);
+', 6, '', 0, '停止看门狗', 1, 3000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3000, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 5, '{
 	"IsUploadFileToTerminal": true,
 	"FullFileNameComputer": "upload\\e9361app",
 	"FullFileNameTerminal": "/home/sysadm/src/e9361app"
-}', 6, '', 0, '下载最新的e9361app程序', 1, 20, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 1, 'chmod +x /home/sysadm/src/e9361app', 6, '', 0, '给e9361app赋予可执行权限', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, 'mkdir -p /data/app/e9361app/root/para && rm -rf /data/app/e9361app/root/para/*', 6, '', 0, '新建配置目录', 1, 3, NULL);
+}', 6, '', 0, '下载最新的e9361app程序', 1, 20000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 1, 'chmod +x /home/sysadm/src/e9361app', 6, '', 0, '给e9361app赋予可执行权限', 1, 3000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, 'mkdir -p /data/app/e9361app/root/para && rm -rf /data/app/e9361app/root/para/*', 6, '', 0, '新建配置目录', 1, 2000, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 5, '{
 	"IsUploadFileToTerminal": true,
 	"FullFileNameComputer": "upload\\c0_test.zip",
-	"FullFileNameTerminal": "/data/app/e9361app/root/para"
-}', 6, '', 0, '下载测试工装配置', 1, 5, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 1, 'unzip -x /data/app/e9361app/root/para/c0_test.zip -d /data/app/e9361app/root/para/ && mv /data/app/e9361app/root/para/localpara/localpara.json /data/app/e9361app/ && rm -rf /data/app/e9361app/root/para/c0_test.zip', 6, '', 0, '解压配置文件并清理压缩包', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 1, '/sbin/reboot', 6, '', 0, '再次重启终端', 1, 3, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 6, '', 6, '', 0, '等待终端重启... ...', 1, 60, NULL);
+	"FullFileNameTerminal": "/data/app/e9361app/root/para/c0_test.zip"
+}', 6, '', 0, '下载测试工装配置', 1, 2000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 1, 'unzip -x /data/app/e9361app/root/para/c0_test.zip -d /data/app/e9361app/root/para/ && mv /data/app/e9361app/root/para/localpara/localpara.json /data/app/e9361app/ && rm -rf /data/app/e9361app/root/para/c0_test.zip', 6, '\w*inflating\w*', 4, '解压配置文件并清理压缩包', 1, 2000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 6, '', 6, '', 0, '等待终端重启... ...', 1, 30000, NULL);
 
 -- 表：t_realDataTypeEnum
 DROP TABLE IF EXISTS t_realDataTypeEnum;

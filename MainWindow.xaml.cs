@@ -200,7 +200,7 @@ namespace E9361Debug
                     async () =>
                     {
                         SetCheckInit(m_CheckItems);
-                        _ = await CheckProcess.CheckOneItemAsync(m_PortDict, m_CheckItems, DisplayCheckInfo);
+                        _ = await CheckProcess.CheckOneItemAsync(m_PortDict, m_CheckItems.Children[0], DisplayCheckInfo);
                     });
                 Button_StartDebug.IsEnabled = true;
             }
