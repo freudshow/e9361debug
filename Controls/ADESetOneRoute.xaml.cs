@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -91,8 +92,6 @@ namespace E9361Debug.Controls
                     item.ActualValue = data.RealDataArray[0].FloatValue;
                 }
             }
-
-            await Task.Delay(10);
         }
 
         private async void Button_SetDefault_Click(object sender, RoutedEventArgs e)

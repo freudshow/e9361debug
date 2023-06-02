@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周五 6月 2 15:21:00 2023
+-- SQLiteStudio v3.4.4 生成的文件，周五 6月 2 16:42:19 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -60,42 +60,42 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 126,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 127,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 128,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 129,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 130,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				}
 			]
 		},
@@ -107,42 +107,42 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 126,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 127,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 128,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 129,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 130,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				}
 			]
 		},
@@ -154,42 +154,42 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 126,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 127,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 128,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 129,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 130,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				}
 			]
 		},
@@ -201,42 +201,42 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 126,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 127,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 128,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 129,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 130,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				}
 			]
 		},
@@ -248,42 +248,42 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 126,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 127,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 128,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 129,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 130,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				}
 			]
 		},
@@ -295,42 +295,42 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 126,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 127,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 128,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 129,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				},
 				{
 					"RealDatabaseNo": 130,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 1,
-					"ErrorThreshold": 1.0
+					"ErrorThreshold": 5.0
 				}
 			]
 		}

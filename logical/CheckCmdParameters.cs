@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Web.Hosting;
+using System.Windows.Media;
 
 namespace E9361Debug.logical
 {
@@ -63,6 +64,7 @@ namespace E9361Debug.logical
 
         private bool m_Result;
         private string m_RessultString;
+        private SolidColorBrush m_ForegroundColor;
 
         /// <summary>
         /// 实时库序号
@@ -114,8 +116,6 @@ namespace E9361Debug.logical
             {
                 m_ActualValue = value;
 
-                m_ErrorThreshold = value;
-
                 double abs = Math.Abs(value - StandardValue);
                 switch (ErrorThresholdType)
                 {
@@ -165,6 +165,7 @@ namespace E9361Debug.logical
             set
             {
                 m_ErrorThreshold = value;
+
                 switch (ErrorThresholdType)
                 {
                     case MeterErrorType.Error_ABS_Value:
@@ -212,24 +213,26 @@ namespace E9361Debug.logical
             set
             {
                 m_Actual_Error = value;
+
                 switch (ErrorThresholdType)
                 {
                     case MeterErrorType.Error_ABS_Value:
-                        ActualErrorString = $"|{value}|";
+                        ActualErrorString = $"|{value.ToString("0.000")}|";
                         break;
 
                     case MeterErrorType.Error_Percent:
-                        ActualErrorString = $"{value}%";
+                        ActualErrorString = $"{value.ToString("0.000")}%";
                         break;
 
                     case MeterErrorType.Error_Permillage:
-                        ActualErrorString = $"{value}‰";
+                        ActualErrorString = $"{value.ToString("0.000")}‰";
                         break;
 
                     default:
                         break;
                 }
 
+                Result = value < ErrorThreshold;
                 OnPropertyChanged(nameof(ActualError));
             }
         }
@@ -259,6 +262,7 @@ namespace E9361Debug.logical
             {
                 m_Result = value;
                 ResultString = value ? "合格" : "不合格";
+                ForegroundColor = value ? Brushes.Green : Brushes.Red;
                 OnPropertyChanged(nameof(Result));
             }
         }
@@ -276,6 +280,20 @@ namespace E9361Debug.logical
                 OnPropertyChanged(nameof(ResultString));
             }
         }
+
+        /// <summary>
+        /// 前景颜色
+        /// </summary>
+        [JsonIgnore]
+        public SolidColorBrush ForegroundColor
+        {
+            get => m_ForegroundColor;
+            set
+            {
+                m_ForegroundColor = value;
+                OnPropertyChanged(nameof(ForegroundColor));
+            }
+        }
     }
 
     public class OneRouteADEError
@@ -286,6 +304,27 @@ namespace E9361Debug.logical
         /// 取值范围0~5
         /// </summary>
         public int RouteNo;
+
+        public bool IsResultPass
+        {
+            get
+            {
+                bool res = true;
+                if (ItemList != null && ItemList.Count > 0)
+                {
+                    foreach (var item in ItemList)
+                    {
+                        if (!item.Result)
+                        {
+                            res = false;
+                            break;
+                        }
+                    }
+                }
+
+                return res;
+            }
+        }
 
         /// <summary>
         /// 参数列表

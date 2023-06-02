@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows;
 using E9361Debug.Controls;
 using System.Windows.Controls;
+using System.Threading.Tasks;
 
 namespace E9361Debug.Windows
 {
@@ -39,25 +40,19 @@ namespace E9361Debug.Windows
                 return;
             }
 
-            if (m_MultiRouteADEError.RouteList.Count > 6)
-            {
-                MessageBox.Show("超过最大采集路数");
-                return;
-            }
-
             int cols = (int)Math.Sqrt(m_MultiRouteADEError.RouteList.Count);
             int rows = m_MultiRouteADEError.RouteList.Count / cols;
             rows += m_MultiRouteADEError.RouteList.Count % cols > 0 ? 1 : 0;
             Grid_Routes.RowDefinitions.Clear();
             for (int i = 0; i < rows; i++)
             {
-                Grid_Routes.RowDefinitions.Add(new System.Windows.Controls.RowDefinition());
+                Grid_Routes.RowDefinitions.Add(new RowDefinition());
             }
 
             Grid_Routes.ColumnDefinitions.Clear();
             for (int i = 0; i < cols; i++)
             {
-                Grid_Routes.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition());
+                Grid_Routes.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
             foreach (var item in m_MultiRouteADEError.RouteList)
@@ -73,18 +68,33 @@ namespace E9361Debug.Windows
 
         private async void RefreshDataAsync()
         {
-            foreach (var item in Grid_Routes.Children)
+            while (true)
             {
-                ADESetOneRoute a = item as ADESetOneRoute;
-                if (a != null)
+                foreach (var item in Grid_Routes.Children)
                 {
-                    await a.ReadValuesAsync();
+                    ADESetOneRoute a = item as ADESetOneRoute;
+                    if (a != null)
+                    {
+                        await a.ReadValuesAsync();
+                    }
+
+                    await Task.Delay(50);
                 }
             }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            m_Result = true;
+            foreach (var item in m_MultiRouteADEError.RouteList)
+            {
+                if (item != null && !item.IsResultPass)
+                {
+                    m_Result = false;
+                    break;
+                }
+            }
+
             CheckResultEvent(m_Result);
         }
     }

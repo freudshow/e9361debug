@@ -6,9 +6,8 @@
     xmlns:local="clr-namespace:E9361Debug.Controls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     mc:Ignorable="d">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -82,18 +81,20 @@
                     CanUserResize="False"
                     Header="误差限"
                     IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="3*"
-                    Binding="{Binding ActualErrorString}"
-                    CanUserResize="False"
-                    Header="实际误差"
-                    IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="3*"
-                    Binding="{Binding ResultString}"
-                    CanUserResize="False"
-                    Header="是否合格"
-                    IsReadOnly="True" />
+                <DataGridTemplateColumn Header="实际误差">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="{Binding ForegroundColor}" Text="{Binding ActualErrorString}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="是否合格">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="{Binding ForegroundColor}" Text="{Binding ResultString}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
