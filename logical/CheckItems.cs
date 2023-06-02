@@ -444,6 +444,7 @@ namespace E9361Debug.Logical
                 {
                     if (item.IsEnable)
                     {
+                        c.CheckIsPassed = CheckIsPassed.Check_Init;
                         isEnable = true;
                         c.CheckIsPassed = CheckIsPassed.Check_Start;
                         res &= await CheckOneItemAsync(port, item, callbackOutput);
@@ -836,6 +837,7 @@ namespace E9361Debug.Logical
                 CommunicationPort port = portDict[PortUseTypeEnum.Console];
 
                 callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, c.CmdParam, c.Depth);
+                port.Clear();
                 if (!port.Write(c.CmdParam))
                 {
                     return false;
