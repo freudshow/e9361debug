@@ -20,23 +20,9 @@
             VerticalAlignment="Stretch">
             <StackPanel Orientation="Horizontal">
                 <TextBlock
+                    x:Name="TextBlock_Route"
                     Margin="5"
-                    VerticalAlignment="Center"
-                    Text="第几路芯片" />
-                <ComboBox
-                    x:Name="ComboBox_RouteIdx"
-                    Margin="5"
-                    VerticalAlignment="Center"
-                    IsEnabled="False"
-                    SelectedIndex="0"
-                    Text="第几路芯片">
-                    <ComboBoxItem Content="1" />
-                    <ComboBoxItem Content="2" />
-                    <ComboBoxItem Content="3" />
-                    <ComboBoxItem Content="4" />
-                    <ComboBoxItem Content="5" />
-                    <ComboBoxItem Content="6" />
-                </ComboBox>
+                    VerticalAlignment="Center" />
                 <Button
                     x:Name="Button_SetDefault"
                     Margin="5"
@@ -60,7 +46,11 @@
                     Content="220V 5A 60° 整定" />
             </StackPanel>
         </materialDesign:Card>
-        <DataGrid x:Name="DataGrid_DisplayItems" Grid.Row="1">
+        <DataGrid
+            x:Name="DataGrid_DisplayItems"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="3*"
@@ -94,7 +84,7 @@
                     IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="3*"
-                    Binding="{Binding ActualError}"
+                    Binding="{Binding ActualErrorString}"
                     CanUserResize="False"
                     Header="实际误差"
                     IsReadOnly="True" />

@@ -45,6 +45,10 @@ namespace E9361Debug.Controls
             m_Port = port;
 
             DataGrid_DisplayItems.ItemsSource = m_OneRouteADEError.ItemList;
+            if (m_OneRouteADEError != null)
+            {
+                TextBlock_Route.Text = $"第[{m_OneRouteADEError.RouteNo + 1}]路芯片";
+            }
         }
 
         public async Task ReadValuesAsync()
@@ -71,27 +75,24 @@ namespace E9361Debug.Controls
                 }
             }
 
-            while (true)
+            foreach (var item in m_OneRouteADEError.ItemList)
             {
-                foreach (var item in m_OneRouteADEError.ItemList)
+                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(dict[item.RealDatabaseNo]);
+                m_Port.Write(b, 0, b.Length);
+                MaintainParseRes res = await m_Port.ReadOneFrameAsync(1000);
+                if (res != null)
                 {
-                    byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(dict[item.RealDatabaseNo]);
-                    m_Port.Write(b, 0, b.Length);
-                    MaintainParseRes res = await m_Port.ReadOneFrameAsync(100);
-                    if (res != null)
+                    ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
+                    if (data == null || !data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
                     {
-                        ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
-                        if (data == null || !data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
-                        {
-                            continue;
-                        }
-
-                        item.ActualValue = data.RealDataArray[0].FloatValue;
+                        continue;
                     }
-                }
 
-                await Task.Delay(10);
+                    item.ActualValue = data.RealDataArray[0].FloatValue;
+                }
             }
+
+            await Task.Delay(10);
         }
 
         private async void Button_SetDefault_Click(object sender, RoutedEventArgs e)
@@ -118,7 +119,7 @@ namespace E9361Debug.Controls
 
             try
             {
-                byte route = Convert.ToByte(ComboBox_RouteIdx.SelectedIndex);
+                byte route = (byte)m_OneRouteADEError.RouteNo;
                 byte[] b = null;
                 switch (t)
                 {

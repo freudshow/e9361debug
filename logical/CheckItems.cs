@@ -666,7 +666,7 @@ namespace E9361Debug.Logical
 
                 string res = m_SshClass.ExecCmd(c.CmdParam);
                 await Task.Delay(c.TimeOut);
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"执行结果: {res}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"执行结果: {res}\n", c.Depth);
                 bool testres = await JudgeResultBySignAsync(res, c.ResultValue, c.ResultSign);
                 m_SshClass.DisConnectSSH();
                 return testres;

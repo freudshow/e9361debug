@@ -42,11 +42,12 @@ namespace E9361Debug.Windows
             if (m_MultiRouteADEError.RouteList.Count > 6)
             {
                 MessageBox.Show("超过最大采集路数");
+                return;
             }
 
-            int cols = 2;
-            int rows = m_MultiRouteADEError.RouteList.Count / cols + m_MultiRouteADEError.RouteList.Count % cols > 0 ? 1 : 0;
-
+            int cols = (int)Math.Sqrt(m_MultiRouteADEError.RouteList.Count);
+            int rows = m_MultiRouteADEError.RouteList.Count / cols;
+            rows += m_MultiRouteADEError.RouteList.Count % cols > 0 ? 1 : 0;
             Grid_Routes.RowDefinitions.Clear();
             for (int i = 0; i < rows; i++)
             {
@@ -59,21 +60,26 @@ namespace E9361Debug.Windows
                 Grid_Routes.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition());
             }
 
-            for (int i = 0; i < m_MultiRouteADEError.RouteList.Count; i++)
+            foreach (var item in m_MultiRouteADEError.RouteList)
             {
-                var c = new ADESetOneRoute(m_MultiRouteADEError.RouteList[i], m_Port);
-                Grid_Routes.Children.Add(c);
-                Grid.SetRow(c, i / m_MultiRouteADEError.RouteList.Count);
-                Grid.SetColumn(c, i % cols);
+                var r = new ADESetOneRoute(item, m_Port);
+                Grid_Routes.Children.Add(r);
+                int row = item.RouteNo / cols;
+                int col = item.RouteNo % cols;
+                Grid.SetRow(r, row);
+                Grid.SetColumn(r, col);
             }
         }
 
         private async void RefreshDataAsync()
         {
-            for (int i = 0; i < Grid_Routes.Children.Count; i++)
+            foreach (var item in Grid_Routes.Children)
             {
-                ADESetOneRoute a = (ADESetOneRoute)Grid_Routes.Children[i];
-                await a.ReadValuesAsync();
+                ADESetOneRoute a = item as ADESetOneRoute;
+                if (a != null)
+                {
+                    await a.ReadValuesAsync();
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using E9361Debug.Logical;
 using E9361Debug.Maintain;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,6 +59,7 @@ namespace E9361Debug.logical
         private double m_ErrorThreshold;
         private string m_ErrorThresholdString;
         private double m_Actual_Error;
+        private string m_ActualErrorString;
 
         private bool m_Result;
         private string m_RessultString;
@@ -104,6 +106,7 @@ namespace E9361Debug.logical
         /// <summary>
         /// 实际值
         /// </summary>
+        [JsonIgnore]
         public double ActualValue
         {
             get => m_ActualValue;
@@ -188,6 +191,7 @@ namespace E9361Debug.logical
         /// <summary>
         /// 呈现给用户的误差限
         /// </summary>
+        [JsonIgnore]
         public string ErrorThresholdString
         {
             get => m_ErrorThresholdString;
@@ -201,19 +205,53 @@ namespace E9361Debug.logical
         /// <summary>
         /// 实际误差
         /// </summary>
+        [JsonIgnore]
         public double ActualError
         {
             get => m_Actual_Error;
             set
             {
                 m_Actual_Error = value;
+                switch (ErrorThresholdType)
+                {
+                    case MeterErrorType.Error_ABS_Value:
+                        ActualErrorString = $"|{value}|";
+                        break;
+
+                    case MeterErrorType.Error_Percent:
+                        ActualErrorString = $"{value}%";
+                        break;
+
+                    case MeterErrorType.Error_Permillage:
+                        ActualErrorString = $"{value}‰";
+                        break;
+
+                    default:
+                        break;
+                }
+
                 OnPropertyChanged(nameof(ActualError));
+            }
+        }
+
+        /// <summary>
+        /// 实际误差
+        /// </summary>
+        [JsonIgnore]
+        public string ActualErrorString
+        {
+            get => m_ActualErrorString;
+            set
+            {
+                m_ActualErrorString = value;
+                OnPropertyChanged(nameof(ActualErrorString));
             }
         }
 
         /// <summary>
         /// 当前项是否合格
         /// </summary>
+        [JsonIgnore]
         public bool Result
         {
             get => m_Result;
@@ -228,6 +266,7 @@ namespace E9361Debug.logical
         /// <summary>
         /// 呈现给用户的检测结果
         /// </summary>
+        [JsonIgnore]
         public string ResultString
         {
             get => m_RessultString;
