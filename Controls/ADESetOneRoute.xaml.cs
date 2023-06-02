@@ -37,8 +37,7 @@ namespace E9361Debug.Controls
         private OneRouteADEError m_OneRouteADEError;
         private readonly ICommunicationPort m_Port;
         private bool m_Result = true;
-
-        private Dictionary<ushort, RealDatabaseCmdParameters> m_Dict = new Dictionary<ushort, RealDatabaseCmdParameters>();
+        private readonly Dictionary<ushort, RealDatabaseCmdParameters> m_Dict = new Dictionary<ushort, RealDatabaseCmdParameters>();
 
         public ADESetOneRoute(OneRouteADEError e, ICommunicationPort port)
         {
