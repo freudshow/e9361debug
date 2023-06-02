@@ -173,6 +173,9 @@
     <Compile Include="common\common.cs" />
     <Compile Include="communication\CommunicateNet.cs" />
     <Compile Include="communication\CommunicatePort.cs" />
+    <Compile Include="Controls\ADESetOneRoute.xaml.cs">
+      <DependentUpon>ADESetOneRoute.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CheckTree.xaml.cs">
       <DependentUpon>CheckTree.xaml</DependentUpon>
     </Compile>
@@ -192,6 +195,10 @@
     <Compile Include="Windows\ADE9078Set.xaml.cs">
       <DependentUpon>ADE9078Set.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\ADESetOneRoute.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\CheckTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

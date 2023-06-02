@@ -7,7 +7,6 @@ using System.IO.Ports;
 using System.Management;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls.WebParts;
 
 namespace E9361Debug.Communication
 {

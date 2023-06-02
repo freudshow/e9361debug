@@ -1,15 +1,15 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
 using E9361Debug.Logical;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System;
-using System.Linq;
-using System.Collections.ObjectModel;
 
 namespace E9361Debug
 {
