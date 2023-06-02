@@ -38,6 +38,8 @@ namespace E9361Debug.Controls
         private readonly ICommunicationPort m_Port;
         private bool m_Result = true;
 
+        private Dictionary<ushort, RealDatabaseCmdParameters> m_Dict = new Dictionary<ushort, RealDatabaseCmdParameters>();
+
         public ADESetOneRoute(OneRouteADEError e, ICommunicationPort port)
         {
             InitializeComponent();
@@ -50,6 +52,27 @@ namespace E9361Debug.Controls
             {
                 TextBlock_Route.Text = $"第[{m_OneRouteADEError.RouteNo + 1}]路芯片";
             }
+
+            m_Dict.Clear();
+
+            if (m_OneRouteADEError != null && m_OneRouteADEError.ItemList != null && m_OneRouteADEError.ItemList.Count > 0)
+            {
+                foreach (var item in m_OneRouteADEError.ItemList)
+                {
+                    RealDatabaseCmdParameters p = new RealDatabaseCmdParameters
+                    {
+                        RealDataBaseNo = item.RealDatabaseNo,
+                        TeleType = RealDataTeleTypeEnum.Real_Data_TeleType_YC,
+                        DataType = RealDataDataTypeEnum.Real_Data_type_Float,
+                        DataItemCount = 1
+                    };
+
+                    if (!m_Dict.Keys.Contains(item.RealDatabaseNo))
+                    {
+                        m_Dict.Add(item.RealDatabaseNo, p);
+                    }
+                }
+            }
         }
 
         public async Task ReadValuesAsync()
@@ -59,26 +82,9 @@ namespace E9361Debug.Controls
                 return;
             }
 
-            Dictionary<ushort, RealDatabaseCmdParameters> dict = new Dictionary<ushort, RealDatabaseCmdParameters>();
             foreach (var item in m_OneRouteADEError.ItemList)
             {
-                RealDatabaseCmdParameters p = new RealDatabaseCmdParameters
-                {
-                    RealDataBaseNo = item.RealDatabaseNo,
-                    TeleType = RealDataTeleTypeEnum.Real_Data_TeleType_YC,
-                    DataType = RealDataDataTypeEnum.Real_Data_type_Float,
-                    DataItemCount = 1
-                };
-
-                if (!dict.Keys.Contains(item.RealDatabaseNo))
-                {
-                    dict.Add(item.RealDatabaseNo, p);
-                }
-            }
-
-            foreach (var item in m_OneRouteADEError.ItemList)
-            {
-                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(dict[item.RealDatabaseNo]);
+                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(m_Dict[item.RealDatabaseNo]);
                 m_Port.Write(b, 0, b.Length);
                 MaintainParseRes res = await m_Port.ReadOneFrameAsync(1000);
                 if (res != null)
