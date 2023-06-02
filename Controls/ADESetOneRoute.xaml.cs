@@ -45,10 +45,9 @@ namespace E9361Debug.Controls
             m_Port = port;
 
             DataGrid_DisplayItems.ItemsSource = m_OneRouteADEError.ItemList;
-            ReadValuesAsync();
         }
 
-        private async void ReadValuesAsync()
+        public async Task ReadValuesAsync()
         {
             if (m_OneRouteADEError == null || m_OneRouteADEError.ItemList == null || m_OneRouteADEError.ItemList.Count <= 0)
             {

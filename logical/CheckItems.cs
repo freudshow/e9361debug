@@ -889,7 +889,7 @@ namespace E9361Debug.Logical
                 await Task.Delay(10);//消除编译警告
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ADE9078Set a = new ADE9078Set(portDict[PortUseTypeEnum.Maintaince].IPort, c.TimeOut);
+                    ADE9078Set a = new ADE9078Set(portDict[PortUseTypeEnum.Maintaince].IPort, JsonConvert.DeserializeObject<MultiRouteADEError>(c.CmdParam));
                     a.CheckResultEvent += e => { res = e; };
                     a.ShowDialog();
                 });

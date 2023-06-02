@@ -326,7 +326,7 @@ namespace E9361Debug.Communication
                         break;
                     }
 
-                    await Task.Delay(100);
+                    await Task.Delay(1);
                 }
             }
             catch (Exception ex)
