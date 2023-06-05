@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周五 6月 2 17:25:17 2023
+-- SQLiteStudio v3.4.4 生成的文件，周一 6月 5 16:36:01 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -653,6 +653,28 @@ INSERT INTO t_checkEncChip (seq, cmdType, cmdParam, resultType, resultValue, res
     "DataItemCount": 1
 }', 1, '1.0', 0, '4G/5G模块检测', 1, 3000, NULL);
 
+-- 表：t_checkGPS
+DROP TABLE IF EXISTS t_checkGPS;
+
+CREATE TABLE IF NOT EXISTS t_checkGPS (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
 
@@ -677,6 +699,79 @@ INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, r
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, NULL, NULL, NULL, NULL, NULL, '加密芯片及4G/5G检测', 1, 1, 't_checkEncChip');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, NULL, NULL, NULL, NULL, NULL, 'Oled液晶检测', 1, 1, 't_checkManual');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, NULL, NULL, NULL, NULL, NULL, 'ADE9078检测', 1, 1, 't_checkADE9078');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, NULL, NULL, NULL, NULL, NULL, 'USB检测', 1, 1, 't_checkUSB');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, NULL, NULL, NULL, NULL, NULL, '按键检测', 1, 1, 't_checkKeyPress');
+
+-- 表：t_checkKeyPress
+DROP TABLE IF EXISTS t_checkKeyPress;
+
+CREATE TABLE IF NOT EXISTS t_checkKeyPress (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 8, '请按下"返回"键, 并保持5秒', 6, '', 0, '按下返回键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
+    "RealDataBaseNo": 16,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取返回键的值', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 8, '请按下"左"键, 并保持5秒', 6, '', 0, '按下左键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '{
+    "RealDataBaseNo": 13,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取左键的值', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 8, '请按下"下"键, 并保持5秒', 6, '', 0, '按下下键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '{
+    "RealDataBaseNo": 14,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取下键的值', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 8, '请按下"复归"键, 并保持5秒', 6, '', 0, '按下复归键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 3, '{
+    "RealDataBaseNo": 19,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取复归键的值', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 8, '请按下"上"键, 并保持5秒', 6, '', 0, '按下上键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, 3, '{
+    "RealDataBaseNo": 17,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取上键的值', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (11, 8, '请按下"右"键, 并保持5秒', 6, '', 0, '按下右键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (12, 3, '{
+    "RealDataBaseNo": 15,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取右键的值', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (13, 8, '请按下"确认"键, 并保持5秒', 6, '', 0, '按下确认键', 1, 2000, NULL);
+INSERT INTO t_checkKeyPress (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (14, 3, '{
+    "RealDataBaseNo": 18,
+    "TeleType": 0,
+    "DataType": 1,
+    "DataItemCount": 1
+}', 1, '1.0', 0, '读取确认键的值', 1, 2000, NULL);
 
 -- 表：t_checkManual
 DROP TABLE IF EXISTS t_checkManual;
@@ -778,6 +873,31 @@ INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resul
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'CCO测试', 1, 5000, NULL);
+
+-- 表：t_checkUSB
+DROP TABLE IF EXISTS t_checkUSB;
+
+CREATE TABLE IF NOT EXISTS t_checkUSB (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 8, '请将U盘插入E9361-C0的USB口', 6, '', 0, '插入U盘', 1, 3000, NULL);
+INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'ls /dev/sd*', 6, '\w*/dev/sda\w*', 4, 'U盘检测', 1, 2000, NULL);
+INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 8, '请将U盘移除', 6, '', 0, '移除U盘', 1, 1000, NULL);
 
 -- 表：t_checkYKYX
 DROP TABLE IF EXISTS t_checkYKYX;
