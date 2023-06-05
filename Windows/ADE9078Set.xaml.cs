@@ -41,8 +41,8 @@ namespace E9361Debug.Windows
             }
 
             int cols = (int)Math.Sqrt(m_MultiRouteADEError.RouteList.Count);
-            int rows = m_MultiRouteADEError.RouteList.Count / cols;
-            rows += m_MultiRouteADEError.RouteList.Count % cols > 0 ? 1 : 0;
+            int rows = m_MultiRouteADEError.RouteList.Count / cols + (m_MultiRouteADEError.RouteList.Count % cols > 0 ? 1 : 0);
+
             Grid_Routes.RowDefinitions.Clear();
             for (int i = 0; i < rows; i++)
             {
