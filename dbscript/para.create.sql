@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周一 6月 5 16:36:01 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 6月 7 09:31:51 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -674,6 +674,18 @@ CREATE TABLE IF NOT EXISTS t_checkGPS (
     childTableName TEXT
 );
 
+INSERT INTO t_checkGPS (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
+    "RealDataBaseNo": 322,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=120.0&&f<=123.0', 5, '读取经度', 1, 5000, NULL);
+INSERT INTO t_checkGPS (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
+    "RealDataBaseNo": 323,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>=36.0&&f<=39.0', 5, '读取纬度', 1, 5000, NULL);
 
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
@@ -688,7 +700,7 @@ CREATE TABLE IF NOT EXISTS t_checkItemsBase (
     description    TEXT    DEFAULT 测试项,
     isEnable       INTEGER REFERENCES t_isEnable (isEnable),
     timeout        INTEGER DEFAULT (1),
-    childTableName TEXT
+    childTableName TEXT    UNIQUE
 );
 
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, NULL, NULL, NULL, NULL, NULL, '检测前的预备工作', 1, 1, 't_preCheckSteps');
@@ -701,6 +713,9 @@ INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, r
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, NULL, NULL, NULL, NULL, NULL, 'ADE9078检测', 1, 1, 't_checkADE9078');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, NULL, NULL, NULL, NULL, NULL, 'USB检测', 1, 1, 't_checkUSB');
 INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (10, NULL, NULL, NULL, NULL, NULL, '按键检测', 1, 1, 't_checkKeyPress');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (11, NULL, NULL, NULL, NULL, NULL, 'GPS检测', 1, 1, 't_checkGPS');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (12, NULL, NULL, NULL, NULL, NULL, 'PT100检测', 1, 1, 't_checkPT100');
+INSERT INTO t_checkItemsBase (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (13, NULL, NULL, NULL, NULL, NULL, 'RS-232检测', 1, 1, 't_checkRS232');
 
 -- 表：t_checkKeyPress
 DROP TABLE IF EXISTS t_checkKeyPress;
@@ -873,6 +888,68 @@ INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resul
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'CCO测试', 1, 5000, NULL);
+
+-- 表：t_checkPT100
+DROP TABLE IF EXISTS t_checkPT100;
+
+CREATE TABLE IF NOT EXISTS t_checkPT100 (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkPT100 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
+    "RealDataBaseNo": 54,
+    "TeleType": 1,
+    "DataType": 0,
+    "DataItemCount": 1
+}', 1, '(f)=>f>0.0&&f<=100.0', 5, 'RS485-1测试', 1, 5000, NULL);
+
+-- 表：t_checkRS232
+DROP TABLE IF EXISTS t_checkRS232;
+
+CREATE TABLE IF NOT EXISTS t_checkRS232 (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 5, '{
+	"IsUploadFileToTerminal": true,
+	"FullFileNameComputer": "upload\\serial",
+	"FullFileNameTerminal": "/bin/serial"
+}', 6, '', 0, '下载串口测试程序', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'chmod +x /bin/serial', 6, '', 0, '给串口测试程序赋予可执行权限', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, ' /bin/mosquitto_pub   -t "e9361app/set/request/e9361esdkapp/version"  -m  "{\"token\": \"200513\", \"timestamp\": \"2023-02-11T09:41:09.845+0800\", \"iHardVer\": \"V1.01.03\", \"iSoftdVer\": \"V1.00.04\", \"eHardVer\": \"SV01.03\", \"eSoftdVer\": \"SV01.004\", \"runtime_min\": 6, \"upprogram\": 0, \"watchdog\": 1 }" -h localhost
+', 6, '', 0, '停止看门狗', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, '/bin/serial -c "/dev/ttymxc2" -b 9600 -p 0 -f"68 18 09 15 04 22 20 68 11 04 33 34 34 35 31 16" -t 1', 6, 'FE FE FE FE 68 18 09 15 04 22 20 68 91 06 33 34 34 35 ([0-9a-fA-F]{2}\s){3}16', 4, '读取A相电压', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 6, '', 6, '', 0, '等待终端重启... ...', 1, 20000, NULL);
 
 -- 表：t_checkUSB
 DROP TABLE IF EXISTS t_checkUSB;
