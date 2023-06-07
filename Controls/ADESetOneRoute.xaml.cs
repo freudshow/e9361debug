@@ -81,6 +81,9 @@ namespace E9361Debug.Controls
                     }
                 }
             }
+
+            StopReadDataEvent += StopReadData;
+            StartReadDataEvent += StartReadData;
         }
 
         public async Task ReadValuesAsync()
@@ -146,7 +149,6 @@ namespace E9361Debug.Controls
             try
             {
                 StopReadDataEvent?.Invoke();
-                m_CanReadData = false;
                 await Task.Delay(3000);
 
                 byte route = (byte)m_OneRouteADEError.RouteNo;
@@ -185,7 +187,6 @@ namespace E9361Debug.Controls
                 }
 
                 StartReadDataEvent?.Invoke();
-                m_CanReadData = true;
             }
             catch (Exception ex)
             {
