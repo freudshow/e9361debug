@@ -102,14 +102,9 @@ namespace E9361Debug.Windows
         {
             while (true)
             {
-                foreach (var item in Grid_Routes.Children)
+                foreach (var item in m_ADESetOneRouteList)
                 {
-                    ADESetOneRoute a = item as ADESetOneRoute;
-                    if (a != null)
-                    {
-                        await a.ReadValuesAsync();
-                    }
-
+                    await item.ReadValuesAsync();
                     await Task.Delay(50);
                 }
             }
