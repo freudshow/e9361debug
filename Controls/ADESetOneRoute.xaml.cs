@@ -19,6 +19,7 @@ using E9361Debug.Communication;
 using E9361Debug.logical;
 using E9361Debug.Maintain;
 using Newtonsoft.Json;
+using static E9361Debug.Windows.ADE9078Set;
 
 namespace E9361Debug.Controls
 {
@@ -36,8 +37,16 @@ namespace E9361Debug.Controls
 
         private OneRouteADEError m_OneRouteADEError;
         private readonly ICommunicationPort m_Port;
-        private bool m_Result = true;
         private readonly Dictionary<ushort, RealDatabaseCmdParameters> m_Dict = new Dictionary<ushort, RealDatabaseCmdParameters>();
+        private bool m_CanReadData = true;
+
+        public delegate void StopReadDataDelegate();
+
+        public event StopReadDataDelegate StopReadDataEvent;
+
+        public delegate void StartReadDataDelegate();
+
+        public event StartReadDataDelegate StartReadDataEvent;
 
         public ADESetOneRoute(OneRouteADEError e, ICommunicationPort port)
         {
@@ -83,20 +92,33 @@ namespace E9361Debug.Controls
 
             foreach (var item in m_OneRouteADEError.ItemList)
             {
-                byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(m_Dict[item.RealDatabaseNo]);
-                m_Port.Write(b, 0, b.Length);
-                MaintainParseRes res = await m_Port.ReadOneFrameAsync(1000);
-                if (res != null)
+                if (m_CanReadData)
                 {
-                    ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
-                    if (data == null || !data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
+                    byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(m_Dict[item.RealDatabaseNo]);
+                    m_Port.Write(b, 0, b.Length);
+                    MaintainParseRes res = await m_Port.ReadOneFrameAsync(500);
+                    if (res != null)
                     {
-                        continue;
-                    }
+                        ContinueRealData data = MaintainProtocol.ParseContinueRealDataValue(res.Frame);
+                        if (data == null || !data.IsValid || data.RealDataArray == null || data.RealDataArray.Length <= 0)
+                        {
+                            continue;
+                        }
 
-                    item.ActualValue = data.RealDataArray[0].FloatValue;
+                        item.ActualValue = data.RealDataArray[0].FloatValue;
+                    }
                 }
             }
+        }
+
+        public void StopReadData()
+        {
+            m_CanReadData = false;
+        }
+
+        public void StartReadData()
+        {
+            m_CanReadData = true;
         }
 
         private async void Button_SetDefault_Click(object sender, RoutedEventArgs e)
@@ -123,6 +145,10 @@ namespace E9361Debug.Controls
 
             try
             {
+                StopReadDataEvent?.Invoke();
+                m_CanReadData = false;
+                await Task.Delay(3000);
+
                 byte route = (byte)m_OneRouteADEError.RouteNo;
                 byte[] b = null;
                 switch (t)
@@ -147,22 +173,22 @@ namespace E9361Debug.Controls
                 if (b != null)
                 {
                     m_Port.Write(b, 0, b.Length);
-                    MaintainParseRes res = await m_Port.ReadOneFrameAsync(100);
+                    MaintainParseRes res = await m_Port.ReadOneFrameAsync(1000);
                     if (res != null && MaintainProtocol.ParseAdeSetAck(res.Frame))
                     {
-                        m_Result &= true;
                         MessageBox.Show("设置成功");
                     }
                     else
                     {
-                        m_Result &= false;
                         MessageBox.Show("设置失败!!!");
                     }
                 }
+
+                StartReadDataEvent?.Invoke();
+                m_CanReadData = true;
             }
             catch (Exception ex)
             {
-                m_Result &= false;
                 MessageBox.Show(ex.Message);
             }
         }

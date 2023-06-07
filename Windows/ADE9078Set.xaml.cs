@@ -18,6 +18,7 @@ namespace E9361Debug.Windows
 
         private readonly ICommunicationPort m_Port;
         private bool m_Result = true;
+        private bool CanReadData = true;
         private MultiRouteADEError m_MultiRouteADEError;
 
         public event GetCheckResult CheckResultEvent;
@@ -28,8 +29,12 @@ namespace E9361Debug.Windows
 
             m_MultiRouteADEError = routes;
             m_Port = port;
-
             InitControls();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            StartReadData();
             RefreshDataAsync();
         }
 
@@ -63,6 +68,9 @@ namespace E9361Debug.Windows
                 int col = item.RouteNo % cols;
                 Grid.SetRow(r, row);
                 Grid.SetColumn(r, col);
+
+                r.StartReadDataEvent += StartReadData;
+                r.StopReadDataEvent += StopReadData;
             }
         }
 
@@ -72,13 +80,42 @@ namespace E9361Debug.Windows
             {
                 foreach (var item in Grid_Routes.Children)
                 {
-                    ADESetOneRoute a = item as ADESetOneRoute;
-                    if (a != null)
+                    if (CanReadData)
                     {
-                        await a.ReadValuesAsync();
+                        ADESetOneRoute a = item as ADESetOneRoute;
+                        if (a != null)
+                        {
+                            await a.ReadValuesAsync();
+                        }
                     }
 
                     await Task.Delay(50);
+                }
+            }
+        }
+
+        private void StopReadData()
+        {
+            CanReadData = false;
+            foreach (var item in Grid_Routes.Children)
+            {
+                ADESetOneRoute a = item as ADESetOneRoute;
+                if (a != null)
+                {
+                    a.StopReadData();
+                }
+            }
+        }
+
+        private void StartReadData()
+        {
+            CanReadData = true;
+            foreach (var item in Grid_Routes.Children)
+            {
+                ADESetOneRoute a = item as ADESetOneRoute;
+                if (a != null)
+                {
+                    a.StartReadData();
                 }
             }
         }
@@ -94,6 +131,8 @@ namespace E9361Debug.Windows
                     break;
                 }
             }
+
+            StopReadData();
 
             CheckResultEvent(m_Result);
         }
