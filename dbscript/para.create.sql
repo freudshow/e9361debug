@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 6月 7 14:47:25 2023
+-- SQLiteStudio v3.4.4 生成的文件，周四 6月 8 15:57:49 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -54,6 +54,451 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 	"RouteList": [
 		{
 			"RouteNo": 0,
+			"ItemList": [
+				{
+					"RealDatabaseNo": 125,
+					"ItemName": "A相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 126,
+					"ItemName": "B相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 127,
+					"ItemName": "C相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 128,
+					"ItemName": "A相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 129,
+					"ItemName": "B相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 130,
+					"ItemName": "C相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 131,
+					"ItemName": "A相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 132,
+					"ItemName": "B相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 133,
+					"ItemName": "C相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 134,
+					"ItemName": "A相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 135,
+					"ItemName": "B相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 136,
+					"ItemName": "C相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				}
+			]
+		},
+		{
+			"RouteNo": 1,
+			"ItemList": [
+				{
+					"RealDatabaseNo": 125,
+					"ItemName": "A相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 126,
+					"ItemName": "B相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 127,
+					"ItemName": "C相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 128,
+					"ItemName": "A相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 129,
+					"ItemName": "B相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 130,
+					"ItemName": "C相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 131,
+					"ItemName": "A相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 132,
+					"ItemName": "B相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 133,
+					"ItemName": "C相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 134,
+					"ItemName": "A相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 135,
+					"ItemName": "B相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 136,
+					"ItemName": "C相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				}
+			]
+		},
+		{
+			"RouteNo": 2,
+			"ItemList": [
+				{
+					"RealDatabaseNo": 125,
+					"ItemName": "A相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 126,
+					"ItemName": "B相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 127,
+					"ItemName": "C相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 128,
+					"ItemName": "A相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 129,
+					"ItemName": "B相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 130,
+					"ItemName": "C相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 131,
+					"ItemName": "A相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 132,
+					"ItemName": "B相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 133,
+					"ItemName": "C相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 134,
+					"ItemName": "A相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 135,
+					"ItemName": "B相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 136,
+					"ItemName": "C相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				}
+			]
+		},
+		{
+			"RouteNo": 3,
+			"ItemList": [
+				{
+					"RealDatabaseNo": 125,
+					"ItemName": "A相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 126,
+					"ItemName": "B相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 127,
+					"ItemName": "C相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 128,
+					"ItemName": "A相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 129,
+					"ItemName": "B相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 130,
+					"ItemName": "C相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 131,
+					"ItemName": "A相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 132,
+					"ItemName": "B相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 133,
+					"ItemName": "C相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 134,
+					"ItemName": "A相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 135,
+					"ItemName": "B相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 136,
+					"ItemName": "C相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				}
+			]
+		},
+		{
+			"RouteNo": 4,
+			"ItemList": [
+				{
+					"RealDatabaseNo": 125,
+					"ItemName": "A相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 126,
+					"ItemName": "B相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 127,
+					"ItemName": "C相电流",
+					"StandardValue": 5.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 128,
+					"ItemName": "A相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 129,
+					"ItemName": "B相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 130,
+					"ItemName": "C相电压",
+					"StandardValue": 220.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 131,
+					"ItemName": "A相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 132,
+					"ItemName": "B相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 133,
+					"ItemName": "C相有功功率",
+					"StandardValue": 550.0,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 134,
+					"ItemName": "A相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 135,
+					"ItemName": "B相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				},
+				{
+					"RealDatabaseNo": 136,
+					"ItemName": "C相无功功率",
+					"StandardValue": 952.6279,
+					"ErrorThresholdType": 2,
+					"ErrorThreshold": 5.0
+				}
+			]
+		},
+		{
+			"RouteNo": 5,
 			"ItemList": [
 				{
 					"RealDatabaseNo": 125,
@@ -470,7 +915,7 @@ INSERT INTO t_checkPT100 (seq, cmdType, cmdParam, resultType, resultValue, resul
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
-}', 1, '(f)=>f>0.0&&f<=100.0', 5, 'RS485-1测试', 1, 5000, NULL);
+}', 1, '(f)=>f>0.0&&f<=100.0', 5, 'PT100检测', 1, 5000, NULL);
 
 -- 表：t_checkRS232
 DROP TABLE IF EXISTS t_checkRS232;

@@ -531,11 +531,23 @@ namespace E9361Debug.Logical
 
                 CommunicationPort port = portDict[PortUseTypeEnum.Maintaince];
 
+                if (port == null)
+                {
+                    return false;
+                }
+
+                if (!port.IsOpen())
+                {
+                    port.Open();
+                }
+
                 for (int i = 0; i < 3 && res == null; i++)
                 {
                     port.Write(b, 0, b.Length);
                     res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
                 }
+
+                port.Close();
 
                 if (res == null)
                 {
@@ -624,12 +636,24 @@ namespace E9361Debug.Logical
                 }
 
                 CommunicationPort port = portDict[PortUseTypeEnum.Maintaince];
+                if (port == null)
+                {
+                    return false;
+                }
+
+                if (!port.IsOpen())
+                {
+                    port.Open();
+                }
+
                 MaintainParseRes res = null;
                 for (int i = 0; i < 3 && res == null; i++)
                 {
                     port.Write(b, 0, b.Length);
                     res = await port.ReadOneFrameAsync(c.TimeOut > 0 ? c.TimeOut : 3000);
                 }
+
+                port.Close();
 
                 if (res == null)
                 {
@@ -728,7 +752,7 @@ namespace E9361Debug.Logical
                     await m_SshClass.UploadFileToTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
                     string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
-
+                    m_SshClass.DisConnectSftp();
                     callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}\n", c.Depth);
 
                     return cMd5 == tMd5;
@@ -752,7 +776,7 @@ namespace E9361Debug.Logical
                     await m_SshClass.DownLoadFileFromTerminalAsync(param.FullFileNameComputer, param.FullFileNameTerminal);
                     string cMd5 = CommonClass.GetComputerFileMd5(param.FullFileNameComputer).ToLower();
                     string tMd5 = m_SshClass.GetSshMd5(param.FullFileNameTerminal).ToLower();
-
+                    m_SshClass.DisConnectSftp();
                     callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"computer md5: {cMd5}, terminal md5: {tMd5}", c.Depth);
 
                     return cMd5 == tMd5;

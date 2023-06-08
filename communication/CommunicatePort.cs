@@ -342,11 +342,11 @@ namespace E9361Debug.Communication
     public class CommunicationPort
     {
         private readonly ICommunicationPort m_AbstractPort;
-        private Object m_PortPara;
+        private readonly object m_PortPara;
 
         public ICommunicationPort IPort => m_AbstractPort;
 
-        public CommunicationPort(PortTypeEnum portType, Object para)
+        public CommunicationPort(PortTypeEnum portType, object para)
         {
             if (para == null)
             {
