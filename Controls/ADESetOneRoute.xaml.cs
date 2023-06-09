@@ -98,6 +98,12 @@ namespace E9361Debug.Controls
                 if (m_CanReadData)
                 {
                     byte[] b = MaintainProtocol.GetContinueRealDataBaseValue(m_Dict[item.RealDatabaseNo]);
+
+                    if (!m_Port.IsOpen())
+                    {
+                        m_Port.Open();
+                    }
+
                     m_Port.Write(b, 0, b.Length);
                     MaintainParseRes res = await m_Port.ReadOneFrameAsync(500);
                     if (res != null)
@@ -174,6 +180,11 @@ namespace E9361Debug.Controls
 
                 if (b != null)
                 {
+                    if (!m_Port.IsOpen())
+                    {
+                        m_Port.Open();
+                    }
+
                     m_Port.Write(b, 0, b.Length);
                     MaintainParseRes res = await m_Port.ReadOneFrameAsync(1000);
                     if (res != null && MaintainProtocol.ParseAdeSetAck(res.Frame))
