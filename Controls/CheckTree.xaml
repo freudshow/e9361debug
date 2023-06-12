@@ -16,46 +16,50 @@
     TextOptions.TextRenderingMode="Auto"
     mc:Ignorable="d">
     <Grid>
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <materialDesign:Card Height="20" Margin="3">
-                <TextBlock
-                    x:Name="TextBlock_CheckTree"
-                    Background="DarkKhaki"
-                    FontStyle="Oblique"
-                    Text="检测项目"
-                    TextWrapping="Wrap" />
-            </materialDesign:Card>
-            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-                <TreeView
-                    x:Name="TreeView_CheckTree"
-                    Canvas.Top="1"
-                    Canvas.Bottom="1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    MouseDoubleClick="TreeView_CheckTree_MouseDoubleClick"
-                    PreviewMouseRightButtonDown="TreeView_CheckTree_PreviewMouseRightButtonDown"
-                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                    ScrollViewer.VerticalScrollBarVisibility="Visible">
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="TreeViewItem">
-                            <Setter Property="IsExpanded" Value="True" />
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                    <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
-                            <StackPanel Background="{Binding BackgroundColor}" Orientation="Horizontal">
-                                <CheckBox IsChecked="{Binding IsEnable}" Visibility="{Binding IsVisible}" />
-                                <TextBlock Background="{Binding BackgroundColor}" Text="{Binding Description}" />
-                            </StackPanel>
-                        </HierarchicalDataTemplate>
-                    </TreeView.ItemTemplate>
-                    <TreeView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Click="Menu_PreviewItem" Header="查看项目" />
-                        </ContextMenu>
-                    </TreeView.ContextMenu>
-                </TreeView>
-            </ScrollViewer>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="15*" />
+        </Grid.RowDefinitions>
+        <materialDesign:Card
+            Grid.Row="0"
+            Height="20"
+            Margin="3">
+            <TextBlock
+                x:Name="TextBlock_CheckTree"
+                Background="DarkKhaki"
+                FontStyle="Oblique"
+                Text="检测项目"
+                TextWrapping="Wrap" />
+        </materialDesign:Card>
+        <TreeView
+            x:Name="TreeView_CheckTree"
+            Grid.Row="1"
+            Canvas.Top="1"
+            Canvas.Bottom="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            MouseDoubleClick="TreeView_CheckTree_MouseDoubleClick"
+            PreviewMouseRightButtonDown="TreeView_CheckTree_PreviewMouseRightButtonDown"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
+                    <StackPanel Background="{Binding BackgroundColor}" Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsEnable}" Visibility="{Binding IsVisible}" />
+                        <TextBlock Background="{Binding BackgroundColor}" Text="{Binding Description}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="Menu_PreviewItem" Header="查看项目" />
+                </ContextMenu>
+            </TreeView.ContextMenu>
+        </TreeView>
     </Grid>
 </UserControl>
