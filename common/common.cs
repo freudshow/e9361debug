@@ -29,7 +29,7 @@ namespace E9361Debug.Common
         /// <summary>
         /// 补丁号
         /// </summary>
-        private static readonly string PatchVersion = "0";
+        private static readonly string PatchVersion = "1";
 
         /// <summary>
         /// 软件版本信息
