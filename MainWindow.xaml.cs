@@ -1,6 +1,7 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
 using E9361Debug.Logical;
+using E9361Debug.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -233,6 +234,12 @@ namespace E9361Debug
         private void RichTextBox_Exception_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             RichTextBox_Exception.ScrollToEnd();
+        }
+
+        private void Button_SetTerminalAddress_Click(object sender, RoutedEventArgs e)
+        {
+            TerminalAddressSet addressSet = new TerminalAddressSet();
+            addressSet.ShowDialog();
         }
     }
 }

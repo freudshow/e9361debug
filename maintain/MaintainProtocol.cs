@@ -1,6 +1,8 @@
 ﻿using E9361Debug.logical;
 using System;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
 
 namespace E9361Debug.Maintain
 {
@@ -725,6 +727,39 @@ namespace E9361Debug.Maintain
             }
 
             return frame[8] == 0x11;
+        }
+
+        public static byte[] GetSetDlt645Address(byte[] address)
+        {
+            if (address == null)
+            {
+                throw new ArgumentOutOfRangeException("address");
+            }
+
+            if (address.Length != 6)
+            {
+                throw new ArgumentOutOfRangeException("address");
+            }
+
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ParameterSet;
+            byte subFunc = 5;
+
+            return ComposeFrame(mainFunc, subFunc, address);
+        }
+
+        public static bool ParseSetDlt645Address(byte[] frame)
+        {
+            if (frame == null)
+            {
+                throw new ArgumentOutOfRangeException("address");
+            }
+
+            if (frame.Length != 9)
+            {
+                throw new ArgumentOutOfRangeException("address");
+            }
+
+            return frame[7] == 0;
         }
     }
 

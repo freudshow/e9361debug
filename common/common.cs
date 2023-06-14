@@ -8,6 +8,7 @@ using System.Management;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace E9361Debug.Common
 {
@@ -232,6 +233,70 @@ namespace E9361Debug.Common
                 p.Close();
                 return str;
             }
+        }
+
+        /// <summary>
+        /// 将输入的报文字符串格式化为
+        /// 正规格式, 并输出字节串
+        /// </summary>
+        /// <param name="inputString">输入的报文字符串</param>
+        /// <param name="outputSting">格式化后的正规字符串</param>
+        /// <param name="outputByteArray">输出的字节串</param>
+        /// <returns>True: 输入的报文字符串格式正确; False: 输入的报文字符串格式错误</returns>
+        public static bool PrepareInputString(string inputString, out string outputSting, out byte[] outputByteArray)
+        {
+            List<byte> list = new List<byte>();
+            string s = inputString;
+            bool matched = false;
+
+            outputSting = "";
+            string[] charsToRemove = new string[] { " ", ",", "\r", "\n", "\t" };
+            foreach (string c in charsToRemove)
+            {
+                s = s.Replace(c, string.Empty);
+            }
+
+            Regex r0 = new Regex("^([0-9a-fA-F]{2})*[0-9a-fA-F]{2}$");
+            Regex r1 = new Regex("(0x[0-9a-fA-F]{1,2})+");
+
+            if (r0.IsMatch(s))
+            {
+                int len = s.Length / 2;
+
+                for (int i = 0; i < len; i++)
+                {
+                    byte b = (byte)Convert.ToInt32(s.Substring(2 * i, 2), 16);
+                    outputSting += string.Format("{0:X2} ", b);
+                    list.Add(b);
+                }
+
+                matched = true;
+            }
+            else if (r1.IsMatch(s))
+            {
+                string[] sa = s.Split(new String[] { "0x" }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < sa.Length; i++)
+                {
+                    byte b = (byte)Convert.ToInt32(sa[i], 16);
+                    outputSting += string.Format("{0:X2} ", b);
+                    list.Add(b);
+                }
+
+                matched = true;
+            }
+
+            if (matched)
+            {
+                outputByteArray = list.ToArray();
+            }
+            else
+            {
+                outputByteArray = null;
+            }
+
+            outputSting = outputSting.Trim();
+
+            return matched;
         }
     }
 }

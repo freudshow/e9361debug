@@ -46,7 +46,12 @@
                     Content="{materialDesign:PackIcon Kind=Play}"
                     Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
                     ToolTip="开始测试" />
-                <Separator />
+                <Separator BorderThickness="5,5,5,5" />
+                <Button
+                    x:Name="Button_SetTerminalAddress"
+                    Click="Button_SetTerminalAddress_Click"
+                    Content="设置终端地址"
+                    Style="{StaticResource MaterialDesignFlatDarkBgButton}" />
             </ToolBar>
         </ToolBarTray>
         <Grid

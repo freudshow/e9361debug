@@ -195,6 +195,9 @@
     <Compile Include="Windows\ADE9078Set.xaml.cs">
       <DependentUpon>ADE9078Set.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\TerminalAddressSet.xaml.cs">
+      <DependentUpon>TerminalAddressSet.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\ADESetOneRoute.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -220,6 +223,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\ADE9078Set.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TerminalAddressSet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

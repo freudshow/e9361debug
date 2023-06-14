@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周四 6月 8 18:35:14 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 6月 14 17:26:37 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -471,7 +471,7 @@ INSERT INTO t_checkPT100 (seq, cmdType, cmdParam, resultType, resultValue, resul
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
-}', 1, '(f)=>f>0.0&&f<=100.0', 5, 'PT100检测', 1, 5000, NULL);
+}', 1, '(f)=>f>-3.0&&f<=3.0', 5, 'PT100检测', 1, 5000, NULL);
 
 -- 表：t_checkRS232
 DROP TABLE IF EXISTS t_checkRS232;
