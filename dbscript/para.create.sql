@@ -1,10 +1,49 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 6月 14 17:26:37 2023
+-- SQLiteStudio v3.4.4 生成的文件，周四 6月 15 17:23:16 2023
 --
 -- 所用的文本编码：UTF-8
 --
 PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;
+
+-- 表：t_afterCheck
+DROP TABLE IF EXISTS t_afterCheck;
+
+CREATE TABLE IF NOT EXISTS t_afterCheck (
+    seq            INTEGER PRIMARY KEY AUTOINCREMENT,
+    cmdType        INTEGER NOT NULL
+                           REFERENCES t_cmdTypeEnum (enum),
+    cmdParam       TEXT    NOT NULL,
+    resultType     INTEGER REFERENCES t_resultDataTypeEnum (enum) 
+                           NOT NULL,
+    resultValue    TEXT    NOT NULL,
+    resultSign     INTEGER NOT NULL
+                           REFERENCES t_resultSignEnum (enum),
+    description    TEXT    DEFAULT 测试项
+                           NOT NULL,
+    isEnable       INTEGER REFERENCES t_isEnable (isEnable) 
+                           NOT NULL,
+    timeout        INTEGER,
+    childTableName TEXT
+);
+
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 5, '{
+	"IsUploadFileToTerminal": true,
+	"FullFileNameComputer": "upload\\rc.local",
+	"FullFileNameTerminal": "/etc/rc.local"
+}', 6, '', 0, '下载系统启动脚本', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'chmod +x /etc/rc.local', 6, '', 0, '给系统启动脚本赋予可执行权限', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, ' /bin/mosquitto_pub   -t "e9361app/set/request/e9361esdkapp/version"  -m  "{\"token\": \"200513\", \"timestamp\": \"2023-02-11T09:41:09.845+0800\", \"iHardVer\": \"V1.01.03\", \"iSoftdVer\": \"V1.00.04\", \"eHardVer\": \"SV01.03\", \"eSoftdVer\": \"SV01.004\", \"runtime_min\": 6, \"upprogram\": 0, \"watchdog\": 1 }" -h localhost
+', 6, '', 0, '停止看门狗', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 1, 'ps | grep e9361esdkapp | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死esdk进程', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 5, '{
+	"IsUploadFileToTerminal": true,
+	"FullFileNameComputer": "upload\\e9361esdkapp",
+	"FullFileNameTerminal": "/home/sysadm/src/e9361esdkapp"
+}', 6, '', 0, '下载esdk', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 1, 'chmod +x /etc/rc.local', 6, '', 0, '给esdk赋予可执行权限', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3000, NULL);
+INSERT INTO t_afterCheck (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 6, '', 6, '', 0, '等待终端重启... ...', 1, 20000, NULL);
 
 -- 表：t_basePara
 DROP TABLE IF EXISTS t_basePara;

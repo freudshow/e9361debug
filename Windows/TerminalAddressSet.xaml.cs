@@ -37,7 +37,7 @@ namespace E9361Debug.Windows
 
         private async void Button_SetDlt645Adress_Click(object sender, RoutedEventArgs e)
         {
-            if (!CommonClass.PrepareInputString(TextBox_DLT645Address.Text, out string outstr, out byte[] outaddress))
+            if (!CommonClass.PrepareInputString(TextBox_DLT645Address.Text, out _, out byte[] outaddress))
             {
                 MessageBox.Show("DLT645地址的格式错误!");
                 return;

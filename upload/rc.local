@@ -1,0 +1,5 @@
+/bin/boa&
+/bin/mosquitto&
+/home/sysadm/src/e9361app>/dev/null&
+/home/sysadm/src/e9361esdkapp>/dev/null&
+exit 0
