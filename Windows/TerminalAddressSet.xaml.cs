@@ -70,5 +70,30 @@ namespace E9361Debug.Windows
                 TextBox_DLT645Address.Text = TextBox_TerminalID.Text.Substring(12, 12);
             }
         }
+
+        private async void Button_SetTerminalID_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(TextBox_TerminalID.Text) || TextBox_TerminalID.Text.Length != MaintainProtocol.TerminalIDLength)
+            {
+                MessageBox.Show("终端ID的格式错误!");
+                return;
+            }
+
+            byte[] frame = MaintainProtocol.GetSetTerminalID(TextBox_TerminalID.Text);
+            m_Port.Write(frame, 0, frame.Length);
+
+            MaintainParseRes res = await m_Port.ReadOneFrameAsync(3000);
+            if (res != null && MaintainProtocol.ParseSetTerminalID(res.Frame))
+            {
+                MessageBox.Show("设置成功");
+            }
+            else
+            {
+                MessageBox.Show("设置失败");
+            }
+
+            TextBox_ScanResult.Focus();
+            TextBox_ScanResult.Text = string.Empty;
+        }
     }
 }

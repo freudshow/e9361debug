@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Markup;
 
 namespace E9361Debug.Maintain
@@ -128,6 +129,8 @@ namespace E9361Debug.Maintain
         /// 1字节起始码 + 2字节地址 + 2字节数据域长度
         /// </summary>
         private const int m_headLen = sizeof(byte) + sizeof(ushort) + sizeof(ushort);
+
+        public const int TerminalIDLength = 24;
 
         private static readonly byte[] _auchCRCHi = new byte[]//crc高位表
             {
@@ -670,7 +673,7 @@ namespace E9361Debug.Maintain
                 return result;
             }
 
-            return frame[8];
+            return FindOneFrame(frame, out _) ? frame[8] : (byte)0xFF;
         }
 
         /// <summary>
@@ -726,7 +729,7 @@ namespace E9361Debug.Maintain
                 return false;
             }
 
-            return frame[8] == 0x11;
+            return FindOneFrame(frame, out _) && frame[8] == 0x11;
         }
 
         public static byte[] GetSetDlt645Address(byte[] address)
@@ -759,7 +762,40 @@ namespace E9361Debug.Maintain
                 throw new ArgumentOutOfRangeException("address");
             }
 
-            return frame[7] == 0;
+            return FindOneFrame(frame, out _) && frame[7] == 0;
+        }
+
+        public static byte[] GetSetTerminalID(string id)
+        {
+            if (string.IsNullOrEmpty(id) || id.Length != TerminalIDLength)
+            {
+                throw new ArgumentOutOfRangeException("id");
+            }
+
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_LookUpInfo;
+            byte subFunc = 2;
+
+            byte[] writeID = Encoding.UTF8.GetBytes(id);
+            byte[] data = new byte[TerminalIDLength + 1];
+            data[0] = TerminalIDLength;
+            Array.Copy(writeID, 0, data, 1, TerminalIDLength);
+
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        public static bool ParseSetTerminalID(byte[] frame)
+        {
+            if (frame == null)
+            {
+                throw new ArgumentOutOfRangeException("frame");
+            }
+
+            if (frame.Length != 9)
+            {
+                throw new ArgumentOutOfRangeException("frame");
+            }
+
+            return FindOneFrame(frame, out _) && frame[7] == 0;
         }
     }
 
