@@ -195,6 +195,12 @@
     <Compile Include="Windows\ADE9078Set.xaml.cs">
       <DependentUpon>ADE9078Set.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ConfigBaseParas.xaml.cs">
+      <DependentUpon>ConfigBaseParas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ConfigCheckItems.xaml.cs">
+      <DependentUpon>ConfigCheckItems.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\TerminalAddressSet.xaml.cs">
       <DependentUpon>TerminalAddressSet.xaml</DependentUpon>
     </Compile>
@@ -223,6 +229,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\ADE9078Set.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConfigBaseParas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConfigCheckItems.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

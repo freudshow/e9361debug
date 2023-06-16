@@ -26,9 +26,14 @@
         <materialDesign:Card Grid.Row="0">
             <Menu materialDesign:MenuAssist.TopLevelMenuItemHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type materialDesign:Card}}, Path=ActualHeight}">
                 <MenuItem Header="文件">
-                    <MenuItem x:Name="Menu_Browse" Header="_配置检测项目" />
-                    <MenuItem Header="Item 2" />
-                    <MenuItem Header="Item 3" />
+                    <MenuItem
+                        x:Name="Menu_ConfigBaseParas"
+                        Click="Menu_ConfigBaseParas_Click"
+                        Header="_配置基本参数" />
+                    <MenuItem
+                        x:Name="Menu_ConfigCheckItems"
+                        Click="Menu_ConfigCheckItems_Click"
+                        Header="_配置检测项目" />
                 </MenuItem>
                 <MenuItem
                     x:Name="Menu_About"

@@ -241,5 +241,17 @@ namespace E9361Debug
             TerminalAddressSet addressSet = new TerminalAddressSet();
             addressSet.ShowDialog();
         }
+
+        private void Menu_ConfigBaseParas_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigBaseParas baseParas = new ConfigBaseParas();
+            baseParas.ShowDialog();
+        }
+
+        private void Menu_ConfigCheckItems_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigCheckItems checkItems = new ConfigCheckItems();
+            checkItems.ShowDialog();
+        }
     }
 }
