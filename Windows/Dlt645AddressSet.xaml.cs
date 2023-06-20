@@ -17,7 +17,7 @@ namespace E9361Debug.Windows
     public partial class Dlt645AddressSet : Window
     {
         private readonly CommunicationPort m_Port;
-        private string m_IDPattern = "[A-Z][A-Z0-9]{11}[0-9]{12}";
+        private string m_IDPattern = "^[A-Z][A-Z0-9]{11}[0-9]{12}$";
         private string m_Dlt645Pattern = "[0-9]{12}";
 
         public Dlt645AddressSet()
