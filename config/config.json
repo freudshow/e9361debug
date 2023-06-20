@@ -1,0 +1,8 @@
+{
+  "Dlt645Address": {
+    "Pattern": "[0-9]{12}"
+  },
+  "TerminalId": {
+    "Pattern": "^[A-Z][A-Z0-9]{11}[0-9]{12}$"
+  }
+}

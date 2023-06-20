@@ -298,5 +298,17 @@ namespace E9361Debug.Common
 
             return matched;
         }
+
+        public static void InverseArray(byte[] buf)
+        {
+            byte b;
+            int bufSize = buf.Length;
+            for (int i = 0; i < bufSize / 2; i++)
+            {
+                b = buf[i];
+                buf[i] = buf[bufSize - i - 1];
+                buf[bufSize - i - 1] = b;
+            }
+        }
     }
 }

@@ -747,6 +747,8 @@ namespace E9361Debug.Maintain
             byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_ParameterSet;
             byte subFunc = 5;
 
+            Common.CommonClass.InverseArray(address);
+
             return ComposeFrame(mainFunc, subFunc, address);
         }
 

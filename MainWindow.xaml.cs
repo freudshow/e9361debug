@@ -238,8 +238,8 @@ namespace E9361Debug
 
         private void Button_SetTerminalAddress_Click(object sender, RoutedEventArgs e)
         {
-            TerminalAddressSet addressSet = new TerminalAddressSet();
-            addressSet.ShowDialog();
+            Dlt645AddressSet dlt645set = new Dlt645AddressSet();
+            dlt645set.ShowDialog();
         }
 
         private void Menu_ConfigBaseParas_Click(object sender, RoutedEventArgs e)
