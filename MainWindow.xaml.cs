@@ -184,7 +184,7 @@ namespace E9361Debug
 
         private void Menu_About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"E9361-C检测软件\n软件版本:{CommonClass.Version}");
+            MessageBox.Show($"E9361-C0工装调试软件\n软件版本:{CommonClass.Version}");
         }
 
         private async void Button_StartDebug_Click(object sender, RoutedEventArgs e)

@@ -19,17 +19,17 @@ namespace E9361Debug.Common
         /// <summary>
         /// 主版本号
         /// </summary>
-        private static readonly string MainVersion = "0";
+        private static readonly string MainVersion = "v3";
 
         /// <summary>
         /// 次版本号
         /// </summary>
-        private static readonly string SubVersion = "1";
+        private static readonly string SubVersion = "00";
 
         /// <summary>
         /// 补丁号
         /// </summary>
-        private static readonly string PatchVersion = "2";
+        private static readonly string PatchVersion = "01";
 
         /// <summary>
         /// 软件版本信息

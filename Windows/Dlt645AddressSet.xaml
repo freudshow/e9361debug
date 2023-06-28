@@ -8,7 +8,7 @@
     Title="设置终端ID"
     MinWidth="100"
     MaxWidth="700"
-    MaxHeight="200"
+    MaxHeight="500"
     mc:Ignorable="d">
 
     <Grid>

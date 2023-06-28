@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="E9361调试软件"
+    Title="E9361-C0工装调试软件"
     Width="auto"
     Height="auto"
     Background="{DynamicResource MaterialDesignPaper}"
