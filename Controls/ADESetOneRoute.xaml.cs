@@ -17,7 +17,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using E9361Debug.Communication;
 using E9361Debug.logical;
+using E9361Debug.Logical;
 using E9361Debug.Maintain;
+using E9361Debug.MsgBox;
+using E9361Debug.SshInterface;
 using Newtonsoft.Json;
 using static E9361Debug.Windows.ADE9078Set;
 
@@ -39,6 +42,7 @@ namespace E9361Debug.Controls
         private readonly ICommunicationPort m_Port;
         private readonly Dictionary<ushort, RealDatabaseCmdParameters> m_Dict = new Dictionary<ushort, RealDatabaseCmdParameters>();
         private bool m_CanReadData = true;
+        private readonly SshClientClass m_SshClass;
 
         public delegate void StopReadDataDelegate();
 
@@ -84,6 +88,11 @@ namespace E9361Debug.Controls
 
             StopReadDataEvent += StopReadData;
             StartReadDataEvent += StartReadData;
+
+            if (m_SshClass == null)
+            {
+                m_SshClass = new SshClientClass(DataBaseLogical.GetTerminalIP(), DataBaseLogical.GetTerminalSSHPort(), DataBaseLogical.GetTerminalSSHUserName(), DataBaseLogical.GetTerminalSSHPasswd());
+            }
         }
 
         public async Task ReadValuesAsync()
@@ -154,6 +163,10 @@ namespace E9361Debug.Controls
 
             try
             {
+                Button_Set220V5A0Angle.IsEnabled = false;
+                Button_Set220V5A60Angle.IsEnabled = false;
+                Button_SetDefault.IsEnabled = false;
+
                 StopReadDataEvent?.Invoke();
                 await Task.Delay(3000);
 
@@ -189,7 +202,21 @@ namespace E9361Debug.Controls
                     MaintainParseRes res = await m_Port.ReadOneFrameAsync(1000);
                     if (res != null && MaintainProtocol.ParseAdeSetAck(res.Frame))
                     {
-                        MessageBox.Show("设置成功");
+                        ShowMsg.ShowMessageBoxTimeout("设置成功", "温馨提示", MessageBoxButton.OK, 1000);
+
+                        if (t == SetTypeEnum.Set_Type_Defatult)
+                        {
+                            ShowMsg.ShowMessageBoxTimeout("终端重启中, 请等待30秒...", "温馨提示", MessageBoxButton.OK, 1000);
+
+                            if (!m_SshClass.IsSshConnected)
+                            {
+                                m_SshClass.ConnectToSshServer();
+                            }
+
+                            m_SshClass.ExecCmd("/sbin/reboot");
+                            await Task.Delay(30 * 1000);
+                            m_SshClass.DisConnectSSH();
+                        }
                     }
                     else
                     {
@@ -202,6 +229,12 @@ namespace E9361Debug.Controls
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                Button_Set220V5A0Angle.IsEnabled = true;
+                Button_Set220V5A60Angle.IsEnabled = true;
+                Button_SetDefault.IsEnabled = true;
             }
         }
     }

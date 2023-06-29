@@ -28,7 +28,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Click="Button_SetDefault_Click"
-                    Content="恢复芯片默认参数" />
+                    Content="恢复芯片默认参数并重启终端" />
                 <Button
                     x:Name="Button_Set220V5A0Angle"
                     Margin="5"
