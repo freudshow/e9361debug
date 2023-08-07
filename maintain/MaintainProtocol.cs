@@ -1,4 +1,4 @@
-﻿using E9361Debug.logical;
+﻿using E9361Debug.Logical;
 using System;
 using System.Net;
 using System.Runtime.InteropServices;

@@ -1,5 +1,5 @@
 ﻿using E9361Debug.Communication;
-using E9361Debug.logical;
+using E9361Debug.Logical;
 using System;
 using System.Collections.Generic;
 using System.Windows;

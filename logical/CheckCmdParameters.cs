@@ -1,5 +1,4 @@
-﻿using E9361Debug.Logical;
-using E9361Debug.Maintain;
+﻿using E9361Debug.Maintain;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.ComponentModel;
 using System.Web.Hosting;
 using System.Windows.Media;
 
-namespace E9361Debug.logical
+namespace E9361Debug.Logical
 {
     public class RealDatabaseCmdParameters
     {

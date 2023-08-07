@@ -16,7 +16,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using E9361Debug.Communication;
-using E9361Debug.logical;
 using E9361Debug.Logical;
 using E9361Debug.Maintain;
 using E9361Debug.MsgBox;
