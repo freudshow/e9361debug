@@ -36,6 +36,7 @@ namespace E9361Debug.Logical
         Cmd_Type_ADC_Adjust,                        //交采整定
         Cmd_Type_Console,                           //维护口检测
         Cmd_Type_SetSerial,                         //设置终端序列号或者ESN号等
+        Cmd_Type_SetPT100,                          //PT100整定
     }
 
     public enum ResultTypeEnum
@@ -508,6 +509,10 @@ namespace E9361Debug.Logical
                         res = await CheckConsoleAsync(port, c, callbackOutput);
                         break;
 
+                    case CommandType.Cmd_Type_SetPT100:
+                        res = await CheckPT100Async(port, c, callbackOutput);
+                        break;
+
                     default:
                         break;
                 }
@@ -913,6 +918,29 @@ namespace E9361Debug.Logical
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     ADE9078Set a = new ADE9078Set(portDict[PortUseTypeEnum.Maintaince].IPort, JsonConvert.DeserializeObject<MultiRouteADEError>(c.CmdParam));
+                    a.CheckResultEvent += e => { res = e; };
+                    a.ShowDialog();
+                });
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+
+                return false;
+            }
+        }
+
+        public static async Task<bool> CheckPT100Async(Dictionary<PortUseTypeEnum, CommunicationPort> portDict, CheckItems c, Action<ResultInfoType, bool, string, int> callbackOutput)
+        {
+            try
+            {
+                bool res = false;
+                await Task.Delay(10);//消除编译警告
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    PT100Set a = new PT100Set(portDict[PortUseTypeEnum.Maintaince].IPort, JsonConvert.DeserializeObject<ADEErrorParameter>(c.CmdParam));
                     a.CheckResultEvent += e => { res = e; };
                     a.ShowDialog();
                 });

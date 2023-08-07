@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周四 6月 15 17:23:16 2023
+-- SQLiteStudio v3.4.4 生成的文件，周一 8月 7 14:40:58 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -505,12 +505,13 @@ CREATE TABLE IF NOT EXISTS t_checkPT100 (
     childTableName TEXT
 );
 
-INSERT INTO t_checkPT100 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
-    "RealDataBaseNo": 54,
-    "TeleType": 1,
-    "DataType": 0,
-    "DataItemCount": 1
-}', 1, '(f)=>f>-3.0&&f<=3.0', 5, 'PT100检测', 1, 5000, NULL);
+INSERT INTO t_checkPT100 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 12, '{
+	"RealDatabaseNo": 54,
+	"ItemName": "当前温度(℃)",
+	"StandardValue": 0.0,
+	"ErrorThresholdType": 0,
+	"ErrorThreshold": 3.0
+}', 1, '0.0', 2, 'PT100整定', 1, 5000, NULL);
 
 -- 表：t_checkRS232
 DROP TABLE IF EXISTS t_checkRS232;
@@ -701,6 +702,8 @@ INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (9, 7, 'Cmd_
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (10, 8, 'Cmd_Type_Manual_Operate', '手动让用户操作');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (11, 9, 'Cmd_Type_ADC_Adjust', '交采整定');
 INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (12, 10, 'Cmd_Type_Console', '维护口检测');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (13, 11, 'Cmd_Type_SetSerial', '设置终端序列号或者ESN号等');
+INSERT INTO t_cmdTypeEnum (seq, enum, enumName, discription) VALUES (14, 12, 'Cmd_Type_SetPT100', 'PT100整定');
 
 -- 表：t_isEnable
 DROP TABLE IF EXISTS t_isEnable;

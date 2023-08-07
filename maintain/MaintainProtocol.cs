@@ -799,6 +799,49 @@ namespace E9361Debug.Maintain
 
             return FindOneFrame(frame, out _) && frame[7] == 0;
         }
+
+        /// <summary>
+        /// 获取PT100整定报文
+        /// </summary>
+        /// <param name="temperature">当前温度值</param>
+        /// <param name="isWriteFile">是否要将整定结果存入配置文件</param>
+        /// <returns>报文</returns>
+        /// <exception cref="ArgumentOutOfRangeException">温度值必须是-49和155二者其一</exception>
+        public static byte[] GetPt100Setting(int temperature, bool isWriteFile)
+        {
+            if (temperature != -49 && temperature != 155)
+            {
+                throw new ArgumentOutOfRangeException("温度值必须是-49和155二者其一");
+            }
+
+            byte mainFunc = (byte)MaintainMainFuction.MaintainMainFuction_OperaAde9078;
+            byte subFunc = 0x30;
+
+            byte[] data = new byte[5];
+
+            int pos = 0;
+            data[pos++] = (byte)(temperature < 0 ? 1 : 0);
+            data[pos++] = (byte)Math.Abs(temperature);
+            data[pos++] = (byte)(isWriteFile ? 1 : 0);
+
+            return ComposeFrame(mainFunc, subFunc, data);
+        }
+
+        /// <summary>
+        /// 解析PT100整定的应答报文
+        /// </summary>
+        /// <param name="frame">整定应答报文</param>
+        /// <returns>整定成功-true; 整定失败-false</returns>
+        /// <exception cref="ArgumentOutOfRangeException">报文必须非空且长度必须为9</exception>
+        public static bool ParseSetPt100Ack(byte[] frame)
+        {
+            if (frame == null || frame.Length != 9)
+            {
+                throw new ArgumentOutOfRangeException("frame");
+            }
+
+            return FindOneFrame(frame, out _) && frame[7] == 0x11;
+        }
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 16, CharSet = CharSet.Ansi)]

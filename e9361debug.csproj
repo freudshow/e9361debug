@@ -205,6 +205,9 @@
     <Compile Include="Windows\Dlt645AddressSet.xaml.cs">
       <DependentUpon>Dlt645AddressSet.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\PT100Set.xaml.cs">
+      <DependentUpon>PT100Set.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\TerminalAddressSet.xaml.cs">
       <DependentUpon>TerminalAddressSet.xaml</DependentUpon>
     </Compile>
@@ -245,6 +248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Dlt645AddressSet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PT100Set.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
