@@ -104,12 +104,12 @@ namespace E9361Debug.Windows
 
         private async Task SetPT100(int value, bool isWriteFile)
         {
-            m_CanReadData = false;
-            await Task.Delay(2000);
-
             byte[] b = MaintainProtocol.GetPt100Setting(value, isWriteFile);
             if (b != null)
             {
+                m_CanReadData = false;
+                await Task.Delay(2000);//等待读取数据函数暂停
+
                 if (!m_Port.IsOpen())
                 {
                     m_Port.Open();
@@ -125,6 +125,8 @@ namespace E9361Debug.Windows
                 {
                     MessageBox.Show("设置失败!!!");
                 }
+
+                await Task.Delay(2000);//等待终端的温度值稳定后再读取
 
                 m_CanReadData = true;
             }
