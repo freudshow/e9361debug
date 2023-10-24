@@ -29,6 +29,7 @@ namespace E9361Debug.Windows
     {
         private bool m_Result = true;
         private bool m_CanReadData = true;
+        private bool m_WindowIsShow = false;
         private readonly ICommunicationPort m_Port;
         private readonly ADEErrorParameter m_Para;
         private readonly ObservableCollection<ADEErrorParameter> m_DataList = new ObservableCollection<ADEErrorParameter>();
@@ -56,12 +57,13 @@ namespace E9361Debug.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            m_WindowIsShow = true;
             ReadValueAsync();
         }
 
         public async void ReadValueAsync()
         {
-            while (true)
+            while (m_WindowIsShow)
             {
                 if (m_CanReadData)
                 {
@@ -134,6 +136,7 @@ namespace E9361Debug.Windows
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            m_WindowIsShow = false;
             CheckResultEvent(m_Para.Result);
         }
     }
