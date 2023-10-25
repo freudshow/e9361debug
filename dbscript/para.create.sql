@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周一 9月 18 18:25:45 2023
+-- SQLiteStudio v3.4.4 生成的文件，周三 10月 25 09:58:52 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -269,13 +269,13 @@ CREATE TABLE IF NOT EXISTS t_checkGPS (
 );
 
 INSERT INTO t_checkGPS (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
-    "RealDataBaseNo": 322,
+    "RealDataBaseNo": 404,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=120.0&&f<=123.0', 5, '读取经度', 1, 5000, NULL);
 INSERT INTO t_checkGPS (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
-    "RealDataBaseNo": 323,
+    "RealDataBaseNo": 405,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
@@ -453,36 +453,36 @@ CREATE TABLE IF NOT EXISTS t_checkPorts (
 );
 
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 3, '{
-    "RealDataBaseNo": 317,
+    "RealDataBaseNo": 399,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'RS485-1测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
-    "RealDataBaseNo": 318,
+    "RealDataBaseNo": 400,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'RS485-2测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 3, '{
-    "RealDataBaseNo": 319,
+    "RealDataBaseNo": 401,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'RS485-3测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 3, '{
-    "RealDataBaseNo": 320,
+    "RealDataBaseNo": 402,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'CAN测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 6, '', 6, '', 0, '等待CCO组网... ...', 1, 3000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '{
-    "RealDataBaseNo": 321,
-    "TeleType": 1,
-    "DataType": 0,
+    "RealDataBaseNo": 120,
+    "TeleType": 0,
+    "DataType": 1,
     "DataItemCount": 1
-}', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'CCO测试', 1, 5000, NULL);
+}', 0, '1', 0, 'CCO测试', 1, 5000, NULL);
 
 -- 表：t_checkPT100
 DROP TABLE IF EXISTS t_checkPT100;
@@ -801,7 +801,7 @@ INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, re
 }', 6, '', 0, '下载测试工装配置', 1, 5000, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 1, 'unzip -x /data/app/e9361app/root/para/c0_test.zip -d /data/app/e9361app/root/para/ && mv /data/app/e9361app/root/para/localpara/localpara.json /data/app/e9361app/ && rm -rf /data/app/e9361app/root/para/c0_test.zip', 6, '\w*inflating\w*', 4, '解压配置文件并清理压缩包', 1, 3000, NULL);
 INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (8, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3000, NULL);
-INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 6, '', 6, '', 0, '等待终端重启... ...', 1, 60000, NULL);
+INSERT INTO t_preCheckSteps (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (9, 6, '', 6, '', 0, '等待终端重启... ...', 1, 40000, NULL);
 
 -- 表：t_realDataTypeEnum
 DROP TABLE IF EXISTS t_realDataTypeEnum;
