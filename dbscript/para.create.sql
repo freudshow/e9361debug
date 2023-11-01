@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 10月 25 09:58:52 2023
+-- SQLiteStudio v3.4.4 生成的文件，周五 10月 27 09:57:44 2023
 --
 -- 所用的文本编码：UTF-8
 --
@@ -95,84 +95,84 @@ INSERT INTO t_checkADE9078 (seq, cmdType, cmdParam, resultType, resultValue, res
 			"RouteNo": 0,
 			"ItemList": [
 				{
-					"RealDatabaseNo": 125,
+					"RealDatabaseNo": 207,
 					"ItemName": "A相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 126,
+					"RealDatabaseNo": 208,
 					"ItemName": "B相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 127,
+					"RealDatabaseNo": 209,
 					"ItemName": "C相电流",
 					"StandardValue": 5.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 128,
+					"RealDatabaseNo": 210,
 					"ItemName": "A相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 129,
+					"RealDatabaseNo": 211,
 					"ItemName": "B相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 130,
+					"RealDatabaseNo": 212,
 					"ItemName": "C相电压",
 					"StandardValue": 220.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 131,
+					"RealDatabaseNo": 213,
 					"ItemName": "A相有功功率",
 					"StandardValue": 550.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 132,
+					"RealDatabaseNo": 214,
 					"ItemName": "B相有功功率",
 					"StandardValue": 550.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 133,
+					"RealDatabaseNo": 215,
 					"ItemName": "C相有功功率",
 					"StandardValue": 550.0,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 134,
+					"RealDatabaseNo": 216,
 					"ItemName": "A相无功功率",
 					"StandardValue": 952.6279,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 135,
+					"RealDatabaseNo": 217,
 					"ItemName": "B相无功功率",
 					"StandardValue": 952.6279,
 					"ErrorThresholdType": 2,
 					"ErrorThreshold": 5.0
 				},
 				{
-					"RealDatabaseNo": 136,
+					"RealDatabaseNo": 218,
 					"ItemName": "C相无功功率",
 					"StandardValue": 952.6279,
 					"ErrorThresholdType": 2,
