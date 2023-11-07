@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace E9361Debug.Config
+﻿namespace E9361Debug.Config
 {
     internal class Dlt645AddressConfig
     {

@@ -11,6 +11,7 @@
     Width="800"
     Height="450"
     Closed="Window_Closed"
-    mc:Ignorable="d" Loaded="Window_Loaded">
+    Loaded="Window_Loaded"
+    mc:Ignorable="d">
     <Grid x:Name="Grid_Routes" />
 </Window>

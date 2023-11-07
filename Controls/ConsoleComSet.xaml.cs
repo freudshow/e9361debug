@@ -1,6 +1,5 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
-using E9361Debug.Log;
 using E9361Debug.Logical;
 using E9361Debug.MsgBox;
 using System;

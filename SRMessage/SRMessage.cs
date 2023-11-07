@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace E9361Debug.Log
 {
@@ -71,10 +73,7 @@ namespace E9361Debug.Log
         public void AddSRMsg(SRMsgType type, string info)
         {
             //触发事件
-            if (OnSRMsg != null)
-            {
-                OnSRMsg(this, new SRMsgEventArgs(type, info)); //演示不同的参数类型
-            }
+            OnSRMsg?.Invoke(this, new SRMsgEventArgs(type, info)); //演示不同的参数类型
 
             m_LogInfo.Debug("Signaleton " + info);
         }
@@ -103,7 +102,21 @@ namespace E9361Debug.Log
 
         public static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string fileName = "")
         {
-            return $"[{fileName}]";
+            return $"[{Path.GetFileName(fileName)}]";
+        }
+
+        public static string GetExceptionInfo(Exception ex)
+        {
+            // 获取堆栈帧
+            StackTrace st = new StackTrace(ex, true);
+            StackFrame sf = st.GetFrame(0);
+
+            string fileName = Path.GetFileName(sf.GetFileName()); //文件名
+            string methodName = sf.GetMethod().Name; //方法名
+            int lineNumber = sf.GetFileLineNumber(); //行号
+            int columnNumber = sf.GetFileColumnNumber(); //列号
+
+            return $"[ {fileName}][{methodName}()][{lineNumber}][{columnNumber}] : {ex.Message}";
         }
     }
 }

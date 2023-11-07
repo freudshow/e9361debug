@@ -2,8 +2,8 @@
 using E9361Debug.Communication;
 using E9361Debug.DBHelper;
 using System;
-using System.Data;
 using System.Collections.Generic;
+using System.Data;
 
 namespace E9361Debug.Logical
 {

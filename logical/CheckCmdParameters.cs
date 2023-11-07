@@ -1,10 +1,7 @@
 ﻿using E9361Debug.Maintain;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Web.Hosting;
 using System.Windows.Media;
 
 namespace E9361Debug.Logical

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Windows;
-using E9361Debug.Common;
+﻿using E9361Debug.Common;
 using E9361Debug.Communication;
 using E9361Debug.Config;
 using E9361Debug.Json;
 using E9361Debug.Logical;
 using E9361Debug.Maintain;
-using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace E9361Debug.Windows
 {

@@ -1,27 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using E9361Debug.Communication;
+﻿using E9361Debug.Communication;
 using E9361Debug.Logical;
 using E9361Debug.Maintain;
 using E9361Debug.MsgBox;
 using E9361Debug.SshInterface;
-using Newtonsoft.Json;
-using static E9361Debug.Windows.ADE9078Set;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace E9361Debug.Controls
 {
