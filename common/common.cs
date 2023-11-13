@@ -193,7 +193,7 @@ namespace E9361Debug.Common
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
                 throw ex;
             }
         }

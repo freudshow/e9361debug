@@ -58,11 +58,12 @@ namespace E9361Debug.Communication
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 if (m_RemoveWatchingObect != null)
                 {
                     m_RemoveWatchingObect.Stop();
                 }
+
+                throw new Exception(FileFunctionLine.GetExceptionInfo(e));
             }
         }
 
@@ -80,11 +81,12 @@ namespace E9361Debug.Communication
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 if (m_InsertWatchingObect != null)
                 {
                     m_InsertWatchingObect.Stop();
                 }
+
+                throw new Exception(FileFunctionLine.GetExceptionInfo(e));
             }
         }
     }
@@ -222,8 +224,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -242,8 +244,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -269,8 +271,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -292,8 +294,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -331,7 +333,7 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
                 Open();
             }
 

@@ -1,4 +1,5 @@
-﻿using Renci.SshNet;
+﻿using E9361Debug.Log;
+using Renci.SshNet;
 using Renci.SshNet.Async;
 using Renci.SshNet.Common;
 using System;
@@ -56,7 +57,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -88,7 +89,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -110,7 +111,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -130,7 +131,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -151,7 +152,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -175,7 +176,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -203,7 +204,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -233,7 +234,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -248,7 +249,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -275,7 +276,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -300,7 +301,7 @@ namespace E9361Debug.SshInterface
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
     }

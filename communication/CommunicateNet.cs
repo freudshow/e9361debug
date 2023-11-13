@@ -90,8 +90,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -117,8 +117,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -139,8 +139,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                return false;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -194,7 +194,7 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
                 Open();
                 await Task.Delay(500);
                 res = await ReadOneFrameAsync(timeout);
@@ -268,8 +268,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -293,8 +293,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -318,8 +318,8 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
-                throw ex;
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 
@@ -367,7 +367,7 @@ namespace E9361Debug.Communication
             }
             catch (Exception ex)
             {
-                m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
                 Open();
                 await Task.Delay(500);
                 res = await ReadOneFrameAsync(timeout);

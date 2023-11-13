@@ -2,6 +2,7 @@
 using E9361Debug.Communication;
 using E9361Debug.Config;
 using E9361Debug.Json;
+using E9361Debug.Log;
 using E9361Debug.Logical;
 using E9361Debug.Maintain;
 using System;
@@ -50,7 +51,7 @@ namespace E9361Debug.Windows
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 

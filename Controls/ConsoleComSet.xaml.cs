@@ -1,5 +1,6 @@
 ﻿using E9361Debug.Common;
 using E9361Debug.Communication;
+using E9361Debug.Log;
 using E9361Debug.Logical;
 using E9361Debug.MsgBox;
 using System;
@@ -27,19 +28,34 @@ namespace E9361Debug.Controls
         {
             InitializeComponent();
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this)) return;
-            InitControls();
+
+            try
+            {
+                InitControls();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void InitControls()
         {
-            m_FirstLoadComName = true;
-            RefreshPortNames();
-            RefreshPortBaudrate();
-            UsbDection.AddRemoveUSBHandler(USBChanged);
-            UsbDection.AddInsetUSBHandler(USBChanged);
+            try
+            {
+                m_FirstLoadComName = true;
+                RefreshPortNames();
+                RefreshPortBaudrate();
+                UsbDection.AddRemoveUSBHandler(USBChanged);
+                UsbDection.AddInsetUSBHandler(USBChanged);
 
-            m_FirstLoadComName = false;
-            m_FirstLoadComName = false;
+                m_FirstLoadComName = false;
+                m_FirstLoadComName = false;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public void USBChanged(object sender, EventArrivedEventArgs e)
@@ -157,7 +173,7 @@ namespace E9361Debug.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
     }

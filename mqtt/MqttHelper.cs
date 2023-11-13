@@ -54,7 +54,7 @@ namespace E9361Debug.Mqtt
                        }
                        catch (Exception ex)
                        {
-                           m_LogError.Error($"{FileFunctionLine.GetFilePath()}{FileFunctionLine.GetFunctionName()}{FileFunctionLine.GetLineNumber()}{ex.Message}");
+                           m_LogError.Error(FileFunctionLine.GetExceptionInfo(ex));
                        }
                        finally
                        {
@@ -77,7 +77,7 @@ namespace E9361Debug.Mqtt
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
     }

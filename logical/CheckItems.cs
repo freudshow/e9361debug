@@ -348,7 +348,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常:{ex.Message}\n");
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常:{FileFunctionLine.GetExceptionInfo(ex)}\n");
             }
         }
 
@@ -603,7 +603,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"[{c.Description}]检测异常:{ex.Message}\n", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"[{c.Description}]检测异常:{FileFunctionLine.GetExceptionInfo(ex)}\n", c.Depth);
 
                 return false;
             }
@@ -672,7 +672,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"异常: {ex.Message}\n", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Logs, true, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}\n", c.Depth);
 
                 return false;
             }
@@ -701,7 +701,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }
@@ -788,7 +788,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }
@@ -826,7 +826,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }
@@ -850,7 +850,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }
@@ -885,7 +885,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }
@@ -926,7 +926,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }
@@ -949,7 +949,7 @@ namespace E9361Debug.Logical
             }
             catch (Exception ex)
             {
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {ex.Message}", c.Depth);
+                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Exception, false, $"异常: {FileFunctionLine.GetExceptionInfo(ex)}", c.Depth);
 
                 return false;
             }

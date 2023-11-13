@@ -1,4 +1,5 @@
-﻿using System;
+﻿using E9361Debug.Log;
+using System;
 using System.Collections;
 using System.Configuration;
 using System.Data;
@@ -23,7 +24,7 @@ namespace E9361Debug.DBHelper
             }
             catch (SQLiteException ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
 
             return sr;
@@ -44,7 +45,7 @@ namespace E9361Debug.DBHelper
             }
             catch (SQLiteException ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
 
             return sr;
@@ -62,10 +63,10 @@ namespace E9361Debug.DBHelper
                     connection.Open();
                     num = command.ExecuteNonQuery();
                 }
-                catch (SQLiteException exception)
+                catch (SQLiteException ex)
                 {
                     connection.Close();
-                    throw new Exception(exception.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -98,7 +99,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -125,7 +126,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -152,10 +153,10 @@ namespace E9361Debug.DBHelper
                     command.CommandTimeout = Times;
                     num = command.ExecuteNonQuery();
                 }
-                catch (SQLiteException exception)
+                catch (SQLiteException ex)
                 {
                     connection.Close();
-                    throw new Exception(exception.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -189,7 +190,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -220,7 +221,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -266,7 +267,7 @@ namespace E9361Debug.DBHelper
                 catch (SQLiteException ex)
                 {
                     transaction.Rollback();
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
             }
         }
@@ -292,10 +293,10 @@ namespace E9361Debug.DBHelper
                             transaction.Commit();
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         transaction.Rollback();
-                        throw;
+                        throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                     }
                 }
             }
@@ -340,7 +341,7 @@ namespace E9361Debug.DBHelper
                 catch (SQLiteException ex)
                 {
                     connection.Close();
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -370,7 +371,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
                 finally
                 {
@@ -437,7 +438,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
 
                 return ds;
@@ -457,7 +458,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
 
                 return ds;
@@ -477,7 +478,7 @@ namespace E9361Debug.DBHelper
                 }
                 catch (SQLiteException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                 }
 
                 return ds;
@@ -502,7 +503,7 @@ namespace E9361Debug.DBHelper
                     }
                     catch (SQLiteException ex)
                     {
-                        throw new Exception(ex.Message);
+                        throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
                     }
 
                     ds = dataSet;

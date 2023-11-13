@@ -15,7 +15,6 @@ namespace E9361Debug.Windows
     /// </summary>
     public partial class PT100Set : Window
     {
-        private bool m_Result = true;
         private bool m_CanReadData = true;
         private bool m_WindowIsShow = false;
         private readonly ICommunicationPort m_Port;

@@ -1,4 +1,5 @@
-﻿using E9361Debug.Logical;
+﻿using E9361Debug.Log;
+using E9361Debug.Logical;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -290,7 +291,7 @@ namespace E9361Debug.Maintain
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(FileFunctionLine.GetExceptionInfo(ex));
             }
         }
 

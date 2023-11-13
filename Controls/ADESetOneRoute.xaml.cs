@@ -1,4 +1,5 @@
 ﻿using E9361Debug.Communication;
+using E9361Debug.Log;
 using E9361Debug.Logical;
 using E9361Debug.Maintain;
 using E9361Debug.MsgBox;
@@ -214,7 +215,7 @@ namespace E9361Debug.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(FileFunctionLine.GetExceptionInfo(ex));
             }
             finally
             {
