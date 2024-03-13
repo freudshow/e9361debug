@@ -478,7 +478,7 @@ INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resul
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'CAN测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 6, '', 6, '', 0, '等待CCO组网... ...', 1, 3000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '{
-    "RealDataBaseNo": 120,
+    "RealDataBaseNo": 126,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
