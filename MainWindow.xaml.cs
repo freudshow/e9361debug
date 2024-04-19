@@ -151,11 +151,13 @@ namespace E9361Debug
         {
             this.Dispatcher.BeginInvoke(new ThreadStart(delegate ()
             {
-                string tabs = "";
+                string tabs = depth > 0 ? "│   " : "";
                 while (depth-- > 0)
                 {
-                    tabs += "|____";
+                    tabs += "│   ";
                 }
+
+                tabs += "├──";
 
                 switch (resultType)
                 {
