@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周五 10月 27 09:57:44 2023
+-- SQLiteStudio v3.4.4 生成的文件，周二 10月 29 17:07:52 2024
 --
 -- 所用的文本编码：UTF-8
 --
@@ -478,7 +478,7 @@ INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resul
 }', 1, '(f)=>f>=50.0&&f<=300.0', 5, 'CAN测试', 1, 5000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 6, '', 6, '', 0, '等待CCO组网... ...', 1, 3000, NULL);
 INSERT INTO t_checkPorts (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 3, '{
-    "RealDataBaseNo": 126,
+    "RealDataBaseNo": 120,
     "TeleType": 0,
     "DataType": 1,
     "DataItemCount": 1
@@ -569,7 +569,7 @@ CREATE TABLE IF NOT EXISTS t_checkUSB (
 );
 
 INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 8, '请将U盘插入E9361-C0的USB口', 6, '', 0, '插入U盘', 1, 3000, NULL);
-INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'ls /dev/sd*', 6, '\w*/dev/sda\w*', 4, 'U盘检测', 1, 2000, NULL);
+INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 1, 'df', 6, '\w*/dev/sda\w*', 4, 'U盘检测', 1, 2000, NULL);
 INSERT INTO t_checkUSB (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 8, '请将U盘移除', 6, '', 0, '移除U盘', 1, 1000, NULL);
 
 -- 表：t_checkYKYX
@@ -885,7 +885,7 @@ CREATE TABLE IF NOT EXISTS t_runtimeVariable (
 );
 
 INSERT INTO t_runtimeVariable (seq, name, value) VALUES (2, 'Console_Port_Baud', '115200');
-INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM6');
+INSERT INTO t_runtimeVariable (seq, name, value) VALUES (3, 'Console_Port_name', 'COM3');
 
 -- 表：t_YKOnOffEnum
 DROP TABLE IF EXISTS t_YKOnOffEnum;
