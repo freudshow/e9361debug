@@ -1,5 +1,5 @@
 --
--- SQLiteStudio v3.4.4 生成的文件，周三 10月 30 11:38:01 2024
+-- SQLiteStudio v3.4.4 生成的文件，周三 10月 30 13:42:23 2024
 --
 -- 所用的文本编码：UTF-8
 --
@@ -543,7 +543,7 @@ INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resul
 INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 1, ' /bin/mosquitto_pub   -t "e9361app/set/request/e9361esdkapp/version"  -m  "{\"token\": \"200513\", \"timestamp\": \"2023-02-11T09:41:09.845+0800\", \"iHardVer\": \"V1.01.03\", \"iSoftdVer\": \"V1.00.04\", \"eHardVer\": \"SV01.03\", \"eSoftdVer\": \"SV01.004\", \"runtime_min\": 6, \"upprogram\": 0, \"watchdog\": 1 }" -h localhost
 ', 6, '', 0, '停止看门狗', 1, 3000, NULL);
 INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 1, 'ps | grep e9361app | awk ''{print  $1}'' | xargs kill -9', 6, '', 0, '杀死e9361app进程', 1, 3000, NULL);
-INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, '/bin/serial -c "/dev/ttymxc2" -b 9600 -p 0 -f"68 01 00 11 05 23 20 68 11 04 33 34 34 35 0F 16" -t 1', 6, 'FE FE FE FE 68 01 00 11 05 23 20 68 91 06 33 34 34 35 ([0-9a-fA-F]{2}\s){3}16', 4, '读取A相电压', 1, 3000, NULL);
+INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (5, 1, '/bin/serial -c "/dev/ttymxc2" -b 9600 -p 0 -f"68 18 09 15 04 22 20 68 11 04 33 34 34 35 31 16" -t 1', 6, 'FE FE FE FE 68 18 09 15 04 22 20 68 91 06 33 34 34 35 ([0-9a-fA-F]{2}\s){3}16', 4, '读取A相电压', 1, 3000, NULL);
 INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (6, 1, '/sbin/reboot', 6, '', 0, '重启终端', 1, 3000, NULL);
 INSERT INTO t_checkRS232 (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (7, 6, '', 6, '', 0, '等待终端重启... ...', 1, 20000, NULL);
 
