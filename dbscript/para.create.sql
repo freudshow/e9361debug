@@ -273,13 +273,13 @@ INSERT INTO t_checkGPS (seq, cmdType, cmdParam, resultType, resultValue, resultS
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
-}', 1, '(f)=>f>=120.0&&f<=123.0', 5, '读取经度', 1, 5000, NULL);
+}', 1, '(f)=>f>=121.36&&f<=121.37', 5, '读取经度', 1, 5000, NULL);
 INSERT INTO t_checkGPS (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 3, '{
     "RealDataBaseNo": 405,
     "TeleType": 1,
     "DataType": 0,
     "DataItemCount": 1
-}', 1, '(f)=>f>=36.0&&f<=39.0', 5, '读取纬度', 1, 5000, NULL);
+}', 1, '(f)=>f>=37.5&&f<=37.53', 5, '读取纬度', 1, 5000, NULL);
 
 -- 表：t_checkItemsBase
 DROP TABLE IF EXISTS t_checkItemsBase;
