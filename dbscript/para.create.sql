@@ -426,10 +426,10 @@ CREATE TABLE IF NOT EXISTS t_checkNetPort (
     childTableName TEXT
 );
 
-INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 7, 'ping 192.168.0.232', 6, '时间<\dms TTL=\d', 4, '网口1测试', 1, 5000, NULL);
-INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 7, 'ping 192.168.1.232', 6, '时间<\dms TTL=\d', 4, '网口2测试', 1, 5000, NULL);
-INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 7, 'ping 192.168.2.232', 6, '时间<\dms TTL=\d', 4, '网口3测试', 1, 5000, NULL);
-INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 7, 'ping 192.168.3.232', 6, '时间<\dms TTL=\d', 4, '网口4测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (1, 7, 'ping 192.168.0.232', 6, '时间[<|=]\dms TTL=\d', 4, '网口1测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (2, 7, 'ping 192.168.1.232', 6, '时间[<|=]\dms TTL=\d', 4, '网口2测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (3, 7, 'ping 192.168.2.232', 6, '时间[<|=]\dms TTL=\d', 4, '网口3测试', 1, 5000, NULL);
+INSERT INTO t_checkNetPort (seq, cmdType, cmdParam, resultType, resultValue, resultSign, description, isEnable, timeout, childTableName) VALUES (4, 7, 'ping 192.168.3.232', 6, '时间[<|=]\dms TTL=\d', 4, '网口4测试', 1, 5000, NULL);
 
 -- 表：t_checkPorts
 DROP TABLE IF EXISTS t_checkPorts;

@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -460,66 +461,70 @@ namespace E9361Debug.Logical
             {
                 c.CheckIsPassed = CheckIsPassed.Check_Init;
 
-                switch (c.CmdType)
+                int retry = 3;
+                do
                 {
-                    case CommandType.Cmd_Type_Invalid:
-                        break;
+                    switch (c.CmdType)
+                    {
+                        case CommandType.Cmd_Type_Invalid:
+                            break;
 
-                    case CommandType.Cmd_Type_Shell:
-                        res = await CheckShellCmdAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_Shell:
+                            res = await CheckShellCmdAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_Mqtt:
-                        res = await CheckMqttCmdAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_Mqtt:
+                            res = await CheckMqttCmdAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_MaintainFrame:
-                        break;
+                        case CommandType.Cmd_Type_MaintainFrame:
+                            break;
 
-                    case CommandType.Cmd_Type_MaintainReadRealDataBase:
-                        res = await ReadRealDatabaseAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_MaintainReadRealDataBase:
+                            res = await ReadRealDatabaseAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_MaintainWriteRealDataBaseYK:
-                        res = await CheckYXYKAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_MaintainWriteRealDataBaseYK:
+                            res = await CheckYXYKAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_SftpFileTransfer:
-                        res = await CheckSftpFileTransferAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_SftpFileTransfer:
+                            res = await CheckSftpFileTransferAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_DelaySomeTime:
-                        res = true;
-                        await Task.Delay(c.TimeOut);
-                        break;
+                        case CommandType.Cmd_Type_DelaySomeTime:
+                            res = true;
+                            await Task.Delay(c.TimeOut);
+                            break;
 
-                    case CommandType.Cmd_Type_WindowsCommand:
-                        res = await CheckWindowsCommandAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_WindowsCommand:
+                            res = await CheckWindowsCommandAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_Manual_Operate:
-                        res = await CheckManualAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_Manual_Operate:
+                            res = await CheckManualAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_ADC_Adjust:
-                        res = await CheckADESet(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_ADC_Adjust:
+                            res = await CheckADESet(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_Console:
-                        res = await CheckConsoleAsync(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_Console:
+                            res = await CheckConsoleAsync(port, c, callbackOutput);
+                            break;
 
-                    case CommandType.Cmd_Type_SetPT100:
-                        res = await CheckPT100Async(port, c, callbackOutput);
-                        break;
+                        case CommandType.Cmd_Type_SetPT100:
+                            res = await CheckPT100Async(port, c, callbackOutput);
+                            break;
 
-                    default:
-                        break;
-                }
+                        default:
+                            break;
+                    }
 
-                checkstr = res ? "" : "不";
-                callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
-                c.CheckIsPassed = res ? CheckIsPassed.Check_Is_Passed : CheckIsPassed.Check_Not_passed;
+                    checkstr = res ? "" : "不";
+                    callbackOutput?.Invoke(ResultInfoType.ResultInfo_Result, res, $"[{c.Description}], 检测{checkstr}通过\n", c.Depth);
+                    c.CheckIsPassed = res ? CheckIsPassed.Check_Is_Passed : CheckIsPassed.Check_Not_passed;
+                } while (!res && retry-- > 0);
             }
 
             return res;
